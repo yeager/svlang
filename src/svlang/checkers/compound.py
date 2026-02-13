@@ -51,6 +51,8 @@ class CompoundSplitter:
 
     def split(self, word: str) -> CompoundSplit:
         """Try to split a compound word into parts."""
+        if not word or len(word) < 2:
+            return CompoundSplit(word=word, parts=[word] if word else [], is_compound=False)
         word_lower = word.lower()
         parts = self._try_split(word_lower)
         if parts and len(parts) > 1:
@@ -121,6 +123,20 @@ _BUILTIN_WORDS = {
     "sjö", "skog", "skola", "sol", "stad", "stol", "ström", "system",
     "tak", "tid", "trafik", "trä", "vagn", "vakt", "vatten", "vin",
     "vind", "väg", "vägg", "värld", "växt", "yta", "öga", "öra",
+    # Buildings & places
+    "bana", "bank", "butik", "fabrik", "hus", "kyrka", "plan",
+    "sjukhus", "station", "torget", "tunnel",
+    # Compound-common nouns
+    "boll", "brand", "bruk", "by", "båt", "flod", "flyg", "hamn",
+    "hyra", "is", "järn", "krig", "kust", "köp", "leda", "mot",
+    "park", "resa", "ring", "sand", "sjuk", "snö", "sång", "torg",
+    "tåg", "vapen", "vård",
+    # Sports & activities
+    "fotboll", "handboll", "ishockey", "tennis",
+    # Government & society
+    "riksdag", "kommun", "ledamot", "minister", "samhälle", "stat",
+    # Transport
+    "flyg", "järnväg", "spår", "tåg", "tunnel", "buss",
     # Common adjectives
     "stor", "liten", "ny", "gammal", "ung", "lång", "kort", "bred",
     "hög", "låg", "varm", "kall", "vit", "svart", "röd", "blå", "grön",
@@ -134,10 +150,12 @@ _BUILTIN_WORDS = {
     "berg", "blad", "blomma", "eld", "frukt", "gren", "sten", "träd",
     # House/building
     "dörr", "fönster", "golv", "kök", "rum", "trapp", "vägg",
+    "byggnad", "våning",
     # Tech
     "data", "fil", "kod", "nät", "webb", "server", "skärm",
-    # More common compound parts
-    "arbets", "efter", "före", "grupp", "halv", "huvud", "inne",
-    "mellan", "mitt", "natt", "riks", "sam", "slut", "under", "ute",
-    "över",
+    # More common compound parts (prefixes)
+    "arbets", "efter", "flyg", "folk", "fot", "före", "grupp", "halv",
+    "huvud", "inne", "järn", "lands", "mellan", "mitt", "natt", "riks",
+    "sam", "sjuk", "slut", "snö", "sol", "stats", "stor", "trafik",
+    "tunnel", "under", "ute", "över",
 }

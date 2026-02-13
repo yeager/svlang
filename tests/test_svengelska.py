@@ -41,6 +41,19 @@ def test_custom_terms():
     assert hits[0].suggestion == "programmering"
 
 
+def test_inflected_forms():
+    c = SvengelskaChecker()
+    # Plural
+    hits = c.check("Alla stakeholders var nöjda")
+    assert any(h.word.lower() == "stakeholders" for h in hits)
+    # Definite
+    hits = c.check("Feedbacken var bra")
+    assert any("feedback" in h.word.lower() for h in hits)
+    # Swedish verb conjugation
+    hits = c.check("Vi implementerade lösningen")
+    assert any("implementer" in h.word.lower() for h in hits)
+
+
 def test_empty_text():
     c = SvengelskaChecker()
     assert c.check("") == []

@@ -138,6 +138,24 @@ class SvengelskaChecker:
         #    Anglicism("approach", "tillvägagångssätt, metod", ...)]
     """
 
+    # Swedish inflection suffixes to strip when matching
+    # Order matters: longest first
+    _SUFFIXES = (
+        "erade", "erades",       # -era verbs past: implementerade
+        "ering",                 # noun from -era verb: implementering
+        "erna", "arna", "orna",  # plural definite
+        "erar",                  # -era verbs present: implementerar
+        "erat",                  # -era verbs supine: implementerat
+        "ande",                  # present participle
+        "ades",                  # past passive
+        "ers", "ens", "ets",    # genitive
+        "ade",                   # past tense
+        "ar", "er", "or",       # plural
+        "en", "et", "an",       # definite
+        "at", "ad",             # supine / past participle
+        "s",                     # genitive / plural
+    )
+
     def __init__(self, *, extra_terms: dict[str, str] | None = None):
         self._terms = dict(ANGLICISMS)
         if extra_terms:
@@ -148,28 +166,62 @@ class SvengelskaChecker:
             r'\b(' + '|'.join(escaped) + r')\b',
             re.IGNORECASE,
         )
+        # Also build a set for fast stem lookup
+        self._term_set = {t.lower() for t in self._terms}
+
+    def _stem_match(self, word: str) -> str | None:
+        """Try to match a word to a known anglicism by stripping suffixes."""
+        low = word.lower()
+        if low in self._term_set:
+            return low
+        for suffix in self._SUFFIXES:
+            if low.endswith(suffix) and len(low) > len(suffix) + 2:
+                stem = low[:-len(suffix)]
+                if stem in self._term_set:
+                    return stem
+                # Try adding back common verb ending: implementer → implementera
+                if (stem + "a") in self._term_set:
+                    return stem + "a"
+        return None
 
     def check(self, text: str) -> list[Anglicism]:
         """Find anglicisms in text."""
         hits = []
+        seen_positions: set[int] = set()
+
+        # First pass: exact pattern matches
         for m in self._pattern.finditer(text):
             word = m.group(0)
             key = word.lower()
             suggestion = self._terms.get(key, "")
             if not suggestion:
-                # Try original case
                 suggestion = self._terms.get(word, "")
             if suggestion:
-                # Context: up to 30 chars around the match
                 start = max(0, m.start() - 30)
                 end = min(len(text), m.end() + 30)
                 context = text[start:end]
                 hits.append(Anglicism(
-                    word=word,
-                    suggestion=suggestion,
-                    context=context,
-                    position=m.start(),
+                    word=word, suggestion=suggestion,
+                    context=context, position=m.start(),
                 ))
+                seen_positions.add(m.start())
+
+        # Second pass: check inflected forms (word boundaries)
+        for m in re.finditer(r'\b(\w+)\b', text):
+            if m.start() in seen_positions:
+                continue
+            stem = self._stem_match(m.group(0))
+            if stem:
+                suggestion = self._terms[stem]
+                start = max(0, m.start() - 30)
+                end = min(len(text), m.end() + 30)
+                context = text[start:end]
+                hits.append(Anglicism(
+                    word=m.group(0), suggestion=suggestion,
+                    context=context, position=m.start(),
+                ))
+
+        hits.sort(key=lambda h: h.position)
         return hits
 
     @property
