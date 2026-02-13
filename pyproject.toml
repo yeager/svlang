@@ -34,3 +34,6 @@ Issues = "https://github.com/yeager/svlang/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+svlang = ["data/*.txt"]

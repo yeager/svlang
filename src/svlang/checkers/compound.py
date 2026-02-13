@@ -68,9 +68,10 @@ class CompoundSplitter:
                 return [word]
             return None
 
-        # Try splitting at every position
+        # Try splitting at every position — longest prefix first
+        # This prefers "sjukhus+byggnad" over "sjuk+husbyggnad"
         best: list[str] | None = None
-        for i in range(self._min_part_len, len(word) - self._min_part_len + 1):
+        for i in range(len(word) - self._min_part_len, self._min_part_len - 1, -1):
             prefix = word[:i]
             if prefix not in self._words:
                 continue
@@ -92,6 +93,7 @@ class CompoundSplitter:
                 # Is the rest a word?
                 if rest in self._words:
                     candidate = [prefix, rest]
+                    # Prefer fewest parts, then longest first part
                     if best is None or len(candidate) < len(best):
                         best = candidate
                     continue
@@ -102,6 +104,10 @@ class CompoundSplitter:
                     candidate = [prefix] + sub
                     if best is None or len(candidate) < len(best):
                         best = candidate
+
+            # If we found a 2-part split with longest prefix, that's optimal
+            if best and len(best) == 2:
+                return best
 
         return best
 
