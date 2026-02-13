@@ -1,0 +1,7 @@
+
+[dev]
+pytest>=7
+polib>=1.2
+
+[po]
+polib>=1.2

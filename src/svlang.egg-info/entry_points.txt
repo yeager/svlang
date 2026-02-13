@@ -1,0 +1,2 @@
+[console_scripts]
+svlang = svlang.cli:main
