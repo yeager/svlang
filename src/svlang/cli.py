@@ -92,6 +92,39 @@ def _cmd_compound(args):
     return 0
 
 
+def _cmd_lookup(args):
+    """Dictionary lookup."""
+    from svlang.checkers.lexicon import SwedishLexicon
+    lex = SwedishLexicon()
+
+    if args.reverse:
+        results = lex.reverse_lookup(args.word, limit=args.limit)
+        if not results:
+            print(f"Inga svenska ord hittades för «{args.word}»")
+            return 1
+        print(f"🔍 Engelska «{args.word}» → svenska:")
+        for r in results:
+            print(f"  {r.word} — {', '.join(r.translations)}")
+        return 0
+
+    if args.search:
+        results = lex.search(args.word, limit=args.limit)
+        if not results:
+            print(f"Inga ord börjar med «{args.word}»")
+            return 1
+        for r in results:
+            print(f"  {r.word} — {', '.join(r.translations)}")
+        return 0
+
+    result = lex.lookup(args.word)
+    if result.found:
+        print(f"  {result.word} — {', '.join(result.translations)}")
+        return 0
+    else:
+        print(f"  «{args.word}» finns inte i ordboken")
+        return 1
+
+
 def main(argv: list[str] | None = None):
     parser = argparse.ArgumentParser(
         prog="svlang",
@@ -116,6 +149,14 @@ def main(argv: list[str] | None = None):
     p_comp = sub.add_parser("compound", aliases=["split"], help="Dela upp sammansatta ord")
     p_comp.add_argument("words", nargs="+", help="Ord att dela")
     p_comp.set_defaults(func=_cmd_compound)
+
+    # lookup
+    p_look = sub.add_parser("lookup", aliases=["ord"], help="Slå upp sv→en (Folkets lexikon)")
+    p_look.add_argument("word", help="Ord att slå upp")
+    p_look.add_argument("--reverse", "-r", action="store_true", help="Sök en→sv")
+    p_look.add_argument("--search", "-s", action="store_true", help="Sök prefix")
+    p_look.add_argument("--limit", "-n", type=int, default=20, help="Max resultat")
+    p_look.set_defaults(func=_cmd_lookup)
 
     args = parser.parse_args(argv)
     if not args.command:
