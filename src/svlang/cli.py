@@ -92,6 +92,32 @@ def _cmd_compound(args):
     return 0
 
 
+def _cmd_lix(args):
+    """Calculate LIX readability index."""
+    from svlang.checkers.readability import LixCalculator
+    calc = LixCalculator()
+
+    if args.text:
+        text = " ".join(args.text)
+    elif args.file:
+        path = Path(args.file)
+        if not path.exists():
+            print(f"Filen finns inte: {path}", file=sys.stderr)
+            return 2
+        text = path.read_text(encoding="utf-8")
+    else:
+        print("Ange --text eller --file", file=sys.stderr)
+        return 2
+
+    result = calc.calculate(text)
+    print(f"  LIX: {result.score}")
+    print(f"  Nivå: {result.level}")
+    print(f"  Ord: {result.words}")
+    print(f"  Meningar: {result.sentences}")
+    print(f"  Långa ord (>6 tecken): {result.long_words}")
+    return 0
+
+
 def _cmd_lookup(args):
     """Dictionary lookup."""
     from svlang.checkers.lexicon import SwedishLexicon
@@ -149,6 +175,12 @@ def main(argv: list[str] | None = None):
     p_comp = sub.add_parser("compound", aliases=["split"], help="Dela upp sammansatta ord")
     p_comp.add_argument("words", nargs="+", help="Ord att dela")
     p_comp.set_defaults(func=_cmd_compound)
+
+    # lix
+    p_lix = sub.add_parser("lix", help="Beräkna LIX läsbarhetsindex")
+    p_lix.add_argument("--text", "-t", nargs="+", help="Text att analysera")
+    p_lix.add_argument("--file", "-f", help="Fil att analysera")
+    p_lix.set_defaults(func=_cmd_lix)
 
     # lookup
     p_look = sub.add_parser("lookup", aliases=["ord"], help="Slå upp sv→en (Folkets lexikon)")
