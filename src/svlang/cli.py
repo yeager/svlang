@@ -157,6 +157,7 @@ def main(argv: list[str] | None = None):
         description="🇸🇪 Svenskt NLP-verktyg för översättare",
     )
     parser.add_argument("-V", "--version", action="version", version=f"svlang {__version__}")
+    parser.add_argument("--about", action="store_true", help="Visa programinfo och avsluta")
     sub = parser.add_subparsers(dest="command", help="Kommando")
 
     # svengelska
@@ -191,6 +192,15 @@ def main(argv: list[str] | None = None):
     p_look.set_defaults(func=_cmd_lookup)
 
     args = parser.parse_args(argv)
+    if args.about:
+        print(f"svlang {__version__}")
+        print("Swedish NLP toolkit for translators")
+        print()
+        print("Author:  Daniel Nylander <daniel@danielnylander.se>")
+        print("License: GPL-3.0-or-later")
+        print("Website: https://github.com/yeager/svlang")
+        print("PyPI:    https://pypi.org/project/svlang/")
+        return 0
     if not args.command:
         parser.print_help()
         return 0
