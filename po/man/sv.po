@@ -1,0 +1,354 @@
+# Swedish translations for PACKAGE package
+# Copyright (C) 2026 Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2026-02-15 15:38+0100\n"
+"PO-Revision-Date: 2026-02-15 15:38+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: sv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. type: TH
+#: data/man/svlang.1:1
+#, no-wrap
+msgid "SVLANG"
+msgstr ""
+
+#. type: TH
+#: data/man/svlang.1:1
+#, no-wrap
+msgid "2026-02-15"
+msgstr ""
+
+#. type: TH
+#: data/man/svlang.1:1
+#, no-wrap
+msgid "Daniel Nylander"
+msgstr ""
+
+#. type: TH
+#: data/man/svlang.1:1
+#, no-wrap
+msgid "svlang Manual"
+msgstr ""
+
+#. type: SH
+#: data/man/svlang.1:2
+#, no-wrap
+msgid "NAME"
+msgstr ""
+
+#. type: Plain text
+#: data/man/svlang.1:4
+msgid "svlang - Swedish NLP toolkit for translators"
+msgstr ""
+
+#. type: SH
+#: data/man/svlang.1:4
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr ""
+
+#. type: Plain text
+#: data/man/svlang.1:9
+msgid "B<svlang> [I<OPTIONS>] I<COMMAND> [I<ARGS>]"
+msgstr ""
+
+#. type: SH
+#: data/man/svlang.1:9
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr ""
+
+#. type: Plain text
+#: data/man/svlang.1:11
+msgid ""
+"B<svlang> is a Swedish NLP toolkit for translators. It detects anglicisms "
+"(svengelska), checks translation consistency across PO/TS files, splits "
+"compound words, calculates LIX readability index, and provides Swedish-"
+"English dictionary lookups via Folkets lexikon."
+msgstr ""
+
+#. type: SH
+#: data/man/svlang.1:11
+#, no-wrap
+msgid "OPTIONS"
+msgstr ""
+
+#. type: TP
+#: data/man/svlang.1:12
+#, no-wrap
+msgid "B<-V>, B<--version>"
+msgstr ""
+
+#. type: Plain text
+#: data/man/svlang.1:15
+msgid "Show version number and exit."
+msgstr ""
+
+#. type: TP
+#: data/man/svlang.1:15
+#, no-wrap
+msgid "B<--about>"
+msgstr ""
+
+#. type: Plain text
+#: data/man/svlang.1:18
+msgid "Show application info and exit."
+msgstr ""
+
+#. type: SH
+#: data/man/svlang.1:18
+#, no-wrap
+msgid "COMMANDS"
+msgstr ""
+
+#. type: TP
+#: data/man/svlang.1:19
+#, no-wrap
+msgid "B<svengelska> (alias: B<sv>)"
+msgstr ""
+
+#. type: Plain text
+#: data/man/svlang.1:22
+msgid "Find anglicisms in Swedish text."
+msgstr ""
+
+#. type: TP
+#: data/man/svlang.1:23 data/man/svlang.1:53
+#, no-wrap
+msgid "B<-t>, B<--text> I<TEXT>"
+msgstr ""
+
+#. type: Plain text
+#: data/man/svlang.1:26
+msgid "Text to check."
+msgstr ""
+
+#. type: TP
+#: data/man/svlang.1:26 data/man/svlang.1:56
+#, no-wrap
+msgid "B<-f>, B<--file> I<FILE>"
+msgstr ""
+
+#. type: Plain text
+#: data/man/svlang.1:29
+msgid "File to check."
+msgstr ""
+
+#. type: TP
+#: data/man/svlang.1:30
+#, no-wrap
+msgid "B<consistency> (alias: B<con>)"
+msgstr ""
+
+#. type: Plain text
+#: data/man/svlang.1:33
+msgid "Check translation consistency across .po or .ts files."
+msgstr ""
+
+#. type: TP
+#: data/man/svlang.1:34
+#, no-wrap
+msgid "I<FILES>"
+msgstr ""
+
+#. type: Plain text
+#: data/man/svlang.1:37
+msgid "One or more .po or .ts files."
+msgstr ""
+
+#. type: TP
+#: data/man/svlang.1:37
+#, no-wrap
+msgid "B<-i>, B<--ignore-case>"
+msgstr ""
+
+#. type: Plain text
+#: data/man/svlang.1:40
+msgid "Ignore case when comparing."
+msgstr ""
+
+#. type: TP
+#: data/man/svlang.1:41
+#, no-wrap
+msgid "B<compound> (alias: B<split>)"
+msgstr ""
+
+#. type: Plain text
+#: data/man/svlang.1:44
+msgid "Split Swedish compound words."
+msgstr ""
+
+#. type: TP
+#: data/man/svlang.1:45
+#, no-wrap
+msgid "I<WORDS>"
+msgstr ""
+
+#. type: Plain text
+#: data/man/svlang.1:48
+msgid "Words to split."
+msgstr ""
+
+#. type: TP
+#: data/man/svlang.1:49
+#, no-wrap
+msgid "B<lix>"
+msgstr ""
+
+#. type: Plain text
+#: data/man/svlang.1:52
+msgid "Calculate LIX readability index."
+msgstr ""
+
+#. type: Plain text
+#: data/man/svlang.1:56
+msgid "Text to analyze."
+msgstr ""
+
+#. type: Plain text
+#: data/man/svlang.1:59
+msgid "File to analyze."
+msgstr ""
+
+#. type: TP
+#: data/man/svlang.1:60
+#, no-wrap
+msgid "B<lookup> (alias: B<ord>)"
+msgstr ""
+
+#. type: Plain text
+#: data/man/svlang.1:63
+msgid "Look up Swedish-English translations (Folkets lexikon)."
+msgstr ""
+
+#. type: TP
+#: data/man/svlang.1:64
+#, no-wrap
+msgid "I<WORD>"
+msgstr ""
+
+#. type: Plain text
+#: data/man/svlang.1:67
+msgid "Word to look up."
+msgstr ""
+
+#. type: TP
+#: data/man/svlang.1:67
+#, no-wrap
+msgid "B<-r>, B<--reverse>"
+msgstr ""
+
+#. type: Plain text
+#: data/man/svlang.1:70
+msgid "Search English to Swedish."
+msgstr ""
+
+#. type: TP
+#: data/man/svlang.1:70
+#, no-wrap
+msgid "B<-s>, B<--search>"
+msgstr ""
+
+#. type: Plain text
+#: data/man/svlang.1:73
+msgid "Search by prefix."
+msgstr ""
+
+#. type: TP
+#: data/man/svlang.1:73
+#, no-wrap
+msgid "B<-n>, B<--limit> I<N>"
+msgstr ""
+
+#. type: Plain text
+#: data/man/svlang.1:76
+msgid "Maximum results (default: 20)."
+msgstr ""
+
+#. type: SH
+#: data/man/svlang.1:77
+#, no-wrap
+msgid "EXAMPLES"
+msgstr ""
+
+#. type: Plain text
+#: data/man/svlang.1:84
+#, no-wrap
+msgid ""
+"svlang svengelska -t \"Vi behöver implementera en ny approach\"\n"
+"svlang consistency file1.po file2.po\n"
+"svlang compound \"kontorsstol\" \"skrivbordslampa\"\n"
+"svlang lix -f document.txt\n"
+"svlang lookup hund\n"
+msgstr ""
+
+#. type: SH
+#: data/man/svlang.1:85
+#, no-wrap
+msgid "FILES"
+msgstr ""
+
+#. type: TP
+#: data/man/svlang.1:86
+#, no-wrap
+msgid "I<~/.config/svlang/>"
+msgstr ""
+
+#. type: Plain text
+#: data/man/svlang.1:89
+msgid "Configuration files."
+msgstr ""
+
+#. type: TP
+#: data/man/svlang.1:89
+#, no-wrap
+msgid "I<~/.cache/svlang/>"
+msgstr ""
+
+#. type: Plain text
+#: data/man/svlang.1:92
+msgid "Cached data."
+msgstr ""
+
+#. type: SH
+#: data/man/svlang.1:92
+#, no-wrap
+msgid "BUGS"
+msgstr ""
+
+#. type: Plain text
+#: data/man/svlang.1:94
+msgid "Report bugs at https://github.com/yeager/svlang/issues"
+msgstr ""
+
+#. type: SH
+#: data/man/svlang.1:94
+#, no-wrap
+msgid "AUTHOR"
+msgstr ""
+
+#. type: Plain text
+#: data/man/svlang.1:96
+msgid "Daniel Nylander E<lt>daniel@danielnylander.seE<gt>"
+msgstr ""
+
+#. type: SH
+#: data/man/svlang.1:96
+#, no-wrap
+msgid "SEE ALSO"
+msgstr ""
+
+#. type: Plain text
+#: data/man/svlang.1:97
+msgid "Project homepage: https://github.com/yeager/svlang"
+msgstr ""
