@@ -196,10 +196,11 @@ def main(argv: list[str] | None = None):
         print(f"svlang {__version__}")
         print("Swedish NLP toolkit for translators")
         print()
-        print("Author:  Daniel Nylander <daniel@danielnylander.se>")
-        print("License: GPL-3.0-or-later")
-        print("Website: https://github.com/yeager/svlang")
-        print("PyPI:    https://pypi.org/project/svlang/")
+        print("Author:     Daniel Nylander <daniel@danielnylander.se>")
+        print("License:    GPL-3.0-or-later")
+        print("Website:    https://github.com/yeager/svlang")
+        print("PyPI:       https://pypi.org/project/svlang/")
+        print("Translate:  https://app.transifex.com/danielnylander/svlang/")
         return 0
     if not args.command:
         parser.print_help()
