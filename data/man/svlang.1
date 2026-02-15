@@ -1,0 +1,97 @@
+.TH SVLANG 1 "2026-02-15" "Daniel Nylander" "svlang Manual"
+.SH NAME
+svlang - Swedish NLP toolkit for translators
+.SH SYNOPSIS
+.B svlang
+.RI [ OPTIONS ]
+.I COMMAND
+.RI [ ARGS ]
+.SH DESCRIPTION
+\fBsvlang\fR is a Swedish NLP toolkit for translators. It detects anglicisms (svengelska), checks translation consistency across PO/TS files, splits compound words, calculates LIX readability index, and provides Swedish-English dictionary lookups via Folkets lexikon.
+.SH OPTIONS
+.TP
+.BR \-V ", " \-\-version
+Show version number and exit.
+.TP
+.B \-\-about
+Show application info and exit.
+.SH COMMANDS
+.TP
+.BR svengelska " (alias: " sv ")"
+Find anglicisms in Swedish text.
+.RS
+.TP
+.BR \-t ", " \-\-text " " \fITEXT\fR
+Text to check.
+.TP
+.BR \-f ", " \-\-file " " \fIFILE\fR
+File to check.
+.RE
+.TP
+.BR consistency " (alias: " con ")"
+Check translation consistency across .po or .ts files.
+.RS
+.TP
+.I FILES
+One or more .po or .ts files.
+.TP
+.BR \-i ", " \-\-ignore\-case
+Ignore case when comparing.
+.RE
+.TP
+.BR compound " (alias: " split ")"
+Split Swedish compound words.
+.RS
+.TP
+.I WORDS
+Words to split.
+.RE
+.TP
+.B lix
+Calculate LIX readability index.
+.RS
+.TP
+.BR \-t ", " \-\-text " " \fITEXT\fR
+Text to analyze.
+.TP
+.BR \-f ", " \-\-file " " \fIFILE\fR
+File to analyze.
+.RE
+.TP
+.BR lookup " (alias: " ord ")"
+Look up Swedish-English translations (Folkets lexikon).
+.RS
+.TP
+.I WORD
+Word to look up.
+.TP
+.BR \-r ", " \-\-reverse
+Search English to Swedish.
+.TP
+.BR \-s ", " \-\-search
+Search by prefix.
+.TP
+.BR \-n ", " \-\-limit " " \fIN\fR
+Maximum results (default: 20).
+.RE
+.SH EXAMPLES
+.nf
+svlang svengelska -t "Vi behöver implementera en ny approach"
+svlang consistency file1.po file2.po
+svlang compound "kontorsstol" "skrivbordslampa"
+svlang lix -f document.txt
+svlang lookup hund
+.fi
+.SH FILES
+.TP
+.I ~/.config/svlang/
+Configuration files.
+.TP
+.I ~/.cache/svlang/
+Cached data.
+.SH BUGS
+Report bugs at https://github.com/yeager/svlang/issues
+.SH AUTHOR
+Daniel Nylander <daniel@danielnylander.se>
+.SH SEE ALSO
+Project homepage: https://github.com/yeager/svlang
