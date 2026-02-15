@@ -96,6 +96,21 @@ print(result.parts)  # ["barn", "vagn", "hjul"]
 - [ ] GitHub Action for CI validation
 - [ ] LinguaEdit plugin
 
+## 🌍 Contributing Translations
+
+This app is translated via Transifex. Help translate it into your language!
+
+**[→ Translate on Transifex](https://app.transifex.com/danielnylander/svlang/)**
+
+Currently supported: Swedish (sv). More languages welcome!
+
+### For Translators
+1. Create a free account at [Transifex](https://www.transifex.com)
+2. Join the [danielnylander](https://app.transifex.com/danielnylander/) organization
+3. Start translating!
+
+Translations are automatically synced via GitHub Actions.
+
 ## License
 
 MIT
