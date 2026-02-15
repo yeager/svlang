@@ -1,0 +1,59 @@
+name: Sync Transifex Translations
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Transifex CLI
+        run: |
+          curl -o- https://raw.githubusercontent.com/transifex/cli/master/install.sh | bash
+          sudo mv tx /usr/local/bin/
+
+      - name: Push source strings to Transifex
+        env:
+          TX_TOKEN: ${{ secrets.TX_TOKEN }}
+        run: tx push --source --force
+
+      - name: Pull translations (minimum 20%)
+        env:
+          TX_TOKEN: ${{ secrets.TX_TOKEN }}
+        run: tx pull --all --force --minimum-perc=20
+
+      - name: Install tools
+        run: sudo apt-get install -y gettext po4a
+
+      - name: Compile .mo files
+        run: |
+          for po in po/*.po; do
+            [ -f "$po" ] || continue
+            lang=$(basename "$po" .po)
+            msgfmt -o "po/${lang}.mo" "$po"
+          done
+
+      - name: Build translated man pages
+        run: |
+          if [ -f po4a.cfg ]; then
+            po4a po4a.cfg || true
+          fi
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add po/ data/man/
+          if git diff --cached --quiet; then
+            echo "No translation changes"
+          else
+            git commit -m "i18n: sync translations from Transifex"
+            git push
+          fi
