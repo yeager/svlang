@@ -19,65 +19,72 @@ jobs:
 
       - name: Get version
         id: version
-        run: echo "version=$(grep -oP '__version__ = \"\K[^\"]+' src/svlang/__init__.py)" >> $GITHUB_OUTPUT
-
-      - name: Setup RPM build
-        run: |
-          mkdir -p ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
-          VERSION=${{ steps.version.outputs.version }}
-          PKG=svlang-$VERSION
-          mkdir -p $PKG/data/man
-          cp -a src/svlang $PKG/
-          cp data/man/svlang.1 $PKG/data/man/
-          cp LICENSE $PKG/
-          tar czf ~/rpmbuild/SOURCES/svlang-$VERSION.tar.gz $PKG
-
-      - name: Create spec file
-        run: |
-          VERSION=${{ steps.version.outputs.version }}
-          cat > ~/rpmbuild/SPECS/svlang.spec << SPEC
-Name:           svlang
-Version:        $VERSION
-Release:        1
-Summary:        Swedish language quality checker for PO files
-License:        GPL-3.0-or-later
-URL:            https://github.com/yeager/svlang
-Source0:        %{name}-%{version}.tar.gz
-BuildArch:      noarch
-Requires:       python3 >= 3.9
-
-%description
-svlang checks Swedish PO translations for language quality issues including
-compound words, anglicisms, consistency, and readability.
-
-%prep
-%setup -q
-
-%install
-mkdir -p %{buildroot}%{_datadir}/svlang
-cp -a svlang %{buildroot}%{_datadir}/svlang/
-mkdir -p %{buildroot}%{_bindir}
-cat > %{buildroot}%{_bindir}/svlang << 'WRAPPER'
-#!/bin/bash
-export PYTHONPATH=/usr/share/svlang
-exec python3 -c "from svlang.cli import main; main()" "\$@"
-WRAPPER
-chmod 755 %{buildroot}%{_bindir}/svlang
-install -Dm644 data/man/svlang.1 %{buildroot}%{_mandir}/man1/svlang.1
-
-%files
-%license LICENSE
-%{_bindir}/svlang
-%{_datadir}/svlang/
-%{_mandir}/man1/svlang.1*
-
-%changelog
-* Mon Feb 16 2026 Daniel Nylander <daniel@danielnylander.se> - $VERSION-1
-- RPM package
-SPEC
+        run: echo "version=$(grep -oP '__version__ = "\K[^"]+' src/svlang/__init__.py)" >> $GITHUB_OUTPUT
 
       - name: Build RPM
-        run: rpmbuild -ba ~/rpmbuild/SPECS/svlang.spec
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        shell: python3 {0}
+        run: |
+          import os, subprocess, textwrap, datetime
+          version = os.environ["VERSION"]
+          pkg = f"svlang-{version}"
+          home = os.path.expanduser("~")
+
+          for d in ["BUILD","RPMS","SOURCES","SPECS","SRPMS"]:
+              os.makedirs(f"{home}/rpmbuild/{d}", exist_ok=True)
+
+          os.makedirs(f"{pkg}/data/man", exist_ok=True)
+          subprocess.run(f"cp -a src/svlang {pkg}/", shell=True, check=True)
+          subprocess.run(f"cp data/man/svlang.1 {pkg}/data/man/", shell=True, check=True)
+          subprocess.run(f"cp LICENSE {pkg}/", shell=True, check=True)
+          subprocess.run(f"tar czf {home}/rpmbuild/SOURCES/svlang-{version}.tar.gz {pkg}", shell=True, check=True)
+
+          today = datetime.datetime.now().strftime("%a %b %d %Y")
+          spec = textwrap.dedent(f"""\
+          Name:           svlang
+          Version:        {version}
+          Release:        1
+          Summary:        Swedish language quality checker for PO files
+          License:        GPL-3.0-or-later
+          URL:            https://github.com/yeager/svlang
+          Source0:        %{{name}}-%{{version}}.tar.gz
+          BuildArch:      noarch
+          Requires:       python3 >= 3.9
+
+          %description
+          svlang checks Swedish PO translations for language quality issues including
+          compound words, anglicisms, consistency, and readability.
+
+          %prep
+          %setup -q
+
+          %install
+          mkdir -p %{{buildroot}}%{{_datadir}}/svlang
+          cp -a svlang %{{buildroot}}%{{_datadir}}/svlang/
+          mkdir -p %{{buildroot}}%{{_bindir}}
+          cat > %{{buildroot}}%{{_bindir}}/svlang << 'WRAPPER'
+          #!/bin/bash
+          export PYTHONPATH=/usr/share/svlang
+          exec python3 -c "from svlang.cli import main; main()" "$@"
+          WRAPPER
+          chmod 755 %{{buildroot}}%{{_bindir}}/svlang
+          install -Dm644 data/man/svlang.1 %{{buildroot}}%{{_mandir}}/man1/svlang.1
+
+          %files
+          %license LICENSE
+          %{{_bindir}}/svlang
+          %{{_datadir}}/svlang/
+          %{{_mandir}}/man1/svlang.1*
+
+          %changelog
+          * {today} Daniel Nylander <daniel@danielnylander.se> - {version}-1
+          - RPM package
+          """)
+          with open(f"{home}/rpmbuild/SPECS/svlang.spec", "w") as f:
+              f.write(spec)
+
+          subprocess.run(["rpmbuild", "-ba", f"{home}/rpmbuild/SPECS/svlang.spec"], check=True)
 
       - name: Upload RPM to release
         if: github.event_name == 'release'
