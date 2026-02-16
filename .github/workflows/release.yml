@@ -39,13 +39,21 @@ jobs:
           # English man page
           gzip -9cn data/man/${PKG}.1 > ${ROOT}/usr/share/man/man1/${PKG}.1.gz
 
-          # Translated man pages
+          # Translated man pages (skip <20% translated)
           for langdir in man/*/; do
             [ -d "$langdir" ] || continue
             lang=$(basename "$langdir")
             [ "$lang" = "en" ] && continue
             for manfile in "$langdir"*.1; do
               [ -f "$manfile" ] || continue
+              en_base="man/en/$(basename "$manfile")"
+              [ ! -f "$en_base" ] && en_base="data/man/$(basename "$manfile")"
+              if [ -f "$en_base" ]; then
+                en_lines=$(grep -cv '^\.' "$en_base" || echo 1)
+                same=$(comm -12 <(grep -v '^\.' "$en_base" | sort) <(grep -v '^\.' "$manfile" | sort) | wc -l)
+                trans_pct=$(( (en_lines - same) * 100 / (en_lines > 0 ? en_lines : 1) ))
+                [ "$trans_pct" -lt 20 ] && continue
+              fi
               mkdir -p ${ROOT}/usr/share/man/${lang}/man1
               gzip -9cn "$manfile" > ${ROOT}/usr/share/man/${lang}/man1/$(basename "$manfile").gz
             done
