@@ -10,6 +10,12 @@ svlang - Swedish NLP toolkit for translators
 \fBsvlang\fR is a Swedish NLP toolkit for translators. It detects anglicisms (svengelska), checks translation consistency across PO/TS files, splits compound words, calculates LIX readability index, and provides Swedish-English dictionary lookups via Folkets lexikon.
 .SH OPTIONS
 .TP
+.BR \-j ", " \-\-json
+Output results in JSON format for programmatic consumption.
+.TP
+.BR \-q ", " \-\-quiet
+Suppress non-essential output, showing only key results.
+.TP
 .BR \-V ", " \-\-version
 Show version number and exit.
 .TP
@@ -18,7 +24,8 @@ Show application info and exit.
 .SH COMMANDS
 .TP
 .BR svengelska " (alias: " sv ")"
-Find anglicisms in Swedish text.
+Detect English loanwords and inappropriate anglicisms in Swedish text.
+Helps identify overuse of English terms where Swedish equivalents exist.
 .RS
 .TP
 .BR \-t ", " \-\-text " " \fITEXT\fR
