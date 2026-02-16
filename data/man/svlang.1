@@ -3,102 +3,230 @@
 svlang - Swedish NLP toolkit for translators
 .SH SYNOPSIS
 .B svlang
-.RI [ OPTIONS ]
+.RI [ GLOBAL_OPTIONS ]
 .I COMMAND
+.RI [ COMMAND_OPTIONS ]
 .RI [ ARGS ]
 .SH DESCRIPTION
-\fBsvlang\fR is a Swedish NLP toolkit for translators. It detects anglicisms (svengelska), checks translation consistency across PO/TS files, splits compound words, calculates LIX readability index, and provides Swedish-English dictionary lookups via Folkets lexikon.
-.SH OPTIONS
+\fBsvlang\fR is a comprehensive Swedish Natural Language Processing toolkit
+designed specifically for translators and language professionals working
+with Swedish text. It provides tools for detecting anglicisms (svengelska),
+checking translation consistency across localization files, analyzing compound
+word structure, calculating readability metrics, and performing dictionary lookups.
+
+The toolkit is particularly useful for maintaining high-quality Swedish
+translations, identifying potential language issues, and ensuring consistency
+across large translation projects. It integrates well with other localization
+tools and workflows.
+.SH GLOBAL OPTIONS
 .TP
 .BR \-j ", " \-\-json
-Output results in JSON format for programmatic consumption.
+Output all results in JSON format for programmatic consumption and
+integration with automation scripts. This affects the output format
+of all commands and provides structured data suitable for parsing.
 .TP
 .BR \-q ", " \-\-quiet
-Suppress non-essential output, showing only key results.
+Suppress non-essential output including progress indicators and
+informational messages. Only display final results and error messages.
+Useful for batch processing and integration with other tools.
 .TP
 .BR \-V ", " \-\-version
-Show version number and exit.
+Display version number, build information, and feature availability, then exit.
 .TP
-.B \-\-about
-Show application info and exit.
+.BR \-\-about
+Show comprehensive application information including version details,
+supported features, data sources, and licensing information, then exit.
 .SH COMMANDS
 .TP
 .BR svengelska " (alias: " sv ")"
-Detect English loanwords and inappropriate anglicisms in Swedish text.
-Helps identify overuse of English terms where Swedish equivalents exist.
+Detect English loanwords, inappropriate anglicisms, and overuse of English
+terms in Swedish text. This tool helps maintain authentic Swedish language
+by identifying cases where Swedish equivalents would be more appropriate.
+It uses comprehensive dictionaries of common anglicisms and provides
+suggestions for Swedish alternatives where available.
 .RS
 .TP
-.BR \-t ", " \-\-text " " \fITEXT\fR
-Text to check.
+.BR \-t " " \fITEXT\fR ", " \-\-text " " \fITEXT\fR
+Directly specify text to analyze for anglicisms. The text should be
+quoted to preserve spacing and special characters.
 .TP
-.BR \-f ", " \-\-file " " \fIFILE\fR
-File to check.
+.BR \-f " " \fIFILE\fR ", " \-\-file " " \fIFILE\fR
+Read text from the specified file for analysis. Supports plain text
+files with UTF-8 encoding. The entire file content will be processed.
 .RE
 .TP
 .BR consistency " (alias: " con ")"
-Check translation consistency across .po or .ts files.
+Check translation consistency across multiple .po (gettext) or .ts (Qt Linguist)
+localization files. This command identifies cases where the same source
+string has been translated differently across files, which may indicate
+inconsistencies that should be reviewed by translators.
 .RS
 .TP
 .I FILES
-One or more .po or .ts files.
+One or more .po or .ts localization files to analyze. The tool will
+compare translations of identical source strings across all specified files.
 .TP
 .BR \-i ", " \-\-ignore\-case
-Ignore case when comparing.
+Perform case-insensitive comparison when checking for inconsistencies.
+This can help identify variations that differ only in capitalization,
+which may or may not be intentional depending on context.
 .RE
 .TP
 .BR compound " (alias: " split ")"
-Split Swedish compound words.
+Analyze and split Swedish compound words into their constituent parts.
+Swedish frequently uses compound word formation, and this tool helps
+understand word structure by breaking down complex compounds into
+their component elements. Useful for translation analysis and
+linguistic research.
 .RS
 .TP
 .I WORDS
-Words to split.
+One or more Swedish compound words to analyze and split. Each word
+will be processed separately and broken down into its identified
+component parts with morphological analysis.
 .RE
 .TP
 .B lix
-Calculate LIX readability index.
+Calculate the LIX (Läsbarhetsindex) readability index for Swedish text.
+LIX is a readability formula specifically designed for Scandinavian languages
+that measures text complexity based on sentence length and word complexity.
+Lower values indicate easier-to-read text, while higher values suggest
+more complex, academic-level writing.
 .RS
 .TP
-.BR \-t ", " \-\-text " " \fITEXT\fR
-Text to analyze.
+.BR \-t " " \fITEXT\fR ", " \-\-text " " \fITEXT\fR
+Directly specify text for readability analysis. The text should be
+complete sentences for accurate assessment.
 .TP
-.BR \-f ", " \-\-file " " \fIFILE\fR
-File to analyze.
+.BR \-f " " \fIFILE\fR ", " \-\-file " " \fIFILE\fR
+Read text from the specified file for readability analysis. The entire
+file content will be processed as a single document for scoring.
 .RE
 .TP
 .BR lookup " (alias: " ord ")"
-Look up Swedish-English translations (Folkets lexikon).
+Perform Swedish-English dictionary lookups using data from Folkets lexikon,
+a comprehensive collaborative dictionary. This tool provides translations,
+definitions, and usage examples for Swedish and English words.
 .RS
 .TP
 .I WORD
-Word to look up.
+Word or phrase to look up in the dictionary. Supports both Swedish
+and English input depending on the search direction specified.
 .TP
 .BR \-r ", " \-\-reverse
-Search English to Swedish.
+Perform English-to-Swedish lookup instead of the default Swedish-to-English
+direction. Useful for finding Swedish translations of English terms.
 .TP
 .BR \-s ", " \-\-search
-Search by prefix.
+Enable prefix-based searching to find words that start with the given
+text. This can help explore related terms and find words when only
+partial spelling is known.
 .TP
-.BR \-n ", " \-\-limit " " \fIN\fR
-Maximum results (default: 20).
+.BR \-n " " \fIN\fR ", " \-\-limit " " \fIN\fR
+Maximum number of dictionary results to display (default: 20).
+Larger values provide more comprehensive results but may produce
+lengthy output.
 .RE
+.SH EXIT STATUS
+.TP
+.B 0
+Command completed successfully without errors.
+.TP
+.B 1
+Error occurred during processing (file not found, network issues,
+invalid input, etc.).
+.TP
+.B 2
+Warnings were found but processing completed successfully (e.g.,
+anglicisms detected, inconsistencies found).
 .SH EXAMPLES
-.nf
-svlang svengelska -t "Vi behöver implementera en ny approach"
-svlang consistency file1.po file2.po
-svlang compound "kontorsstol" "skrivbordslampa"
-svlang lix -f document.txt
-svlang lookup hund
-.fi
+.TP
+Check text for anglicisms:
+.B svlang svengelska \-t "Vi behöver implementera en ny approach"
+.TP
+Analyze file for English loanwords:
+.B svlang sv \-f translation.txt
+.TP
+Check consistency across translation files:
+.B svlang consistency file1.po file2.po \-\-ignore\-case
+.TP
+Split compound words:
+.B svlang compound "kontorsstol" "skrivbordslampa"
+.TP
+Calculate readability index for document:
+.B svlang lix \-f document.txt
+.TP
+Look up Swedish word:
+.B svlang lookup hund
+.TP
+Reverse lookup (English to Swedish):
+.B svlang ord \-r dog \-\-limit 10
+.TP
+Search words by prefix:
+.B svlang lookup \-s bil \-\-limit 15
+.TP
+JSON output for automation:
+.B svlang svengelska \-t "test text" \-\-json
+.TP
+Quiet consistency check:
+.B svlang consistency *.po \-\-quiet
+.SH LIX READABILITY SCALE
+The LIX readability index provides the following interpretation guidelines:
+.RS 4
+.B Below 25:
+Very easy (children's books, simple instructions)
+.br
+.B 25-35:
+Easy (popular fiction, newspapers)
+.br
+.B 35-45:
+Medium (non-fiction, textbooks)
+.br
+.B 45-55:
+Difficult (academic texts, technical documentation)
+.br
+.B Above 55:
+Very difficult (research papers, complex technical texts)
+.RE
 .SH FILES
 .TP
-.I ~/.config/svlang/
-Configuration files.
+.B ~/.config/svlang/
+User configuration directory for custom settings and preferences.
 .TP
-.I ~/.cache/svlang/
-Cached data.
-.SH BUGS
-Report bugs at https://github.com/yeager/svlang/issues
+.B ~/.config/svlang/anglicisms.json
+Custom anglicism detection rules and Swedish alternatives.
+.TP
+.B ~/.cache/svlang/
+Cache directory for downloaded dictionary data and linguistic resources.
+.TP
+.B ~/.cache/svlang/folkets-lexikon/
+Cached data from Folkets lexikon dictionary service.
+.SH DATA SOURCES
+.B svlang
+utilizes several linguistic resources:
+.RS 4
+.B Folkets lexikon:
+Swedish-English dictionary data
+.br
+.B Custom anglicism database:
+Curated list of English loanwords in Swedish
+.br
+.B Compound word analyzer:
+Swedish morphological analysis rules
+.br
+.B LIX algorithm:
+Standard Scandinavian readability measurement
+.RE
 .SH AUTHOR
 Daniel Nylander <daniel@danielnylander.se>
 .SH SEE ALSO
+.BR l10n-lint (1),
+.BR po-translate (1),
+.BR tp-lint (1),
+.BR l10n-conv (1),
+.BR msgfmt (1),
+.BR msginit (1)
+.SH BUGS
+Report bugs at: https://github.com/yeager/svlang/issues
+
 Project homepage: https://github.com/yeager/svlang
