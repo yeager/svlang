@@ -1,0 +1,78 @@
+name: Build .deb
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-deb:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get version
+        id: version
+        run: echo "version=$(grep -oP '__version__\s*=\s*\"\K[^\"]+' src/svlang/__init__.py)" >> $GITHUB_OUTPUT
+
+      - name: Build .deb
+        run: |
+          PKG=svlang
+          VER=${{ steps.version.outputs.version }}
+          ROOT=pkg-deb/${PKG}_${VER}-1_all
+          mkdir -p ${ROOT}/DEBIAN
+          mkdir -p ${ROOT}/usr/bin
+          mkdir -p ${ROOT}/usr/share/${PKG}
+          mkdir -p ${ROOT}/usr/share/man/man1
+
+          # Install Python package
+          cp -r src/svlang ${ROOT}/usr/share/${PKG}/
+          cat > ${ROOT}/usr/bin/${PKG} << 'WRAPPER'
+          #!/bin/bash
+          exec python3 -c "import sys; sys.path.insert(0,'/usr/share/svlang'); from svlang.cli import main; main()" "$@"
+          WRAPPER
+          chmod 755 ${ROOT}/usr/bin/${PKG}
+
+          # English man page
+          gzip -9cn data/man/${PKG}.1 > ${ROOT}/usr/share/man/man1/${PKG}.1.gz
+
+          # Translated man pages
+          for langdir in man/*/; do
+            [ -d "$langdir" ] || continue
+            lang=$(basename "$langdir")
+            [ "$lang" = "en" ] && continue
+            for manfile in "$langdir"*.1; do
+              [ -f "$manfile" ] || continue
+              mkdir -p ${ROOT}/usr/share/man/${lang}/man1
+              gzip -9cn "$manfile" > ${ROOT}/usr/share/man/${lang}/man1/$(basename "$manfile").gz
+            done
+          done
+
+          cat > ${ROOT}/DEBIAN/control << EOF
+          Package: ${PKG}
+          Version: ${VER}-1
+          Architecture: all
+          Maintainer: Daniel Nylander <daniel@danielnylander.se>
+          Depends: python3 (>= 3.9)
+          Section: text
+          Priority: optional
+          Homepage: https://github.com/yeager/${PKG}
+          Description: Swedish NLP toolkit for translators
+           svlang checks Swedish text for svengelska, consistency issues,
+           compound word errors, and readability (LIX score).
+          EOF
+          sed -i 's/^          //' ${ROOT}/DEBIAN/control
+
+          dpkg-deb --build --root-owner-group ${ROOT}
+          mv pkg-deb/*.deb .
+
+      - name: Upload .deb to release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VER=${{ steps.version.outputs.version }}
+          gh release upload "v${VER}" svlang_${VER}-1_all.deb --clobber 2>/dev/null || \
+          gh release upload "${GITHUB_REF_NAME}" svlang_${VER}-1_all.deb --clobber
