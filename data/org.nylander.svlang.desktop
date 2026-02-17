@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=svlang
+Comment=Swedish language quality checker
+Exec=svlang %F
+Icon=org.nylander.svlang
+Terminal=true
+Type=Application
+Categories=TextTools;Utility;
+Keywords=swedish;language;translation;po;
