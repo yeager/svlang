@@ -40,17 +40,12 @@ jobs:
             msgfmt -o "po/${lang}.mo" "$po"
           done
 
-      - name: Build translated man pages
-        run: |
-          if [ -f po4a.cfg ]; then
-            po4a po4a.cfg || true
-          fi
 
       - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add po/ data/man/
+          git add po/
           if git diff --cached --quiet; then
             echo "No translation changes"
           else
