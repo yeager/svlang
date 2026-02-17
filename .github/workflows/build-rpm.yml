@@ -37,9 +37,6 @@ jobs:
           os.makedirs(f"{pkg}/data/man", exist_ok=True)
           subprocess.run(f"cp -a src/svlang {pkg}/", shell=True, check=True)
           subprocess.run(f"cp data/man/svlang.1 {pkg}/data/man/", shell=True, check=True)
-          os.makedirs(f"{pkg}/data/icons/hicolor/scalable/apps", exist_ok=True)
-          subprocess.run(f"cp data/icons/hicolor/scalable/apps/org.nylander.svlang.svg {pkg}/data/icons/hicolor/scalable/apps/", shell=True, check=True)
-          subprocess.run(f"cp data/org.nylander.svlang.desktop {pkg}/data/", shell=True, check=True)
           subprocess.run(f"cp LICENSE {pkg}/", shell=True, check=True)
           subprocess.run(f"tar czf {home}/rpmbuild/SOURCES/svlang-{version}.tar.gz {pkg}", shell=True, check=True)
 
@@ -73,16 +70,12 @@ jobs:
           WRAPPER
           chmod 755 %{{buildroot}}%{{_bindir}}/svlang
           install -Dm644 data/man/svlang.1 %{{buildroot}}%{{_mandir}}/man1/svlang.1
-          install -Dm644 data/icons/hicolor/scalable/apps/org.nylander.svlang.svg %{{buildroot}}%{{_datadir}}/icons/hicolor/scalable/apps/org.nylander.svlang.svg
-          install -Dm644 data/org.nylander.svlang.desktop %{{buildroot}}%{{_datadir}}/applications/org.nylander.svlang.desktop
 
           %files
           %license LICENSE
           %{{_bindir}}/svlang
           %{{_datadir}}/svlang/
           %{{_mandir}}/man1/svlang.1*
-          %{{_datadir}}/icons/hicolor/scalable/apps/org.nylander.svlang.svg
-          %{{_datadir}}/applications/org.nylander.svlang.desktop
 
           %changelog
           * {today} Daniel Nylander <daniel@danielnylander.se> - {version}-1

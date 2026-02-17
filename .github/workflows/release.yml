@@ -36,12 +36,6 @@ jobs:
           WRAPPER
           chmod 755 ${ROOT}/usr/bin/${PKG}
 
-          # Icon + desktop
-          mkdir -p ${ROOT}/usr/share/icons/hicolor/scalable/apps
-          cp data/icons/hicolor/scalable/apps/org.nylander.svlang.svg ${ROOT}/usr/share/icons/hicolor/scalable/apps/
-          mkdir -p ${ROOT}/usr/share/applications
-          cp data/org.nylander.svlang.desktop ${ROOT}/usr/share/applications/
-
           # English man page
           gzip -9cn data/man/${PKG}.1 > ${ROOT}/usr/share/man/man1/${PKG}.1.gz
 
