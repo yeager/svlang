@@ -31,19 +31,19 @@ msgstr "SVLANG"
 #: data/man/svlang.1:1
 #, no-wrap
 msgid "February 2026"
-msgstr ""
+msgstr "Februari 2026"
 
 #. type: TH
 #: data/man/svlang.1:1
 #, no-wrap
 msgid "svlang 0.1.5"
-msgstr ""
+msgstr "svlang 0.1.5"
 
 #. type: TH
 #: data/man/svlang.1:1
 #, no-wrap
 msgid "User Commands"
-msgstr ""
+msgstr "Användarkommandon"
 
 #. type: SH
 #: data/man/svlang.1:2
@@ -65,7 +65,7 @@ msgstr "SYNOPSIS"
 #. type: Plain text
 #: data/man/svlang.1:7
 msgid "B<svlang> [I<OPTIONS>] I<COMMAND> [I<COMMAND-OPTIONS>]"
-msgstr ""
+msgstr "B<svlang> [I<OPTIONS>] I<COMMAND> [I<COMMAND-OPTIONS>]"
 
 #. type: SH
 #: data/man/svlang.1:7
@@ -81,6 +81,10 @@ msgid ""
 "compound word splitting, readability analysis, and Swedish-English "
 "dictionary lookup."
 msgstr ""
+"B<svlang> är en samling svenska språktjänster för översättare och "
+"skribenter. Den erbjuder funktioner för att upptäcka anglicismer, "
+"kontrollera översättningens konsistens, dela upp sammansatta ord, analysera "
+"läsbarhet och slå upp ord i en svensk-engelsk ordbok."
 
 #. type: Plain text
 #: data/man/svlang.1:16
@@ -89,23 +93,28 @@ msgid ""
 "minimal output, making svlang suitable for both interactive use and "
 "scripting/CI pipelines."
 msgstr ""
+"Alla kommandon stöder B<--json> för strukturerad utdata och B<--quiet> för "
+"minimal utdata, vilket gör svlang lämpligt för både interaktiv användning "
+"och skriptning/CI-pipelines."
 
 #. type: Plain text
 #: data/man/svlang.1:18
 msgid "Exit codes: 0 = no issues, 1 = issues found, 2 = usage error."
 msgstr ""
+"Avslutningskoder: 0 = inga problem, 1 = problem upptäckta, 2 = "
+"användningsfel."
 
 #. type: SH
 #: data/man/svlang.1:18
 #, no-wrap
 msgid "GLOBAL OPTIONS"
-msgstr ""
+msgstr "GLOBALA FLAGGOR"
 
 #. type: TP
 #: data/man/svlang.1:19
 #, no-wrap
 msgid "B<-j>, B<--json>"
-msgstr ""
+msgstr "B<-j>, B<--json>"
 
 #. type: Plain text
 #: data/man/svlang.1:23
@@ -113,17 +122,19 @@ msgid ""
 "Output results as JSON for all commands. Produces structured data suitable "
 "for piping into jq or other tools."
 msgstr ""
+"Skriv ut resultat som JSON för alla kommandon. Producerar strukturerade data "
+"som är lämpliga för vidarebefordran till jq eller andra verktyg."
 
 #. type: TP
 #: data/man/svlang.1:23
 #, no-wrap
 msgid "B<-q>, B<--quiet>"
-msgstr ""
+msgstr "B<-q>, B<--quiet>"
 
 #. type: Plain text
 #: data/man/svlang.1:26
 msgid "Suppress non-essential output. Only errors and warnings are shown."
-msgstr ""
+msgstr "Undertryck icke-väsentlig utdata. Endast fel och varningar visas."
 
 #. type: TP
 #: data/man/svlang.1:26
@@ -135,6 +146,7 @@ msgstr "B<--about>"
 #: data/man/svlang.1:29
 msgid "Show application info (name, version, author, license) and exit."
 msgstr ""
+"Visa programinformation (namn, version, upphovsperson, licens) och avsluta."
 
 #. type: TP
 #: data/man/svlang.1:29
@@ -157,7 +169,7 @@ msgstr "KOMMANDON"
 #: data/man/svlang.1:33
 #, no-wrap
 msgid "svengelska (alias: sv)"
-msgstr ""
+msgstr "svengelska (alias: sv)"
 
 #. type: Plain text
 #: data/man/svlang.1:36
@@ -165,12 +177,14 @@ msgid ""
 "Detect anglicisms (svengelska) in Swedish text. Checks for common English "
 "loanwords and suggests Swedish alternatives."
 msgstr ""
+"Upptäck anglicismer (svengelska) i svenska texter. Kontrollerar vanliga "
+"engelska lånord och föreslår svenska alternativ."
 
 #. type: TP
 #: data/man/svlang.1:36 data/man/svlang.1:87
 #, no-wrap
 msgid "B<-t>, B<--text> I<WORDS>..."
-msgstr ""
+msgstr "B<-t>, B<--text> I<WORDS>..."
 
 #. type: Plain text
 #: data/man/svlang.1:40
@@ -178,6 +192,8 @@ msgid ""
 "Text to check (as command-line arguments). Multiple words are joined with "
 "spaces."
 msgstr ""
+"Text att kontrollera (som kommandoradsargument). Flera ord sammanfogas med "
+"mellanslag."
 
 #. type: TP
 #: data/man/svlang.1:40 data/man/svlang.1:90
@@ -188,13 +204,13 @@ msgstr "B<-f>, B<--file> I<FILE>"
 #. type: Plain text
 #: data/man/svlang.1:43
 msgid "File to check. Reads the entire file and scans for anglicisms."
-msgstr ""
+msgstr "Fil att kontrollera. Läser hela filen och söker efter anglicismer."
 
 #. type: Plain text
 #: data/man/svlang.1:45 data/man/svlang.1:64 data/man/svlang.1:77
 #: data/man/svlang.1:98 data/man/svlang.1:124
 msgid "Example:"
-msgstr ""
+msgstr "Exempel:"
 
 #. type: Plain text
 #: data/man/svlang.1:50
@@ -204,12 +220,15 @@ msgid ""
 "  \\[u27A4]  Â«brainstormingÂ» \\[u2192] idÃ©klÃ¤ckning\n"
 "  \\[u27A4]  Â«sessionÂ» \\[u2192] mÃ¶te\n"
 msgstr ""
+"svlang svengelska -t \"Vi hade en brainstorming session\"\n"
+"  \\[u27A4]  Â«brainstormingÂ» \\[u2192] idÃ©klÃ¤ckning\n"
+"  \\[u27A4]  Â«sessionÂ» \\[u2192] mÃ¶te\n"
 
 #. type: SS
 #: data/man/svlang.1:52
 #, no-wrap
 msgid "consistency (alias: con)"
-msgstr ""
+msgstr "consistency (alias: con)"
 
 #. type: Plain text
 #: data/man/svlang.1:56
@@ -218,17 +237,20 @@ msgid ""
 "same source string has been translated differently, or where different "
 "source strings share the same translation."
 msgstr ""
+"Kontrollera översättningens konsistens i PO- eller TS-filer. Hittar fall där "
+"samma källsträng har översatts på olika sätt, eller där olika källsträngar "
+"har samma översättning."
 
 #. type: TP
 #: data/man/svlang.1:56
 #, no-wrap
 msgid "I<FILES>..."
-msgstr ""
+msgstr "I<FILES>..."
 
 #. type: Plain text
 #: data/man/svlang.1:59
 msgid "One or more .po or .ts files to check."
-msgstr ""
+msgstr "En eller flera .po- eller .ts-filer att kontrollera."
 
 #. type: TP
 #: data/man/svlang.1:59
@@ -239,19 +261,19 @@ msgstr "B<-i>, B<--ignore-case>"
 #. type: Plain text
 #: data/man/svlang.1:62
 msgid "Ignore case when comparing translations."
-msgstr ""
+msgstr "Ignorera versaler och gemener vid jämförelse av översättningar."
 
 #. type: Plain text
 #: data/man/svlang.1:67
 #, no-wrap
 msgid "svlang consistency po/sv.po po/sv_extra.po\n"
-msgstr ""
+msgstr "svlang consistency po/sv.po po/sv_extra.po\n"
 
 #. type: SS
 #: data/man/svlang.1:69
 #, no-wrap
 msgid "compound (alias: split)"
-msgstr ""
+msgstr "compound (alias: split)"
 
 #. type: Plain text
 #: data/man/svlang.1:72
@@ -259,17 +281,19 @@ msgid ""
 "Split Swedish compound words into their components. Uses dictionary-based "
 "decomposition to identify word parts."
 msgstr ""
+"Dela upp svenska sammansatta ord i sina beståndsdelar. Använder "
+"ordboksbaserad uppdelning för att identifiera orddelar."
 
 #. type: TP
 #: data/man/svlang.1:72
 #, no-wrap
 msgid "I<WORDS>..."
-msgstr ""
+msgstr "I<WORDS>..."
 
 #. type: Plain text
 #: data/man/svlang.1:75
 msgid "One or more Swedish words to decompose."
-msgstr ""
+msgstr "Ett eller flera svenska ord att bryta ner."
 
 #. type: Plain text
 #: data/man/svlang.1:81
@@ -278,12 +302,14 @@ msgid ""
 "svlang compound fÃ¶rsÃ¤kringskassahandlÃ¤ggare\n"
 "  \\[u27A4]  fÃ¶rsÃ¤kring + kassa + handlÃ¤ggare\n"
 msgstr ""
+"svlang compound fÃ¶rsÃ¤kringskassahandlÃ¤ggare\n"
+"  \\[u27A4]  fÃ¶rsÃ¤kring + kassa + handlÃ¤ggare\n"
 
 #. type: SS
 #: data/man/svlang.1:83
 #, no-wrap
 msgid "lix"
-msgstr ""
+msgstr "lix"
 
 #. type: Plain text
 #: data/man/svlang.1:87
@@ -292,6 +318,8 @@ msgid ""
 "index) measures text complexity on a scale where lower values indicate "
 "easier text."
 msgstr ""
+"Beräkna LIX-läsbarhetsindex för svensk text. LIX (Läsbarhetsindex) mäter "
+"textens komplexitet på en skala där lägre värden indikerar enklare text."
 
 #. type: Plain text
 #: data/man/svlang.1:90
@@ -309,6 +337,8 @@ msgid ""
 "LIX scale: E<lt>25 = children's books, 25-30 = easy, 30-40 = normal, 40-50 = "
 "factual/professional, 50-60 = technical, E<gt>60 = very difficult."
 msgstr ""
+"LIX-skala: E<lt>25 = barnböcker, 25-30 = lätt, 30-40 = normal, 40-50 = "
+"faktabaserad/professionell, 50-60 = teknisk, E<gt>60 = mycket svår."
 
 #. type: Plain text
 #: data/man/svlang.1:102
@@ -317,12 +347,14 @@ msgid ""
 "svlang lix -f article.txt\n"
 "  LIX: 38.2 (normal)\n"
 msgstr ""
+"svlang lix -f article.txt\n"
+"  LIX: 38.2 (normal)\n"
 
 #. type: SS
 #: data/man/svlang.1:104
 #, no-wrap
 msgid "lookup (alias: ord)"
-msgstr ""
+msgstr "lookup (alias: ord)"
 
 #. type: Plain text
 #: data/man/svlang.1:108
@@ -331,6 +363,8 @@ msgid ""
 "Supports both sv\\[u2192]en and en\\[u2192]sv directions, as well as prefix "
 "searching."
 msgstr ""
+"Sök upp svenska ord i Folkets lexikon (svensk-engelsk ordbok). Stöder både "
+"sv\\[u2192]en och en\\[u2192]sv riktningar, samt prefixsökning."
 
 #. type: TP
 #: data/man/svlang.1:108
@@ -355,6 +389,8 @@ msgid ""
 "Search English-to-Swedish (en\\[u2192]sv) instead of the default Swedish-to-"
 "English direction."
 msgstr ""
+"Sök på engelska till svenska (en\\[u2192]sv) istället för "
+"standardinställningen svenska till engelska."
 
 #. type: TP
 #: data/man/svlang.1:115
@@ -368,6 +404,8 @@ msgid ""
 "Prefix search. Returns all entries starting with the given string.  Useful "
 "for exploring related words."
 msgstr ""
+"Prefixsökning. Returnerar alla poster som börjar med den angivna strängen. "
+"Användbart för att utforska relaterade ord."
 
 #. type: TP
 #: data/man/svlang.1:119
@@ -378,7 +416,7 @@ msgstr "B<-n>, B<--limit> I<N>"
 #. type: Plain text
 #: data/man/svlang.1:122
 msgid "Maximum number of results to show. Default: 20."
-msgstr ""
+msgstr "Maximalt antal resultat som ska visas. Standard: 20."
 
 #. type: Plain text
 #: data/man/svlang.1:128
@@ -387,6 +425,8 @@ msgid ""
 "svlang lookup dator\n"
 "  dator (nn) \\[u2192] computer\n"
 msgstr ""
+"svlang lookup dator\n"
+"  dator (nn) \\[u2192] computer\n"
 
 #. type: Plain text
 #: data/man/svlang.1:131
@@ -395,45 +435,47 @@ msgid ""
 "svlang lookup -r computer\n"
 "  computer \\[u2192] dator (nn)\n"
 msgstr ""
+"svlang lookup -r computer\n"
+"  computer \\[u2192] dator (nn)\n"
 
 #. type: SH
 #: data/man/svlang.1:133
 #, no-wrap
 msgid "EXIT STATUS"
-msgstr ""
+msgstr "AVSLUTSSTATUS"
 
 #. type: TP
 #: data/man/svlang.1:134
 #, no-wrap
 msgid "B<0>"
-msgstr ""
+msgstr "B<0>"
 
 #. type: Plain text
 #: data/man/svlang.1:137
 msgid "No issues found (or lookup succeeded)."
-msgstr ""
+msgstr "Inga problem hittades (eller sökningen lyckades)."
 
 #. type: TP
 #: data/man/svlang.1:137
 #, no-wrap
 msgid "B<1>"
-msgstr ""
+msgstr "B<1>"
 
 #. type: Plain text
 #: data/man/svlang.1:140
 msgid "Issues found (anglicisms, inconsistencies) or no results."
-msgstr ""
+msgstr "Problem upptäckta (anglicismer, inkonsekvenser) eller inga resultat."
 
 #. type: TP
 #: data/man/svlang.1:140
 #, no-wrap
 msgid "B<2>"
-msgstr ""
+msgstr "B<2>"
 
 #. type: Plain text
 #: data/man/svlang.1:143
 msgid "Usage error (missing arguments, file not found)."
-msgstr ""
+msgstr "Användningsfel (saknade argument, filen hittades inte)."
 
 #. type: SH
 #: data/man/svlang.1:143
@@ -444,7 +486,7 @@ msgstr "SE ÄVEN"
 #. type: Plain text
 #: data/man/svlang.1:146
 msgid "B<l10n-lint>(1), B<po-translate>(1)"
-msgstr ""
+msgstr "B<l10n-lint>(1), B<po-translate>(1)"
 
 #. type: SH
 #: data/man/svlang.1:146
@@ -466,15 +508,15 @@ msgstr "BUGGAR"
 #. type: Plain text
 #: data/man/svlang.1:150
 msgid "Report bugs at: https://github.com/yeager/svlang/issues"
-msgstr ""
+msgstr "Rapportera buggar på: https://github.com/yeager/svlang/issues"
 
 #. type: SH
 #: data/man/svlang.1:150
 #, no-wrap
 msgid "COPYRIGHT"
-msgstr ""
+msgstr "UPPHOVSRÄTT"
 
 #. type: Plain text
 #: data/man/svlang.1:151
 msgid "Copyright \\(co 2026 Daniel Nylander. License: GPL-3.0-or-later."
-msgstr ""
+msgstr "Copyright \\(co 2026 Daniel Nylander. Licens: GPL-3.0-eller-senare."
