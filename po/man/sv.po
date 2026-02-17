@@ -64,10 +64,8 @@ msgstr "SYNOPSIS"
 
 #. type: Plain text
 #: data/man/svlang.1:7
-#, fuzzy
-#| msgid "B<svlang> [I<OPTIONS>] I<COMMAND> [I<ARGS>]"
 msgid "B<svlang> [I<OPTIONS>] I<COMMAND> [I<COMMAND-OPTIONS>]"
-msgstr "B<svlang> [I<OPTIONS>] I<COMMAND> [I<ARGS>]"
+msgstr ""
 
 #. type: SH
 #: data/man/svlang.1:7
@@ -77,22 +75,12 @@ msgstr "BESKRIVNING"
 
 #. type: Plain text
 #: data/man/svlang.1:12
-#, fuzzy
-#| msgid ""
-#| "B<svlang> is a Swedish NLP toolkit for translators. It detects anglicisms "
-#| "(svengelska), checks translation consistency across PO/TS files, splits "
-#| "compound words, calculates LIX readability index, and provides Swedish-"
-#| "English dictionary lookups via Folkets lexikon."
 msgid ""
 "B<svlang> is a collection of Swedish language tools for translators and "
 "writers. It provides anglicism detection, translation consistency checking, "
 "compound word splitting, readability analysis, and Swedish-English "
 "dictionary lookup."
 msgstr ""
-"B<svlang> är ett svenskt NLP-verktyg för översättare. Det upptäcker "
-"anglicismer (svengelska), kontrollerar översättningens konsistens mellan PO/"
-"TS-filer, delar upp sammansatta ord, beräknar LIX-läsbarhetsindex och "
-"erbjuder uppslag i svensk-engelska ordböcker via Folkets lexikon."
 
 #. type: Plain text
 #: data/man/svlang.1:16
@@ -109,17 +97,15 @@ msgstr ""
 
 #. type: SH
 #: data/man/svlang.1:18
-#, fuzzy, no-wrap
-#| msgid "OPTIONS"
+#, no-wrap
 msgid "GLOBAL OPTIONS"
-msgstr "FLAGGOR"
+msgstr ""
 
 #. type: TP
 #: data/man/svlang.1:19
-#, fuzzy, no-wrap
-#| msgid "B<-V>, B<--version>"
+#, no-wrap
 msgid "B<-j>, B<--json>"
-msgstr "B<-V>, B<--version>"
+msgstr ""
 
 #. type: Plain text
 #: data/man/svlang.1:23
@@ -130,10 +116,9 @@ msgstr ""
 
 #. type: TP
 #: data/man/svlang.1:23
-#, fuzzy, no-wrap
-#| msgid "B<-s>, B<--search>"
+#, no-wrap
 msgid "B<-q>, B<--quiet>"
-msgstr "B<-s>, B<--search>"
+msgstr ""
 
 #. type: Plain text
 #: data/man/svlang.1:26
@@ -148,10 +133,8 @@ msgstr "B<--about>"
 
 #. type: Plain text
 #: data/man/svlang.1:29
-#, fuzzy
-#| msgid "Show application info and exit."
 msgid "Show application info (name, version, author, license) and exit."
-msgstr "Visa applikationsinformation och avsluta."
+msgstr ""
 
 #. type: TP
 #: data/man/svlang.1:29
@@ -172,10 +155,9 @@ msgstr "KOMMANDON"
 
 #. type: SS
 #: data/man/svlang.1:33
-#, fuzzy, no-wrap
-#| msgid "B<svengelska> (alias: B<sv>)"
+#, no-wrap
 msgid "svengelska (alias: sv)"
-msgstr "B<svengelska> (alias: B<sv>)"
+msgstr ""
 
 #. type: Plain text
 #: data/man/svlang.1:36
@@ -186,10 +168,9 @@ msgstr ""
 
 #. type: TP
 #: data/man/svlang.1:36 data/man/svlang.1:87
-#, fuzzy, no-wrap
-#| msgid "B<-t>, B<--text> I<TEXT>"
+#, no-wrap
 msgid "B<-t>, B<--text> I<WORDS>..."
-msgstr "B<-t>, B<--text> I<TEXT>"
+msgstr ""
 
 #. type: Plain text
 #: data/man/svlang.1:40
@@ -226,10 +207,9 @@ msgstr ""
 
 #. type: SS
 #: data/man/svlang.1:52
-#, fuzzy, no-wrap
-#| msgid "B<consistency> (alias: B<con>)"
+#, no-wrap
 msgid "consistency (alias: con)"
-msgstr "B<consistency> (alias: B<con>)"
+msgstr ""
 
 #. type: Plain text
 #: data/man/svlang.1:56
@@ -241,17 +221,14 @@ msgstr ""
 
 #. type: TP
 #: data/man/svlang.1:56
-#, fuzzy, no-wrap
-#| msgid "I<FILES>"
+#, no-wrap
 msgid "I<FILES>..."
-msgstr "I<FILES>"
+msgstr ""
 
 #. type: Plain text
 #: data/man/svlang.1:59
-#, fuzzy
-#| msgid "One or more .po or .ts files."
 msgid "One or more .po or .ts files to check."
-msgstr "En eller flera .po- eller .ts-filer."
+msgstr ""
 
 #. type: TP
 #: data/man/svlang.1:59
@@ -261,10 +238,8 @@ msgstr "B<-i>, B<--ignore-case>"
 
 #. type: Plain text
 #: data/man/svlang.1:62
-#, fuzzy
-#| msgid "Ignore case when comparing."
 msgid "Ignore case when comparing translations."
-msgstr "Ignorera skiftläget vid jämförelse."
+msgstr ""
 
 #. type: Plain text
 #: data/man/svlang.1:67
@@ -274,10 +249,9 @@ msgstr ""
 
 #. type: SS
 #: data/man/svlang.1:69
-#, fuzzy, no-wrap
-#| msgid "B<compound> (alias: B<split>)"
+#, no-wrap
 msgid "compound (alias: split)"
-msgstr "B<compound> (alias: B<split>)"
+msgstr ""
 
 #. type: Plain text
 #: data/man/svlang.1:72
@@ -288,17 +262,14 @@ msgstr ""
 
 #. type: TP
 #: data/man/svlang.1:72
-#, fuzzy, no-wrap
-#| msgid "I<WORDS>"
+#, no-wrap
 msgid "I<WORDS>..."
-msgstr "I<WORDS>"
+msgstr ""
 
 #. type: Plain text
 #: data/man/svlang.1:75
-#, fuzzy
-#| msgid "One or more .po or .ts files."
 msgid "One or more Swedish words to decompose."
-msgstr "En eller flera .po- eller .ts-filer."
+msgstr ""
 
 #. type: Plain text
 #: data/man/svlang.1:81
@@ -310,10 +281,9 @@ msgstr ""
 
 #. type: SS
 #: data/man/svlang.1:83
-#, fuzzy, no-wrap
-#| msgid "B<lix>"
+#, no-wrap
 msgid "lix"
-msgstr "B<lix>"
+msgstr ""
 
 #. type: Plain text
 #: data/man/svlang.1:87
@@ -350,10 +320,9 @@ msgstr ""
 
 #. type: SS
 #: data/man/svlang.1:104
-#, fuzzy, no-wrap
-#| msgid "B<lookup> (alias: B<ord>)"
+#, no-wrap
 msgid "lookup (alias: ord)"
-msgstr "B<lookup> (alias: B<ord>)"
+msgstr ""
 
 #. type: Plain text
 #: data/man/svlang.1:108
@@ -408,10 +377,8 @@ msgstr "B<-n>, B<--limit> I<N>"
 
 #. type: Plain text
 #: data/man/svlang.1:122
-#, fuzzy
-#| msgid "Maximum results (default: 20)."
 msgid "Maximum number of results to show. Default: 20."
-msgstr "Maximalt antal resultat (standard: 20)."
+msgstr ""
 
 #. type: Plain text
 #: data/man/svlang.1:128
@@ -498,10 +465,8 @@ msgstr "BUGGAR"
 
 #. type: Plain text
 #: data/man/svlang.1:150
-#, fuzzy
-#| msgid "Report bugs at https://github.com/yeager/svlang/issues"
 msgid "Report bugs at: https://github.com/yeager/svlang/issues"
-msgstr "Rapportera buggar på https://github.com/yeager/svlang/issues"
+msgstr ""
 
 #. type: SH
 #: data/man/svlang.1:150
