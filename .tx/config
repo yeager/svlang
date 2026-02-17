@@ -1,2 +1,8 @@
 [main]
 host = https://www.transifex.com
+
+[o:danielnylander:p:svlang:r:svlang-man]
+file_filter  = po/man/<lang>.po
+source_file  = po/man/svlang.1.pot
+source_lang  = en
+type         = PO

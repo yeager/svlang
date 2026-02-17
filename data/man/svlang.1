@@ -1,0 +1,151 @@
+.TH SVLANG 1 "February 2026" "svlang 0.1.5" "User Commands"
+.SH NAME
+svlang \- Swedish NLP toolkit for translators
+.SH SYNOPSIS
+.B svlang
+[\fIOPTIONS\fR] \fICOMMAND\fR [\fICOMMAND\-OPTIONS\fR]
+.SH DESCRIPTION
+\fBsvlang\fR is a collection of Swedish language tools for translators
+and writers. It provides anglicism detection, translation consistency
+checking, compound word splitting, readability analysis, and Swedish\-English
+dictionary lookup.
+.PP
+All commands support \fB\-\-json\fR for structured output and \fB\-\-quiet\fR
+for minimal output, making svlang suitable for both interactive use
+and scripting/CI pipelines.
+.PP
+Exit codes: 0 = no issues, 1 = issues found, 2 = usage error.
+.SH GLOBAL OPTIONS
+.TP
+\fB\-j\fR, \fB\-\-json\fR
+Output results as JSON for all commands. Produces structured data
+suitable for piping into jq or other tools.
+.TP
+\fB\-q\fR, \fB\-\-quiet\fR
+Suppress non\-essential output. Only errors and warnings are shown.
+.TP
+\fB\-\-about\fR
+Show application info (name, version, author, license) and exit.
+.TP
+\fB\-V\fR, \fB\-\-version\fR
+Show version number and exit.
+.SH COMMANDS
+.SS svengelska (alias: sv)
+Detect anglicisms (svengelska) in Swedish text. Checks for common
+English loanwords and suggests Swedish alternatives.
+.TP
+\fB\-t\fR, \fB\-\-text\fR \fIWORDS\fR...
+Text to check (as command\-line arguments). Multiple words are joined
+with spaces.
+.TP
+\fB\-f\fR, \fB\-\-file\fR \fIFILE\fR
+File to check. Reads the entire file and scans for anglicisms.
+.PP
+Example:
+.RS
+.nf
+svlang svengelska \-t "Vi hade en brainstorming session"
+  \[u27A4]  «brainstorming» \[u2192] idékläckning
+  \[u27A4]  «session» \[u2192] möte
+.fi
+.RE
+.SS consistency (alias: con)
+Check translation consistency across PO or TS files. Finds cases where
+the same source string has been translated differently, or where
+different source strings share the same translation.
+.TP
+\fIFILES\fR...
+One or more .po or .ts files to check.
+.TP
+\fB\-i\fR, \fB\-\-ignore\-case\fR
+Ignore case when comparing translations.
+.PP
+Example:
+.RS
+.nf
+svlang consistency po/sv.po po/sv_extra.po
+.fi
+.RE
+.SS compound (alias: split)
+Split Swedish compound words into their components. Uses dictionary\-based
+decomposition to identify word parts.
+.TP
+\fIWORDS\fR...
+One or more Swedish words to decompose.
+.PP
+Example:
+.RS
+.nf
+svlang compound försäkringskassahandläggare
+  \[u27A4]  försäkring + kassa + handläggare
+.fi
+.RE
+.SS lix
+Calculate the LIX readability index for Swedish text. LIX (Läsbarhets\-
+index) measures text complexity on a scale where lower values indicate
+easier text.
+.TP
+\fB\-t\fR, \fB\-\-text\fR \fIWORDS\fR...
+Text to analyze.
+.TP
+\fB\-f\fR, \fB\-\-file\fR \fIFILE\fR
+File to analyze.
+.PP
+LIX scale: <25 = children's books, 25\-30 = easy, 30\-40 = normal,
+40\-50 = factual/professional, 50\-60 = technical, >60 = very difficult.
+.PP
+Example:
+.RS
+.nf
+svlang lix \-f article.txt
+  LIX: 38.2 (normal)
+.fi
+.RE
+.SS lookup (alias: ord)
+Look up Swedish words in Folkets lexikon (Swedish\-English dictionary).
+Supports both sv\[u2192]en and en\[u2192]sv directions, as well as
+prefix searching.
+.TP
+\fIWORD\fR
+Word to look up.
+.TP
+\fB\-r\fR, \fB\-\-reverse\fR
+Search English\-to\-Swedish (en\[u2192]sv) instead of the default
+Swedish\-to\-English direction.
+.TP
+\fB\-s\fR, \fB\-\-search\fR
+Prefix search. Returns all entries starting with the given string.
+Useful for exploring related words.
+.TP
+\fB\-n\fR, \fB\-\-limit\fR \fIN\fR
+Maximum number of results to show. Default: 20.
+.PP
+Example:
+.RS
+.nf
+svlang lookup dator
+  dator (nn) \[u2192] computer
+
+svlang lookup \-r computer
+  computer \[u2192] dator (nn)
+.fi
+.RE
+.SH EXIT STATUS
+.TP
+.B 0
+No issues found (or lookup succeeded).
+.TP
+.B 1
+Issues found (anglicisms, inconsistencies) or no results.
+.TP
+.B 2
+Usage error (missing arguments, file not found).
+.SH SEE ALSO
+.BR l10n\-lint (1),
+.BR po\-translate (1)
+.SH AUTHOR
+Daniel Nylander <daniel@danielnylander.se>
+.SH BUGS
+Report bugs at: https://github.com/yeager/svlang/issues
+.SH COPYRIGHT
+Copyright \(co 2026 Daniel Nylander. License: GPL\-3.0\-or\-later.
