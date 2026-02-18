@@ -3,11 +3,22 @@
 from __future__ import annotations
 
 import argparse
+import gettext
 import json
+import locale
 import sys
 from pathlib import Path
 
 from svlang import __version__
+
+TEXTDOMAIN = "svlang"
+LOCALEDIR = "/usr/share/locale"
+try:
+    locale.bindtextdomain(TEXTDOMAIN, LOCALEDIR)
+    locale.textdomain(TEXTDOMAIN)
+except AttributeError:
+    pass
+_ = gettext.gettext
 
 
 def _output(data, as_json=False, quiet=False):
@@ -33,16 +44,16 @@ def _cmd_svengelska(args):
         path = Path(args.file)
         if not path.exists():
             if args.json:
-                _output({"error": f"Filen finns inte: {path}"}, as_json=True)
+                _output({"error": _("File not found: {path}").format(path=path)}, as_json=True)
             else:
-                print(f"Filen finns inte: {path}", file=sys.stderr)
+                print(_("File not found: {path}").format(path=path), file=sys.stderr)
             return 2
         text = path.read_text(encoding="utf-8")
     else:
         if args.json:
-            _output({"error": "Ange --text eller --file"}, as_json=True)
+            _output({"error": _("Specify --text or --file")}, as_json=True)
         else:
-            print("Ange --text eller --file", file=sys.stderr)
+            print(_("Specify --text or --file"), file=sys.stderr)
         return 2
 
     hits = checker.check(text)
@@ -54,13 +65,13 @@ def _cmd_svengelska(args):
         }, as_json=True)
     elif not args.quiet:
         if not hits:
-            source = Path(args.file).name if args.file else "text"
-            print(f"✅ {source}: Inga anglicismer hittade.")
+            source = Path(args.file).name if args.file else _("text")
+            print(_("✅ {source}: No anglicisms found.").format(source=source))
         else:
             if args.file:
-                print(f"⚠️  {Path(args.file).name}: {len(hits)} anglicism(er)")
+                print(_("⚠️  {name}: {count} anglicism(s)").format(name=Path(args.file).name, count=len(hits)))
             for h in hits:
-                print(f"  ⚠️  «{h.word}» → {h.suggestion}")
+                print(_("  ⚠️  «{word}» → {suggestion}").format(word=h.word, suggestion=h.suggestion))
                 if hasattr(h, 'context') and h.context:
                     print(f"    ...{h.context}...")
 
@@ -75,14 +86,14 @@ def _cmd_consistency(args):
     for path in args.files:
         p = Path(path)
         if not p.exists():
-            print(f"Filen finns inte: {p}", file=sys.stderr)
+            print(_("File not found: {path}").format(path=p), file=sys.stderr)
             continue
         if p.suffix == ".po":
             checker.add_po_file(str(p))
         elif p.suffix == ".ts":
             checker.add_ts_file(str(p))
         else:
-            print(f"Format stöds inte: {p.suffix} (använd .po eller .ts)", file=sys.stderr)
+            print(_("Unsupported format: {suffix} (use .po or .ts)").format(suffix=p.suffix), file=sys.stderr)
 
     issues = checker.check()
 
@@ -93,11 +104,12 @@ def _cmd_consistency(args):
         }, as_json=True)
     elif not args.quiet:
         if not issues:
-            print("✅ Alla översättningar är konsekventa.")
+            print(_("✅ All translations are consistent."))
         else:
-            print(f"⚠️  {len(issues)} inkonsistens(er) hittade:\n")
+            print(_("⚠️  {count} inconsistency(ies) found:").format(count=len(issues)))
+            print()
             for issue in issues:
-                print(f"  Källa: «{issue.source}»")
+                print(_("  Source: «{source}»").format(source=issue.source))
                 for trans, locs in issue.translations.items():
                     loc_str = ", ".join(locs[:3])
                     if len(locs) > 3:
@@ -129,7 +141,7 @@ def _cmd_compound(args):
             if r["is_compound"]:
                 print(f"  {r['word']} → {' + '.join(r['parts'])}")
             else:
-                print(f"  {r['word']} → (ej sammansatt)")
+                print(_("  {word} → (not a compound)").format(word=r['word']))
     return 0
 
 
@@ -144,16 +156,16 @@ def _cmd_lix(args):
         path = Path(args.file)
         if not path.exists():
             if args.json:
-                _output({"error": f"Filen finns inte: {path}"}, as_json=True)
+                _output({"error": _("File not found: {path}").format(path=path)}, as_json=True)
             else:
-                print(f"Filen finns inte: {path}", file=sys.stderr)
+                print(_("File not found: {path}").format(path=path), file=sys.stderr)
             return 2
         text = path.read_text(encoding="utf-8")
     else:
         if args.json:
-            _output({"error": "Ange --text eller --file"}, as_json=True)
+            _output({"error": _("Specify --text or --file")}, as_json=True)
         else:
-            print("Ange --text eller --file", file=sys.stderr)
+            print(_("Specify --text or --file"), file=sys.stderr)
         return 2
 
     result = calc.calculate(text)
@@ -166,11 +178,11 @@ def _cmd_lix(args):
             "long_words": result.long_words,
         }, as_json=True)
     elif not args.quiet:
-        print(f"  LIX: {result.score}")
-        print(f"  Nivå: {result.level}")
-        print(f"  Ord: {result.words}")
-        print(f"  Meningar: {result.sentences}")
-        print(f"  Långa ord (>6 tecken): {result.long_words}")
+        print(_("  LIX: {score}").format(score=result.score))
+        print(_("  Level: {level}").format(level=result.level))
+        print(_("  Words: {count}").format(count=result.words))
+        print(_("  Sentences: {count}").format(count=result.sentences))
+        print(_("  Long words (>6 chars): {count}").format(count=result.long_words))
     return 0
 
 
@@ -189,9 +201,9 @@ def _cmd_lookup(args):
             }, as_json=True)
         elif not args.quiet:
             if not results:
-                print(f"Inga svenska ord hittades för «{args.word}»")
+                print(_("No Swedish words found for «{word}»").format(word=args.word))
             else:
-                print(f"🔍 Engelska «{args.word}» → svenska:")
+                print(_("🔍 English «{word}» → Swedish:").format(word=args.word))
                 for r in results:
                     print(f"  {r.word} — {', '.join(r.translations)}")
         return 0 if results else 1
@@ -206,7 +218,7 @@ def _cmd_lookup(args):
             }, as_json=True)
         elif not args.quiet:
             if not results:
-                print(f"Inga ord börjar med «{args.word}»")
+                print(_("No words starting with «{word}»").format(word=args.word))
             else:
                 for r in results:
                     print(f"  {r.word} — {', '.join(r.translations)}")
@@ -224,62 +236,62 @@ def _cmd_lookup(args):
         if result.found:
             print(f"  {result.word} — {', '.join(result.translations)}")
         else:
-            print(f"  «{args.word}» finns inte i ordboken")
+            print(_("  «{word}» not found in dictionary").format(word=args.word))
     return 0 if result.found else 1
 
 
 def main(argv: list[str] | None = None):
     parser = argparse.ArgumentParser(
         prog="svlang",
-        description="🇸🇪 Svenskt NLP-verktyg för översättare",
+        description=_("🇸🇪 Swedish NLP toolkit for translators"),
     )
     parser.add_argument("-V", "--version", action="version", version=f"svlang {__version__}")
-    parser.add_argument("--about", action="store_true", help="Visa programinfo och avsluta")
-    parser.add_argument("--json", "-j", action="store_true", help="JSON output")
-    parser.add_argument("--quiet", "-q", action="store_true", help="Suppress non-essential output")
-    sub = parser.add_subparsers(dest="command", help="Kommando")
+    parser.add_argument("--about", action="store_true", help=_("Show application info and exit"))
+    parser.add_argument("--json", "-j", action="store_true", help=_("JSON output"))
+    parser.add_argument("--quiet", "-q", action="store_true", help=_("Suppress non-essential output"))
+    sub = parser.add_subparsers(dest="command", help=_("Command"))
 
     # svengelska
-    p_sv = sub.add_parser("svengelska", aliases=["sv"], help="Hitta anglicismer")
-    p_sv.add_argument("--text", "-t", nargs="+", help="Text att kontrollera")
-    p_sv.add_argument("--file", "-f", help="Fil att kontrollera")
+    p_sv = sub.add_parser("svengelska", aliases=["sv"], help=_("Find anglicisms"))
+    p_sv.add_argument("--text", "-t", nargs="+", help=_("Text to check"))
+    p_sv.add_argument("--file", "-f", help=_("File to check"))
     p_sv.set_defaults(func=_cmd_svengelska)
 
     # consistency
-    p_con = sub.add_parser("consistency", aliases=["con"], help="Kontrollera konsekvens")
-    p_con.add_argument("files", nargs="+", help=".po- eller .ts-filer")
+    p_con = sub.add_parser("consistency", aliases=["con"], help=_("Check consistency"))
+    p_con.add_argument("files", nargs="+", help=_(".po or .ts files"))
     p_con.add_argument("--ignore-case", "-i", action="store_true")
     p_con.set_defaults(func=_cmd_consistency)
 
     # compound
-    p_comp = sub.add_parser("compound", aliases=["split"], help="Dela upp sammansatta ord")
-    p_comp.add_argument("words", nargs="+", help="Ord att dela")
+    p_comp = sub.add_parser("compound", aliases=["split"], help=_("Split compound words"))
+    p_comp.add_argument("words", nargs="+", help=_("Words to split"))
     p_comp.set_defaults(func=_cmd_compound)
 
     # lix
-    p_lix = sub.add_parser("lix", help="Beräkna LIX läsbarhetsindex")
-    p_lix.add_argument("--text", "-t", nargs="+", help="Text att analysera")
-    p_lix.add_argument("--file", "-f", help="Fil att analysera")
+    p_lix = sub.add_parser("lix", help=_("Calculate LIX readability index"))
+    p_lix.add_argument("--text", "-t", nargs="+", help=_("Text to analyze"))
+    p_lix.add_argument("--file", "-f", help=_("File to analyze"))
     p_lix.set_defaults(func=_cmd_lix)
 
     # lookup
-    p_look = sub.add_parser("lookup", aliases=["ord"], help="Slå upp sv→en (Folkets lexikon)")
-    p_look.add_argument("word", help="Ord att slå upp")
-    p_look.add_argument("--reverse", "-r", action="store_true", help="Sök en→sv")
-    p_look.add_argument("--search", "-s", action="store_true", help="Sök prefix")
-    p_look.add_argument("--limit", "-n", type=int, default=20, help="Max resultat")
+    p_look = sub.add_parser("lookup", aliases=["ord"], help=_("Look up sv→en (Folkets lexikon)"))
+    p_look.add_argument("word", help=_("Word to look up"))
+    p_look.add_argument("--reverse", "-r", action="store_true", help=_("Search en→sv"))
+    p_look.add_argument("--search", "-s", action="store_true", help=_("Search prefix"))
+    p_look.add_argument("--limit", "-n", type=int, default=20, help=_("Max results"))
     p_look.set_defaults(func=_cmd_lookup)
 
     args = parser.parse_args(argv)
     if args.about:
         print(f"svlang {__version__}")
-        print("Swedish NLP toolkit for translators")
+        print(_("Swedish NLP toolkit for translators"))
         print()
-        print("Author:     Daniel Nylander <daniel@danielnylander.se>")
-        print("License:    GPL-3.0-or-later")
-        print("Website:    https://github.com/yeager/svlang")
-        print("PyPI:       https://pypi.org/project/svlang/")
-        print("Translate:  https://app.transifex.com/danielnylander/svlang/")
+        print(f"{_('Author')}:     Daniel Nylander <daniel@danielnylander.se>")
+        print(f"{_('License')}:    GPL-3.0-or-later")
+        print(f"{_('Website')}:    https://github.com/yeager/svlang")
+        print(f"{_('PyPI')}:       https://pypi.org/project/svlang/")
+        print(f"{_('Translate')}:  https://app.transifex.com/danielnylander/svlang/")
         return 0
     if not args.command:
         parser.print_help()

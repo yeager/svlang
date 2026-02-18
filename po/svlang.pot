@@ -1,0 +1,221 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 10:16+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/svlang/cli.py:47 src/svlang/cli.py:49 src/svlang/cli.py:89
+#: src/svlang/cli.py:159 src/svlang/cli.py:161
+#, python-brace-format
+msgid "File not found: {path}"
+msgstr ""
+
+#: src/svlang/cli.py:54 src/svlang/cli.py:56 src/svlang/cli.py:166
+#: src/svlang/cli.py:168
+msgid "Specify --text or --file"
+msgstr ""
+
+#: src/svlang/cli.py:68
+msgid "text"
+msgstr ""
+
+#: src/svlang/cli.py:69
+#, python-brace-format
+msgid "✅ {source}: No anglicisms found."
+msgstr ""
+
+#: src/svlang/cli.py:72
+#, python-brace-format
+msgid "⚠️  {name}: {count} anglicism(s)"
+msgstr ""
+
+#: src/svlang/cli.py:74
+#, python-brace-format
+msgid "  ⚠️  «{word}» → {suggestion}"
+msgstr ""
+
+#: src/svlang/cli.py:96
+#, python-brace-format
+msgid "Unsupported format: {suffix} (use .po or .ts)"
+msgstr ""
+
+#: src/svlang/cli.py:107
+msgid "✅ All translations are consistent."
+msgstr ""
+
+#: src/svlang/cli.py:109
+#, python-brace-format
+msgid "⚠️  {count} inconsistency(ies) found:"
+msgstr ""
+
+#: src/svlang/cli.py:112
+#, python-brace-format
+msgid "  Source: «{source}»"
+msgstr ""
+
+#: src/svlang/cli.py:144
+#, python-brace-format
+msgid "  {word} → (not a compound)"
+msgstr ""
+
+#: src/svlang/cli.py:181
+#, python-brace-format
+msgid "  LIX: {score}"
+msgstr ""
+
+#: src/svlang/cli.py:182
+#, python-brace-format
+msgid "  Level: {level}"
+msgstr ""
+
+#: src/svlang/cli.py:183
+#, python-brace-format
+msgid "  Words: {count}"
+msgstr ""
+
+#: src/svlang/cli.py:184
+#, python-brace-format
+msgid "  Sentences: {count}"
+msgstr ""
+
+#: src/svlang/cli.py:185
+#, python-brace-format
+msgid "  Long words (>6 chars): {count}"
+msgstr ""
+
+#: src/svlang/cli.py:204
+#, python-brace-format
+msgid "No Swedish words found for «{word}»"
+msgstr ""
+
+#: src/svlang/cli.py:206
+#, python-brace-format
+msgid "🔍 English «{word}» → Swedish:"
+msgstr ""
+
+#: src/svlang/cli.py:221
+#, python-brace-format
+msgid "No words starting with «{word}»"
+msgstr ""
+
+#: src/svlang/cli.py:239
+#, python-brace-format
+msgid "  «{word}» not found in dictionary"
+msgstr ""
+
+#: src/svlang/cli.py:246
+msgid "🇸🇪 Swedish NLP toolkit for translators"
+msgstr ""
+
+#: src/svlang/cli.py:249
+msgid "Show application info and exit"
+msgstr ""
+
+#: src/svlang/cli.py:250
+msgid "JSON output"
+msgstr ""
+
+#: src/svlang/cli.py:251
+msgid "Suppress non-essential output"
+msgstr ""
+
+#: src/svlang/cli.py:252
+msgid "Command"
+msgstr ""
+
+#: src/svlang/cli.py:255
+msgid "Find anglicisms"
+msgstr ""
+
+#: src/svlang/cli.py:256
+msgid "Text to check"
+msgstr ""
+
+#: src/svlang/cli.py:257
+msgid "File to check"
+msgstr ""
+
+#: src/svlang/cli.py:261
+msgid "Check consistency"
+msgstr ""
+
+#: src/svlang/cli.py:262
+msgid ".po or .ts files"
+msgstr ""
+
+#: src/svlang/cli.py:267
+msgid "Split compound words"
+msgstr ""
+
+#: src/svlang/cli.py:268
+msgid "Words to split"
+msgstr ""
+
+#: src/svlang/cli.py:272
+msgid "Calculate LIX readability index"
+msgstr ""
+
+#: src/svlang/cli.py:273
+msgid "Text to analyze"
+msgstr ""
+
+#: src/svlang/cli.py:274
+msgid "File to analyze"
+msgstr ""
+
+#: src/svlang/cli.py:278
+msgid "Look up sv→en (Folkets lexikon)"
+msgstr ""
+
+#: src/svlang/cli.py:279
+msgid "Word to look up"
+msgstr ""
+
+#: src/svlang/cli.py:280
+msgid "Search en→sv"
+msgstr ""
+
+#: src/svlang/cli.py:281
+msgid "Search prefix"
+msgstr ""
+
+#: src/svlang/cli.py:282
+msgid "Max results"
+msgstr ""
+
+#: src/svlang/cli.py:288
+msgid "Swedish NLP toolkit for translators"
+msgstr ""
+
+#: src/svlang/cli.py:290
+msgid "Author"
+msgstr ""
+
+#: src/svlang/cli.py:291
+msgid "License"
+msgstr ""
+
+#: src/svlang/cli.py:292
+msgid "Website"
+msgstr ""
+
+#: src/svlang/cli.py:293
+msgid "PyPI"
+msgstr ""
+
+#: src/svlang/cli.py:294
+msgid "Translate"
+msgstr ""

@@ -6,3 +6,9 @@ file_filter  = po/man/<lang>.po
 source_file  = po/man/svlang.1.pot
 source_lang  = en
 type         = PO
+
+[o:danielnylander:p:svlang:r:svlang-pot]
+file_filter  = po/<lang>.po
+source_file  = po/svlang.pot
+source_lang  = en
+type         = PO
