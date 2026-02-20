@@ -1,0 +1,49 @@
+name: Build .deb
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build .deb
+        run: |
+          VER=$(python3 -c "import re; print(re.search(r'__version__.*?\"(.+?)\"', open('src/svlang/__init__.py').read()).group(1))")
+          PKG=svlang
+          mkdir -p pkg/DEBIAN pkg/usr/lib/python3/dist-packages/svlang pkg/usr/bin
+          cp src/svlang/*.py pkg/usr/lib/python3/dist-packages/svlang/
+          echo '#!/usr/bin/env python3' > pkg/usr/bin/$PKG
+          echo 'from svlang.main import main' >> pkg/usr/bin/$PKG
+          echo 'main()' >> pkg/usr/bin/$PKG
+          chmod +x pkg/usr/bin/$PKG
+          if [ -d po ]; then
+            for po in po/*.po; do
+              [ -f "$po" ] || continue
+              lang=$(basename "$po" .po)
+              mkdir -p pkg/usr/share/locale/$lang/LC_MESSAGES
+              msgfmt "$po" -o "pkg/usr/share/locale/$lang/LC_MESSAGES/$PKG.mo" 2>/dev/null
+            done
+          fi
+          if [ -d man ]; then
+            mkdir -p pkg/usr/share/man/man1
+            cp man/*.1 pkg/usr/share/man/man1/ 2>/dev/null
+          fi
+          cat > pkg/DEBIAN/control <<CTRL
+          Package: $PKG
+          Version: ${VER}-1
+          Architecture: all
+          Maintainer: Daniel Nylander <daniel@danielnylander.se>
+          Depends: python3
+          Section: utils
+          Priority: optional
+          Homepage: https://github.com/yeager/$PKG
+          Description: svlang
+          CTRL
+          sed -i 's/^          //' pkg/DEBIAN/control
+          dpkg-deb --build pkg ${PKG}_${VER}-1_all.deb
+      - uses: actions/upload-artifact@v4
+        with:
+          name: deb-package
+          path: '*.deb'
