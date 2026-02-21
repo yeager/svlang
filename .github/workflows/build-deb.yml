@@ -15,7 +15,7 @@ jobs:
           mkdir -p pkg/DEBIAN pkg/usr/lib/python3/dist-packages/svlang pkg/usr/bin
           cp src/svlang/*.py pkg/usr/lib/python3/dist-packages/svlang/
           echo '#!/usr/bin/env python3' > pkg/usr/bin/$PKG
-          echo 'from svlang.main import main' >> pkg/usr/bin/$PKG
+          echo 'from svlang.cli import main' >> pkg/usr/bin/$PKG
           echo 'main()' >> pkg/usr/bin/$PKG
           chmod +x pkg/usr/bin/$PKG
           if [ -d po ]; then
