@@ -8,6 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Install build deps
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq gettext
       - name: Build .deb
         run: |
           VER=$(python3 -c "import re; print(re.search(r'__version__.*?\"(.+?)\"', open('src/svlang/__init__.py').read()).group(1))")
