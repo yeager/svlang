@@ -2,10 +2,10 @@
 # Copyright (C) YEAR Free Software Foundation, Inc.
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 # Translators:
 # Daniel Nylander <po@danielnylander.se>, 2026
-#
+# 
 #, fuzzy
 msgid ""
 msgstr ""
@@ -13,12 +13,11 @@ msgstr ""
 "POT-Creation-Date: 2026-02-16 11:43+0000\n"
 "PO-Revision-Date: 2026-02-15 14:41+0000\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>, 2026\n"
-"Language-Team: Swedish (https://app.transifex.com/danielnylander/"
-"teams/304815/sv/)\n"
-"Language: sv\n"
+"Language-Team: Swedish (https://app.transifex.com/danielnylander/teams/304815/sv/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: sv\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. type: TH
@@ -122,8 +121,8 @@ msgid ""
 "Output results as JSON for all commands. Produces structured data suitable "
 "for piping into jq or other tools."
 msgstr ""
-"Skriv ut resultat som JSON för alla kommandon. Producerar strukturerade data "
-"som är lämpliga för vidarebefordran till jq eller andra verktyg."
+"Skriv ut resultat som JSON för alla kommandon. Producerar strukturerade data"
+" som är lämpliga för vidarebefordran till jq eller andra verktyg."
 
 #. type: TP
 #: data/man/svlang.1:23
@@ -237,8 +236,8 @@ msgid ""
 "same source string has been translated differently, or where different "
 "source strings share the same translation."
 msgstr ""
-"Kontrollera översättningens konsistens i PO- eller TS-filer. Hittar fall där "
-"samma källsträng har översatts på olika sätt, eller där olika källsträngar "
+"Kontrollera översättningens konsistens i PO- eller TS-filer. Hittar fall där"
+" samma källsträng har översatts på olika sätt, eller där olika källsträngar "
 "har samma översättning."
 
 #. type: TP
@@ -334,8 +333,8 @@ msgstr "Fil att analysera."
 #. type: Plain text
 #: data/man/svlang.1:96
 msgid ""
-"LIX scale: E<lt>25 = children's books, 25-30 = easy, 30-40 = normal, 40-50 = "
-"factual/professional, 50-60 = technical, E<gt>60 = very difficult."
+"LIX scale: E<lt>25 = children's books, 25-30 = easy, 30-40 = normal, 40-50 ="
+" factual/professional, 50-60 = technical, E<gt>60 = very difficult."
 msgstr ""
 "LIX-skala: E<lt>25 = barnböcker, 25-30 = lätt, 30-40 = normal, 40-50 = "
 "faktabaserad/professionell, 50-60 = teknisk, E<gt>60 = mycket svår."
