@@ -1,0 +1,50 @@
+Metadata-Version: 2.4
+Name: svlang
+Version: 0.1.7
+Summary: Swedish NLP toolkit for translators
+Author-email: Daniel Nylander <daniel@danielnylander.se>
+License: MIT
+Project-URL: Homepage, https://github.com/yeager/svlang
+Project-URL: Issues, https://github.com/yeager/svlang/issues
+Keywords: swedish,nlp,translation,localization,i18n,l10n
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Natural Language :: Swedish
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Text Processing :: Linguistic
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Provides-Extra: po
+Requires-Dist: polib>=1.2; extra == "po"
+Provides-Extra: dev
+Requires-Dist: polib>=1.2; extra == "dev"
+Requires-Dist: pytest>=7; extra == "dev"
+Dynamic: license-file
+
+# svlang
+
+Swedish NLP toolkit for translators. Spell checking, grammar, declension.
+
+Built with Python CLI. Part of the [Danne L10n Suite](https://github.com/yeager/debian-repo).
+
+## Installation
+
+### Debian/Ubuntu
+```bash
+sudo apt install svlang
+```
+
+### Fedora/RPM
+```bash
+sudo dnf install svlang
+```
+
+## License
+
+GPL-3.0
+
+## Author
+
+Daniel Nylander — [danielnylander.se](https://danielnylander.se)

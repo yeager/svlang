@@ -1,0 +1,21 @@
+Source: svlang
+Section: text
+Priority: optional
+Maintainer: Daniel Nylander <daniel@danielnylander.se>
+Build-Depends: debhelper-compat (= 13),
+               dh-python,
+               python3-all,
+               python3-setuptools,
+               pybuild-plugin-pyproject
+Standards-Version: 4.7.0
+Homepage: https://github.com/yeager/svlang
+Vcs-Git: https://github.com/yeager/svlang.git
+Vcs-Browser: https://github.com/yeager/svlang
+
+Package: svlang
+Architecture: all
+Depends: ${python3:Depends}, ${misc:Depends}
+Description: Swedish language analysis tool
+ svlang is a command-line tool for analyzing Swedish text. It provides
+ grammar checking, word frequency analysis, readability scoring, and
+ other linguistic analysis features for the Swedish language.
