@@ -6,3 +6,9 @@ __pycache__/
 dist/
 build/
 *.mo
+debian/svlang/
+debian/files
+debian/debhelper-build-stamp
+debian/.debhelper/
+debian/*.substvars
+debian/*.debhelper
