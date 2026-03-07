@@ -186,6 +186,75 @@ def _cmd_lix(args):
     return 0
 
 
+def _cmd_skrivregler(args):
+    """Check Swedish writing rules."""
+    from svlang.checkers.skrivregler import SkrivreglerChecker
+    checker = SkrivreglerChecker(
+        check_sarskrivning=not args.disable_sarskrivning,
+        check_dedem=not args.disable_dedem,
+        check_stavfel=not args.disable_stavfel,
+        check_interpunktion=getattr(args, 'enable_interpunktion', False),
+    )
+
+    if args.text:
+        text = " ".join(args.text)
+    elif args.file:
+        path = Path(args.file)
+        if not path.exists():
+            if args.json:
+                _output({"error": _("File not found: {path}").format(path=path)}, as_json=True)
+            else:
+                print(_("File not found: {path}").format(path=path), file=sys.stderr)
+            return 2
+        text = path.read_text(encoding="utf-8")
+    else:
+        if args.json:
+            _output({"error": _("Specify --text or --file")}, as_json=True)
+        else:
+            print(_("Specify --text or --file"), file=sys.stderr)
+        return 2
+
+    issues = checker.check(text)
+
+    if args.json:
+        _output({
+            "file": getattr(args, 'file', None),
+            "issues": [
+                {"rule": i.rule, "word": i.word, "suggestion": i.suggestion,
+                 "line": i.line, "context": i.context}
+                for i in issues
+            ],
+            "count": len(issues),
+            "by_rule": {
+                rule: len([i for i in issues if i.rule == rule])
+                for rule in sorted(set(i.rule for i in issues))
+            },
+        }, as_json=True)
+    elif not args.quiet:
+        if not issues:
+            source = Path(args.file).name if args.file else _("text")
+            print(_("✅ {source}: Inga skrivregelfel hittades.").format(source=source))
+        else:
+            if args.file:
+                print(_("⚠️  {name}: {count} skrivregelfel").format(
+                    name=Path(args.file).name, count=len(issues)))
+            by_rule: dict[str, list] = {}
+            for i in issues:
+                by_rule.setdefault(i.rule, []).append(i)
+            for rule, items in sorted(by_rule.items()):
+                rule_labels = {
+                    "sarskrivning": "📝 Särskrivning",
+                    "dedem": "🔤 De/dem",
+                    "stavfel": "✏️ Stavfel",
+                    "interpunktion": "⚙️ Interpunktion",
+                }
+                print(f"\n  {rule_labels.get(rule, rule)} ({len(items)}):")
+                for i in items:
+                    print(f"    rad {i.line}: «{i.word}» → {i.suggestion}")
+
+    return 1 if issues else 0
+
+
 def _cmd_lookup(args):
     """Dictionary lookup."""
     from svlang.checkers.lexicon import SwedishLexicon
@@ -273,6 +342,17 @@ def main(argv: list[str] | None = None):
     p_lix.add_argument("--text", "-t", nargs="+", help=_("Text to analyze"))
     p_lix.add_argument("--file", "-f", help=_("File to analyze"))
     p_lix.set_defaults(func=_cmd_lix)
+
+    # skrivregler
+    p_skriv = sub.add_parser("skrivregler", aliases=["regler", "sr"], help=_("Check Swedish writing rules"))
+    p_skriv.add_argument("--text", "-t", nargs="+", help=_("Text to check"))
+    p_skriv.add_argument("--file", "-f", help=_("File to check"))
+    p_skriv.add_argument("--disable-sarskrivning", action="store_true", help=_("Disable compound split check"))
+    p_skriv.add_argument("--disable-dedem", action="store_true", help=_("Disable de/dem check"))
+    p_skriv.add_argument("--disable-stavfel", action="store_true", help=_("Disable misspelling check"))
+    p_skriv.add_argument("--enable-interpunktion", action="store_true", help=_("Enable punctuation check (off by default)"))
+    p_skriv.add_argument("--disable-interpunktion", action="store_true", help=argparse.SUPPRESS)  # back-compat
+    p_skriv.set_defaults(func=_cmd_skrivregler)
 
     # lookup
     p_look = sub.add_parser("lookup", aliases=["ord"], help=_("Look up sv→en (Folkets lexikon)"))
