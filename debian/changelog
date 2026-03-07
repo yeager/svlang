@@ -1,3 +1,11 @@
+svlang (0.2.0-1) unstable; urgency=medium
+
+  * New upstream release.
+  * New 'skrivregler' command: Swedish writing rules checker.
+  * Checks särskrivning (100+ patterns), de/dem, stavfel (70+ patterns).
+
+ -- Daniel Nylander <daniel@danielnylander.se>  Sat, 07 Mar 2026 17:56:00 +0100
+
 svlang (0.1.7-2) unstable; urgency=medium
 
   * Re-upload to mentors. (Closes: #1129388)
