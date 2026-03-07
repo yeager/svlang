@@ -19,8 +19,8 @@ class Anglicism:
 # Based on Språkrådet recommendations and common translation pitfalls.
 _ANGLICISMS: dict[str, str] = {
     # Verbs
-    "implementera": "genomföra, införa",
-    "initiera": "inleda, starta",
+    "implementera": None,  # OK — established in technical Swedish
+    "initiera": None,  # OK — established in technical Swedish
     "adressera": "ta itu med, hantera",
     "facilitera": "underlätta",
     "monitorera": "övervaka",
@@ -47,18 +47,34 @@ _ANGLICISMS: dict[str, str] = {
     "merga": "sammanfoga, slå ihop",
     "pitcha": "presentera, sälja in",
     "pusha": "driva på, trycka på",
-    "rendera": "återge, framställa",
+    "rendera": None,  # OK — accepted Swedish (confirmed by translator)
     "reseta": "återställa",
     "reviewera": "granska",
     "scrolla": "bläddra, rulla",
+    "toggla": "växla",
     "skipa": "hoppa över",
     "sparka av": "starta, dra igång",
     "streama": "strömma, sända",
     "swipa": "svepa",
-    "tagga": "märka, märka upp",
+    "tagga": "märka, märka upp",  # context-dependent: OK in git/tech, bad in general
     "trenda": "vara populär",
     "uppdatera": None,  # OK — established Swedish
     "uppgradera": None,  # OK — established
+
+    # Technical terms — OK in programming/compiler/system context
+    "kompilera": None,  # OK — established
+    "debugga": None,  # OK — established in tech
+    "logga": None,  # OK — established
+    "formatera": None,  # OK — established
+    "allokera": None,  # OK — established in tech
+    "parsea": "tolka, analysera",
+    "deploya": "driftsätta",
+    "committa": "checka in, versionshantera",
+    "brancha": "förgrena",
+    "mergea": "sammanfoga, slå ihop",
+    "patcha": "laga, programfixa",
+    "repostera": "skicka om, vidareskicka",
+    "reposta": "skicka om, vidareskicka",
 
     # Nouns
     "approach": "tillvägagångssätt, metod",
@@ -70,16 +86,16 @@ _ANGLICISMS: dict[str, str] = {
     "brainstorm": "idésamling",
     "brief": "instruktion, uppdrag",
     "budget": None,  # OK — established
-    "case": "fall, ärende",
+    "case": None,  # Too many false positives in technical text (switch case, use case)
     "challenge": "utmaning",
     "deadline": "tidsfrist, slutdatum",
     "feature": "funktion, egenskap",
     "feedback": "återkoppling, respons",
-    "flow": "flöde",
+    "flow": None,  # OK in technical context (data flow, control flow)
     "gap": "glapp, lucka",
     "high-level": "övergripande",
     "impact": "påverkan, inverkan",
-    "input": "synpunkter, underlag",
+    "input": None,  # OK in technical context (input/output, user input)
     "insight": "insikt",
     "issue": "fråga, problem",
     "item": "punkt, sak",
@@ -87,34 +103,34 @@ _ANGLICISMS: dict[str, str] = {
     "leverage": "utnyttja, dra nytta av",
     "mindset": "tankesätt, inställning",
     "outcome": "resultat, utfall",
-    "output": "resultat, utdata",
+    "output": None,  # OK in technical context (compiler output, I/O)
     "pain point": "smärtpunkt, problem",
     "performance": "prestanda, resultat",
-    "pipeline": "kedja, process",
+    "pipeline": None,  # OK in technical context (build pipeline, data pipeline)
     "pitch": "presentation, säljpitch",
     "scope": "omfattning, räckvidd",
     "setup": "uppställning, konfiguration",
     "stakeholder": "intressent",
     "startup": "nystartad, uppstart",
-    "target": "mål, målgrupp",
+    "target": None,  # Too context-dependent — OK in compiler/build context
     "task": "uppgift",
     "team": None,  # OK — established
-    "template": "mall",
+    "template": None,  # OK in C++/programming context
     "timeline": "tidslinje, tidsplan",
-    "tool": "verktyg",
+    "tool": None,  # Often used in compound words (tooltip, toolchain) — too many FP
     "touchpoint": "kontaktpunkt",
     "trade-off": "avvägning",
     "trigger": "utlösare",
-    "update": "uppdatering",
+    "update": None,  # "uppdatera/uppdatering" already established; "update" in tech context OK
     "workshop": None,  # OK — established
 
     # Adjectives
     "agil": "smidig, flexibel",
-    "aligned": "samstämd, i linje",
+    "aligned": None,  # OK in technical context (memory aligned, aligned to)
     "customized": "anpassad, skräddarsydd",
     "dedicated": "engagerad, tillägnad",
     "hands-on": "praktisk, handgriplig",
-    "key": "viktig, central",
+    "key": None,  # Too many false positives (keyboard key, encryption key, config key)
     "lean": "resurssnål, slimmad",
     "on track": "på rätt spår, i fas",
     "proaktiv": "förebyggande, framåtblickande",
