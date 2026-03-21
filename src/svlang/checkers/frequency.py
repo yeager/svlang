@@ -67,10 +67,18 @@ class SwedishFrequency:
             "behöver", "behöva", "denna", "denna", "våra", "vår", "vara", "finns",
             "finnas", "mycket", "lite", "stor", "stora", "liten", "lilla", "bra", "dålig",
             "ny", "nya", "gamla", "gammal", "första", "sista", "nästa", "förra",
-            "kommer", "gå", "gör", "ta", "tror", "vill", "ville", "veta", "vet",
+            "kommer", "gå", "går", "gör", "ta", "tar", "tror", "vill", "ville", "veta", "vet",
             "använda", "använder", "system", "problem", "lösning", "projekt", "arbete",
             "arbeta", "jobba", "studera", "lära", "hjälp", "hjälpa", "tänka", "tycker",
-            "känna", "höra", "se", "visa", "titta", "kolla", "fundera", "räkna"
+            "känna", "höra", "hör", "se", "ser", "visa", "titta", "kolla", "fundera", "räkna",
+            # Very common everyday words
+            "jag", "mig", "min", "mitt", "mina", "dig", "din", "ditt", "dina", "oss", "er", "ers",
+            "hem", "hus", "bil", "mat", "mjölk", "affär", "affären", "köpa", "köper", "äta",
+            "äter", "sova", "sover", "jobbar", "arbetar", "lagar", "middag", "frukost",
+            "lunch", "morgon", "kväll", "natt", "imorgon", "igår", "idag", "sen", "sedan",
+            "klocka", "timme", "minut", "sekund", "pengar", "kosta", "kostar", "pris",
+            "familj", "vänner", "barn", "föräldrar", "mamma", "pappa", "syster", "bror",
+            "skola", "lärare", "elev", "bok", "läsa", "läser", "skriva", "skriver"
         ]
         
         # Read the full wordlist and take first 10k minus our curated common words
