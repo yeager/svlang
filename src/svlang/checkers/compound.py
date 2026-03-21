@@ -17,8 +17,10 @@ class CompoundSplit:
 class CompoundSplitter:
     """Split Swedish compound words into components.
     
-    Uses a dictionary-based approach: tries to find the longest prefix
-    that's a known word, then recursively splits the remainder.
+    Uses a dictionary-based approach with Swedish compound rules:
+    - Hyphen rules (bindestreck-regler)
+    - Double consonant rules (dubbelkonsonant vid sammansättning)
+    - Common linking elements (vanliga foge-s-regler)
     
     Usage:
         splitter = CompoundSplitter()
@@ -28,6 +30,12 @@ class CompoundSplitter:
 
     # Common compound join letters (fogmorfem)
     _JOINERS = ("s", "e", "o", "u", "")
+    
+    # Words that often take -s- as linking element
+    _S_LINKERS = {
+        "arbete", "barn", "folk", "lands", "lands", "kyrk", "tid", "väg", "år",
+        "huvud", "kärlek", "fred", "krig", "röst", "sjuk", "död", "liv"
+    }
 
     def __init__(self, wordlist: set[str] | None = None):
         if wordlist is not None:
@@ -60,7 +68,7 @@ class CompoundSplitter:
         return CompoundSplit(word=word, parts=[word], is_compound=False)
 
     def _try_split(self, word: str, depth: int = 0) -> list[str] | None:
-        """Recursive compound splitting."""
+        """Recursive compound splitting with Swedish compound rules."""
         if depth > 5:
             return None
         if len(word) < self._min_part_len * 2:
@@ -73,43 +81,95 @@ class CompoundSplitter:
         best: list[str] | None = None
         for i in range(len(word) - self._min_part_len, self._min_part_len - 1, -1):
             prefix = word[:i]
-            if prefix not in self._words:
-                continue
+            
+            # Check if prefix matches any known word (possibly with modifications)
+            prefix_candidates = self._get_prefix_candidates(prefix)
+            
+            for actual_prefix in prefix_candidates:
+                if actual_prefix not in self._words:
+                    continue
+                
+                remainder = word[i:]
 
-            remainder = word[i:]
+                # Try with and without joiners
+                for joiner in self._JOINERS:
+                    if joiner and remainder.startswith(joiner):
+                        rest = remainder[len(joiner):]
+                    else:
+                        if joiner:
+                            continue
+                        rest = remainder
 
-            # Try with and without joiners
-            for joiner in self._JOINERS:
-                if joiner and remainder.startswith(joiner):
-                    rest = remainder[len(joiner):]
-                else:
-                    if joiner:
+                    if not rest:
                         continue
-                    rest = remainder
 
-                if not rest:
-                    continue
+                    # Is the rest a word?
+                    if rest in self._words:
+                        candidate = [actual_prefix, rest]
+                        # Prefer fewest parts, then longest first part
+                        if best is None or len(candidate) < len(best):
+                            best = candidate
+                        continue
 
-                # Is the rest a word?
-                if rest in self._words:
-                    candidate = [prefix, rest]
-                    # Prefer fewest parts, then longest first part
-                    if best is None or len(candidate) < len(best):
-                        best = candidate
-                    continue
+                    # Try splitting the rest recursively
+                    sub = self._try_split(rest, depth + 1)
+                    if sub:
+                        candidate = [actual_prefix] + sub
+                        if best is None or len(candidate) < len(best):
+                            best = candidate
 
-                # Try splitting the rest recursively
-                sub = self._try_split(rest, depth + 1)
-                if sub:
-                    candidate = [prefix] + sub
-                    if best is None or len(candidate) < len(best):
-                        best = candidate
-
-            # If we found a 2-part split with longest prefix, that's optimal
-            if best and len(best) == 2:
-                return best
+                # If we found a 2-part split with longest prefix, that's optimal
+                if best and len(best) == 2:
+                    return best
 
         return best
+
+    def _get_prefix_candidates(self, prefix: str) -> list[str]:
+        """Get possible word forms for a prefix (handling compound modifications)."""
+        candidates = [prefix]
+        
+        # Handle double consonants at compound boundaries
+        if len(prefix) >= 2:
+            last_char = prefix[-1]
+            second_last = prefix[-2]
+            
+            # If ends with double consonant, try single consonant
+            if last_char == second_last and last_char in "mnrts":
+                candidates.append(prefix[:-1])
+            
+            # If ends with single consonant, try double consonant  
+            elif last_char in "mnrts":
+                candidates.append(prefix + last_char)
+        
+        # Handle common -e endings that might be dropped in compounds
+        if prefix.endswith("e"):
+            candidates.append(prefix[:-1])
+        elif len(prefix) >= 2 and not prefix.endswith("e"):
+            # Try adding -e ending
+            candidates.append(prefix + "e")
+        
+        return candidates
+
+    def validate_compound_rules(self, word: str) -> list[str]:
+        """Validate Swedish compound writing rules and return issues."""
+        issues = []
+        
+        # Check for incorrect hyphenation (särskrivning/sammanskrivning)
+        if " " in word:
+            # Check if this should be written as one word
+            no_space = word.replace(" ", "")
+            if self.is_valid_compound(no_space):
+                issues.append(f"Särskrivning: '{word}' borde skrivas '{no_space}'")
+        
+        # Check for missing hyphens in certain cases
+        if "-" not in word and len(word) > 15:
+            # Very long compounds might benefit from hyphens for readability
+            split_result = self.split(word)
+            if split_result.is_compound and len(split_result.parts) > 3:
+                suggested = "-".join(split_result.parts)
+                issues.append(f"Läsbarhet: Mycket långt sammansättning '{word}' kan skrivas '{suggested}' för bättre läsbarhet")
+        
+        return issues
 
     def is_valid_compound(self, word: str) -> bool:
         """Check if a word is a valid compound."""

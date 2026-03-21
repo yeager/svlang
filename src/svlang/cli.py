@@ -303,10 +303,243 @@ def _cmd_lookup(args):
         }, as_json=True)
     elif not args.quiet:
         if result.found:
-            print(f"  {result.word} — {', '.join(result.translations)}")
+            print(f"  {result.word} — {', '.join(r.translations)}")
         else:
             print(_("  «{word}» not found in dictionary").format(word=args.word))
     return 0 if result.found else 1
+
+
+def _cmd_check(args):
+    """Comprehensive text analysis."""
+    from svlang.checkers.frequency import SwedishFrequency
+    from svlang.checkers.naturalness import SwedishNaturalness
+    from svlang.checkers.compound import CompoundSplitter
+    from svlang.checkers.svengelska import SvengelskaChecker
+    from svlang.checkers.skrivregler import SkrivreglerChecker
+
+    if args.text:
+        text = " ".join(args.text)
+    elif args.file:
+        path = Path(args.file)
+        if not path.exists():
+            if args.json:
+                _output({"error": _("File not found: {path}").format(path=path)}, as_json=True)
+            else:
+                print(_("File not found: {path}").format(path=path), file=sys.stderr)
+            return 2
+        text = path.read_text(encoding="utf-8")
+    else:
+        if args.json:
+            _output({"error": _("Specify --text or --file")}, as_json=True)
+        else:
+            print(_("Specify --text or --file"), file=sys.stderr)
+        return 2
+
+    # Run all checks
+    freq_analyzer = SwedishFrequency()
+    naturalness_analyzer = SwedishNaturalness()
+    svengelska_checker = SvengelskaChecker()
+    skrivregler_checker = SkrivreglerChecker()
+
+    # Frequency analysis
+    rare_words = freq_analyzer.analyze_text(text, threshold=args.frequency_threshold)
+    
+    # Naturalness analysis
+    naturalness = naturalness_analyzer.analyze(text)
+    
+    # Anglicisms
+    anglicisms = svengelska_checker.check(text)
+    
+    # Writing rules
+    writing_issues = skrivregler_checker.check(text)
+
+    if args.json:
+        _output({
+            "file": getattr(args, 'file', None),
+            "naturalness_score": naturalness.score,
+            "rare_words": [
+                {"word": w.word, "score": w.frequency_score, "rank": w.rank}
+                for w in rare_words
+            ],
+            "naturalness_issues": [
+                {"category": i.category, "description": i.description, "severity": i.severity}
+                for i in naturalness.issues
+            ],
+            "anglicisms": [{"word": a.word, "suggestion": a.suggestion} for a in anglicisms],
+            "writing_issues": [
+                {"rule": i.rule, "word": i.word, "suggestion": i.suggestion, "line": i.line}
+                for i in writing_issues
+            ],
+            "statistics": {
+                "sentence_count": naturalness.sentence_count,
+                "avg_sentence_length": naturalness.avg_sentence_length,
+                "passive_ratio": naturalness.passive_ratio,
+                "rare_word_count": len(rare_words),
+                "anglicism_count": len(anglicisms),
+                "writing_issue_count": len(writing_issues)
+            }
+        }, as_json=True)
+    elif not args.quiet:
+        source = Path(args.file).name if args.file else "text"
+        print(f"📊 Analyserar {source}...")
+        print()
+        
+        # Naturalness score
+        print(f"🎯 Naturlighetspoäng: {naturalness.score:.1f}/10")
+        if naturalness.score < 7:
+            print("   ⚠️ Låg poäng kan tyda på maskinöversättning eller onaturlig svenska")
+        print()
+        
+        # Statistics
+        print(f"📈 Statistik:")
+        print(f"   Meningar: {naturalness.sentence_count}")
+        print(f"   Genomsnittlig meningslängd: {naturalness.avg_sentence_length:.1f} ord")
+        if naturalness.avg_sentence_length > 25:
+            print("   ⚠️ Långa meningar kan påverka läsbarheten")
+        print()
+        
+        # Rare words
+        if rare_words:
+            print(f"🔍 Ovanliga ord ({len(rare_words)}):")
+            for word in rare_words[:10]:  # Show top 10
+                level = freq_analyzer.get_word_rarity_level(word.frequency_score)
+                rank_str = f" (#{word.rank})" if word.rank else " (okänt)"
+                print(f"   «{word.word}»{rank_str} — {level}")
+            if len(rare_words) > 10:
+                print(f"   ... och {len(rare_words) - 10} till")
+            print()
+        
+        # Naturalness issues
+        if naturalness.issues:
+            print(f"⚠️ Naturlighetsproblem ({len(naturalness.issues)}):")
+            for issue in naturalness.issues:
+                print(f"   {issue.category}: {issue.description}")
+                if issue.context:
+                    print(f"     Kontext: {issue.context}")
+            print()
+        
+        # Anglicisms  
+        if anglicisms:
+            print(f"🇬🇧 Anglicismer ({len(anglicisms)}):")
+            for a in anglicisms:
+                print(f"   «{a.word}» → {a.suggestion}")
+            print()
+        
+        # Writing issues
+        if writing_issues:
+            print(f"✏️ Skrivregelfel ({len(writing_issues)}):")
+            by_rule = {}
+            for i in writing_issues:
+                by_rule.setdefault(i.rule, []).append(i)
+            for rule, items in sorted(by_rule.items()):
+                print(f"   {rule}: {len(items)} fel")
+                for i in items[:3]:  # Show first 3 per rule
+                    print(f"     rad {i.line}: «{i.word}» → {i.suggestion}")
+                if len(items) > 3:
+                    print(f"     ... och {len(items) - 3} till")
+            print()
+
+        # Summary
+        total_issues = len(rare_words) + len(naturalness.issues) + len(anglicisms) + len(writing_issues)
+        if total_issues == 0:
+            print("✅ Inga problem hittades!")
+        else:
+            print(f"📋 Sammanfattning: {total_issues} problem hittade")
+
+    # Return non-zero if significant issues found
+    major_issues = len([i for i in naturalness.issues if i.severity > 0.5]) + len(anglicisms) + len(writing_issues)
+    return 1 if major_issues > 0 else 0
+
+
+def _cmd_freq(args):
+    """Word frequency lookup."""
+    from svlang.checkers.frequency import SwedishFrequency
+    
+    freq = SwedishFrequency()
+    result = freq.get_frequency_score(args.word)
+    
+    if args.json:
+        _output({
+            "word": result.word,
+            "found": result.found,
+            "frequency_score": result.frequency_score,
+            "rank": result.rank,
+            "level": freq.get_word_rarity_level(result.frequency_score)
+        }, as_json=True)
+    elif not args.quiet:
+        level = freq.get_word_rarity_level(result.frequency_score)
+        if result.found:
+            print(f"📊 «{result.word}»")
+            print(f"   Rang: #{result.rank} av {freq.total_words}")
+            print(f"   Frekvenspoäng: {result.frequency_score:.3f}")
+            print(f"   Nivå: {level}")
+        else:
+            print(f"📊 «{result.word}»")
+            print(f"   Status: Okänt ord")
+            print(f"   Nivå: {level}")
+    
+    return 0
+
+
+def _cmd_natural(args):
+    """Naturalness analysis."""
+    from svlang.checkers.naturalness import SwedishNaturalness
+    
+    if args.text:
+        text = " ".join(args.text)
+    else:
+        if args.json:
+            _output({"error": _("Specify --text")}, as_json=True)
+        else:
+            print(_("Specify --text"), file=sys.stderr)
+        return 2
+
+    analyzer = SwedishNaturalness()
+    result = analyzer.analyze(text)
+    
+    if args.json:
+        _output({
+            "text": text,
+            "score": result.score,
+            "sentence_count": result.sentence_count,
+            "avg_sentence_length": result.avg_sentence_length,
+            "passive_ratio": result.passive_ratio,
+            "anglicism_count": result.anglicism_count,
+            "issues": [
+                {"category": i.category, "description": i.description, "severity": i.severity, "context": i.context}
+                for i in result.issues
+            ]
+        }, as_json=True)
+    elif not args.quiet:
+        print(f"🎯 Naturlighetspoäng: {result.score:.1f}/10")
+        
+        # Interpretation
+        if result.score >= 8.5:
+            print("   ✅ Mycket naturlig svenska")
+        elif result.score >= 7.0:
+            print("   ✓ Naturlig svenska")
+        elif result.score >= 5.0:
+            print("   ⚠️ Något onaturlig svenska")
+        else:
+            print("   ❌ Onaturlig svenska - misstänkt maskinöversättning")
+        
+        print()
+        print(f"📊 Statistik:")
+        print(f"   Meningar: {result.sentence_count}")
+        print(f"   Genomsnittlig meningslängd: {result.avg_sentence_length:.1f} ord")
+        print(f"   Passiv ratio: {result.passive_ratio:.1%}")
+        print(f"   Anglicismer: {result.anglicism_count}")
+        
+        if result.issues:
+            print()
+            print(f"⚠️ Problem ({len(result.issues)}):")
+            for issue in result.issues:
+                severity_icon = "🚨" if issue.severity > 0.7 else "⚠️" if issue.severity > 0.3 else "ℹ️"
+                print(f"   {severity_icon} {issue.description}")
+                if issue.context:
+                    print(f"     Kontext: {issue.context}")
+    
+    return 0
 
 
 def main(argv: list[str] | None = None):
@@ -361,6 +594,23 @@ def main(argv: list[str] | None = None):
     p_look.add_argument("--search", "-s", action="store_true", help=_("Search prefix"))
     p_look.add_argument("--limit", "-n", type=int, default=20, help=_("Max results"))
     p_look.set_defaults(func=_cmd_lookup)
+
+    # check (comprehensive analysis)
+    p_check = sub.add_parser("check", help=_("Comprehensive text analysis"))
+    p_check.add_argument("--text", "-t", nargs="+", help=_("Text to analyze"))
+    p_check.add_argument("--file", "-f", help=_("File to analyze"))
+    p_check.add_argument("--frequency-threshold", type=float, default=0.7, help=_("Threshold for flagging rare words (0.0-1.0)"))
+    p_check.set_defaults(func=_cmd_check)
+
+    # freq (frequency analysis)
+    p_freq = sub.add_parser("freq", help=_("Word frequency lookup"))
+    p_freq.add_argument("word", help=_("Word to analyze"))
+    p_freq.set_defaults(func=_cmd_freq)
+
+    # natural (naturalness analysis)
+    p_natural = sub.add_parser("natural", help=_("Text naturalness analysis"))
+    p_natural.add_argument("--text", "-t", nargs="+", help=_("Text to analyze"))
+    p_natural.set_defaults(func=_cmd_natural)
 
     args = parser.parse_args(argv)
     if args.about:
