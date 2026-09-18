@@ -53,17 +53,17 @@ pip install -e .
 
 Check Swedish text:
 ```bash
-svlang check text.txt
+svlang check --file text.txt
 ```
 
-Analyze Swedish grammar:
+Check Swedish writing rules:
 ```bash
-svlang grammar --input file.txt
+svlang skrivregler --file file.txt
 ```
 
-Spell check Swedish content:
+Check text naturalness (heuristics, not a complete grammar checker):
 ```bash
-svlang spell --file content.txt
+svlang natural --text "Det här är en svensk mening."
 ```
 
 Show help and all options:

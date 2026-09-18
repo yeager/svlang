@@ -1,0 +1,35 @@
+import json
+from svlang.cli import main
+
+
+def test_lookup_plain_output(capsys):
+    assert main(['lookup', 'hund']) == 0
+    output = capsys.readouterr().out
+    assert 'hund' in output and 'dog' in output
+
+
+def test_lookup_json_and_missing_word(capsys):
+    assert main(['--json', 'lookup', 'hund']) == 0
+    assert json.loads(capsys.readouterr().out)['found'] is True
+    assert main(['lookup', 'osannolikttestordxyz']) == 1
+    assert 'osannolikttestordxyz' in capsys.readouterr().out
+
+
+def test_about_license_matches_distribution(capsys):
+    assert main(['--about']) == 0
+    output = capsys.readouterr().out
+    assert 'MIT' in output and 'GPL' not in output
+
+
+def test_consistency_missing_input_is_an_error(tmp_path, capsys):
+    assert main(['consistency', str(tmp_path / 'missing.po')]) == 2
+    result = capsys.readouterr()
+    assert 'consistent' not in result.out
+    assert 'missing.po' in result.err
+
+
+def test_consistency_json_parse_error(tmp_path, capsys):
+    path = tmp_path / 'broken.ts'
+    path.write_text('<TS><context>')
+    assert main(['--json', 'consistency', str(path)]) == 2
+    assert json.loads(capsys.readouterr().out)['errors']

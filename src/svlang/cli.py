@@ -82,34 +82,49 @@ def _cmd_consistency(args):
     """Check translation consistency."""
     from svlang.checkers.consistency import ConsistencyChecker
     checker = ConsistencyChecker(case_sensitive=not args.ignore_case)
+    from xml.etree.ElementTree import ParseError
+    errors = []
 
     for path in args.files:
         p = Path(path)
         if not p.exists():
-            print(_("File not found: {path}").format(path=p), file=sys.stderr)
+            errors.append(_("File not found: {path}").format(path=p))
             continue
-        if p.suffix == ".po":
-            checker.add_po_file(str(p))
-        elif p.suffix == ".ts":
-            checker.add_ts_file(str(p))
-        else:
-            print(_("Unsupported format: {suffix} (use .po or .ts)").format(suffix=p.suffix), file=sys.stderr)
+        try:
+            if p.suffix == ".po":
+                checker.add_po_file(str(p))
+            elif p.suffix == ".ts":
+                checker.add_ts_file(str(p))
+            else:
+                errors.append(_("Unsupported format: {suffix} (use .po or .ts)").format(suffix=p.suffix))
+        except (OSError, UnicodeError, ParseError) as exc:
+            errors.append(f"{p}: {exc}")
 
     issues = checker.check()
 
     if args.json:
         _output({
-            "issues": [{"source": i.source, "translations": i.translations} for i in issues],
+            "issues": [{"source": i.source, "translations": i.translations,
+                        "context": i.context, "plural_source": i.plural_source,
+                        "plural_index": i.plural_index,
+                        "disambiguation": i.disambiguation} for i in issues],
             "count": len(issues),
+            "errors": errors,
         }, as_json=True)
     elif not args.quiet:
-        if not issues:
+        if not issues and not errors:
             print(_("✅ All translations are consistent."))
-        else:
+        elif issues:
             print(_("⚠️  {count} inconsistency(ies) found:").format(count=len(issues)))
             print()
             for issue in issues:
                 print(_("  Source: «{source}»").format(source=issue.source))
+                if issue.context:
+                    print(f"    context: {issue.context}")
+                if issue.disambiguation:
+                    print(f"    comment: {issue.disambiguation}")
+                if issue.plural_index is not None:
+                    print(f"    plural[{issue.plural_index}]: {issue.plural_source or issue.source}")
                 for trans, locs in issue.translations.items():
                     loc_str = ", ".join(locs[:3])
                     if len(locs) > 3:
@@ -117,6 +132,11 @@ def _cmd_consistency(args):
                     print(f"    → «{trans}»  ({loc_str})")
                 print()
 
+    if errors:
+        if not args.json:
+            for error in errors:
+                print(error, file=sys.stderr)
+        return 2
     return 1 if issues else 0
 
 
@@ -303,7 +323,7 @@ def _cmd_lookup(args):
         }, as_json=True)
     elif not args.quiet:
         if result.found:
-            print(f"  {result.word} — {', '.join(r.translations)}")
+            print(f"  {result.word} — {', '.join(result.translations)}")
         else:
             print(_("  «{word}» not found in dictionary").format(word=args.word))
     return 0 if result.found else 1
@@ -618,7 +638,7 @@ def main(argv: list[str] | None = None):
         print(_("Swedish NLP toolkit for translators"))
         print()
         print(f"{_('Author')}:     Daniel Nylander <daniel@danielnylander.se>")
-        print(f"{_('License')}:    GPL-3.0-or-later")
+        print(f"{_('License')}:    MIT")
         print(f"{_('Website')}:    https://github.com/yeager/svlang")
         print(f"{_('PyPI')}:       https://pypi.org/project/svlang/")
         print(f"{_('Translate')}:  https://app.transifex.com/danielnylander/svlang/")

@@ -149,8 +149,7 @@ class SvengelskaChecker:
     Usage:
         checker = SvengelskaChecker()
         hits = checker.check("Vi behöver implementera en ny approach")
-        # → [Anglicism("implementera", "genomföra, införa", ...),
-        #    Anglicism("approach", "tillvägagångssätt, metod", ...)]
+        # → [Anglicism("approach", "tillvägagångssätt, metod", ...)]
     """
 
     # Swedish inflection suffixes to strip when matching
