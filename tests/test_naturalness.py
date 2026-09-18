@@ -69,6 +69,13 @@ def test_empty_text():
     assert len(result.issues) == 0
 
 
+def test_established_technical_swedish_is_not_an_anglicism():
+    analyzer = SwedishNaturalness()
+    result = analyzer.analyze('Allokera minne. Uppdatera metadata. Implementera funktionen.')
+    assert result.anglicism_count == 0
+    assert not any(i.category == 'anglicism' for i in result.issues)
+
+
 def test_short_natural_text():
     """Test analysis of short, natural text."""
     analyzer = SwedishNaturalness()

@@ -149,15 +149,18 @@ class SvengelskaChecker:
     Usage:
         checker = SvengelskaChecker()
         hits = checker.check("Vi behöver implementera en ny approach")
-        # → [Anglicism("implementera", "genomföra, införa", ...),
-        #    Anglicism("approach", "tillvägagångssätt, metod", ...)]
+        # → [Anglicism("approach", "tillvägagångssätt, metod", ...)]
     """
 
     # Swedish inflection suffixes to strip when matching
     # Order matters: longest first
     _SWEDISH_FALSE_POSITIVES = {
         # Native Swedish forms of "blockera" must not match English "blocker".
-        "blockera", "blockerad", "blockerade", "blockeras", "blockering", "blockeringar",
+        "blockera", "blockerar", "blockeras", "blockerade", "blockerades",
+        "blockerat", "blockerats", "blockerad", "blockerande",
+        "blockering", "blockeringen", "blockeringar", "blockeringarna",
+        # HTML tag nouns must not match the verb "tagga".
+        "tagg", "taggen", "taggens", "taggar", "taggars", "taggarna", "taggarnas",
         # Native noun forms of "adress" must not match anglicism "adressera".
         "adress", "adressen", "adresser", "adresserna", "adressers",
     }
@@ -194,10 +197,11 @@ class SvengelskaChecker:
     def _stem_match(self, word: str) -> str | None:
         """Try to match a word to a known anglicism by stripping suffixes."""
         low = word.lower()
-        if low in self._SWEDISH_FALSE_POSITIVES:
-            return None
+        # Explicit extra_terms take priority over exclusions of native forms.
         if low in self._term_set:
             return low
+        if low in self._SWEDISH_FALSE_POSITIVES:
+            return None
         for suffix in self._SUFFIXES:
             if low.endswith(suffix) and len(low) > len(suffix) + 2:
                 stem = low[:-len(suffix)]
@@ -213,9 +217,16 @@ class SvengelskaChecker:
         """Find anglicisms in text."""
         hits = []
         seen_positions: set[int] = set()
+        # Flags are literal program syntax, including words such as backup and
+        # feature. Keep them intact while still checking the surrounding prose.
+        options = [m.span() for m in re.finditer(r'(?<![\w-])--?[A-Za-z][A-Za-z0-9_-]*', text)]
+        def inside_option(start, end):
+            return any(a <= start and end <= b for a, b in options)
 
         # First pass: exact pattern matches
         for m in self._pattern.finditer(text):
+            if inside_option(m.start(), m.end()):
+                continue
             word = m.group(0)
             key = word.lower()
             suggestion = self._terms.get(key, "")
@@ -233,7 +244,7 @@ class SvengelskaChecker:
 
         # Second pass: check inflected forms (word boundaries)
         for m in re.finditer(r'\b(\w+)\b', text):
-            if m.start() in seen_positions:
+            if m.start() in seen_positions or inside_option(m.start(), m.end()):
                 continue
             stem = self._stem_match(m.group(0))
             if stem:

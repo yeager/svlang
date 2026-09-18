@@ -53,6 +53,11 @@ def test_inflected_forms():
     hits = c.check("Vi reviewerade lösningen")
     assert any("review" in h.word.lower() for h in hits)
 
+    # Swedish verb conjugation
+    hits = c.check("Vi monitorerade lösningen")
+    assert any("monitorer" in h.word.lower() for h in hits)
+    assert c.check("Vi implementerade lösningen") == []
+
 
 def test_empty_text():
     c = SvengelskaChecker()
@@ -69,3 +74,15 @@ def test_swedish_blockera_forms_are_not_anglicisms():
     checker = SvengelskaChecker()
     assert checker.check("Trafiken är blockerad och blockeringen kan tas bort.") == []
     assert checker.check("Ange IP-adresser och serveradresser.") == []
+
+def test_tp_technical_forms_are_not_english_stems():
+    c = SvengelskaChecker()
+    assert c.check('Processen blockerar. Icke-blockerande I/O. HTML-taggar och taggen.') == []
+    assert c.check('Detta är en blocker')[0].suggestion == 'hinder'
+    assert SvengelskaChecker(extra_terms={'taggar': 'egna etiketter'}).check('taggar')
+
+
+def test_command_flags_are_literal_but_prose_is_checked():
+    c = SvengelskaChecker()
+    hits = c.check('Använd --backup, --enable-x86-feature och --ignore-backups för backup.')
+    assert [h.word for h in hits] == ['backup']

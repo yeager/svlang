@@ -44,10 +44,8 @@ class SwedishNaturalness:
         # Common anglicisms that have Swedish alternatives
         self.anglicisms = {
             "feedback": "återkoppling",
-            "implementera": "genomföra",
             "fokusera": "fokusera på/koncentrera sig på",
             "involvera": "involvera/inkludera",
-            "allokera": "tilldela",
             "prioritera": "prioritera/sätta i första hand",
             "optimera": "förbättra/optimera",
             "integrerad": "integrerad/sammanbyggd",
@@ -55,7 +53,6 @@ class SwedishNaturalness:
             "identifiera": "identifiera/fastställa",
             "attackera": "angripa",
             "supporta": "stödja",
-            "uppdatera": "uppdatera/förnya",
             "defaultvärde": "standardvärde",
             "performance": "prestanda",
             "feature": "funktion/egenskap",

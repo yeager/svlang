@@ -53,17 +53,17 @@ pip install -e .
 
 Check Swedish text:
 ```bash
-svlang check text.txt
+svlang check --file text.txt
 ```
 
-Analyze Swedish grammar:
+Check Swedish writing rules:
 ```bash
-svlang grammar --input file.txt
+svlang skrivregler --file file.txt
 ```
 
-Spell check Swedish content:
+Check text naturalness (heuristics, not a complete grammar checker):
 ```bash
-svlang spell --file content.txt
+svlang natural --text "Det här är en svensk mening."
 ```
 
 Show help and all options:
@@ -71,6 +71,28 @@ Show help and all options:
 svlang --help
 man svlang
 ```
+
+## Frequency and spelling coverage
+
+`check` consults both bundled Swedish lexicons before flagging a word missing
+from the estimated frequency list. If `hunspell` and its `sv_SE` dictionary are
+installed, inflected forms are checked there too. Without them, the bundled
+lexicons still work, but morphological coverage is narrower.
+
+The frequency list is an estimate assembled from common words and a wordlist,
+not measured corpus frequencies. `freq` reports presence in that list;
+`found: false` does **not** mean a word is misspelled. Frequency suggestions are
+advisory and do not alone make `check` exit with status 1.
+
+## Development
+
+```bash
+python -m pip install -e '.[dev]'
+python -m pytest
+```
+
+Tests simulate Hunspell availability and failure; system dictionaries are not
+required to run the suite.
 
 ## Translation
 
