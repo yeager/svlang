@@ -32,7 +32,7 @@ jobs:
           cp -r src/svlang ${ROOT}/usr/share/${PKG}/
           cat > ${ROOT}/usr/bin/${PKG} << 'WRAPPER'
           #!/bin/bash
-          exec python3 -c "import sys; sys.path.insert(0,'/usr/share/svlang'); from svlang.cli import main; main()" "$@"
+          exec python3 -c "import sys; sys.path.insert(0,'/usr/share/svlang'); from svlang.cli import main; sys.exit(main())" "$@"
           WRAPPER
           chmod 755 ${ROOT}/usr/bin/${PKG}
 
@@ -64,7 +64,7 @@ jobs:
           Version: ${VER}-1
           Architecture: all
           Maintainer: Daniel Nylander <daniel@danielnylander.se>
-          Depends: python3 (>= 3.9)
+          Depends: python3 (>= 3.10)
           Section: text
           Priority: optional
           Homepage: https://github.com/yeager/${PKG}

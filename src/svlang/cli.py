@@ -423,7 +423,7 @@ def _cmd_check(args):
             print(f"🔍 Ovanliga ord ({len(rare_words)}):")
             for word in rare_words[:10]:  # Show top 10
                 level = freq_analyzer.get_word_rarity_level(word.frequency_score)
-                rank_str = f" (#{word.rank})" if word.rank else " (okänt)"
+                rank_str = f" (#{word.rank})" if word.rank else " (saknas i frekvenslistan)"
                 print(f"   «{word.word}»{rank_str} — {level}")
             if len(rare_words) > 10:
                 print(f"   ... och {len(rare_words) - 10} till")
@@ -495,7 +495,7 @@ def _cmd_freq(args):
             print(f"   Nivå: {level}")
         else:
             print(f"📊 «{result.word}»")
-            print(f"   Status: Okänt ord")
+            print("   Status: Saknas i frekvenslistan (ingen stavningsbedömning)")
             print(f"   Nivå: {level}")
     
     return 0

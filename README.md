@@ -72,6 +72,28 @@ svlang --help
 man svlang
 ```
 
+## Frequency and spelling coverage
+
+`check` consults both bundled Swedish lexicons before flagging a word missing
+from the estimated frequency list. If `hunspell` and its `sv_SE` dictionary are
+installed, inflected forms are checked there too. Without them, the bundled
+lexicons still work, but morphological coverage is narrower.
+
+The frequency list is an estimate assembled from common words and a wordlist,
+not measured corpus frequencies. `freq` reports presence in that list;
+`found: false` does **not** mean a word is misspelled. Frequency suggestions are
+advisory and do not alone make `check` exit with status 1.
+
+## Development
+
+```bash
+python -m pip install -e '.[dev]'
+python -m pytest
+```
+
+Tests simulate Hunspell availability and failure; system dictionaries are not
+required to run the suite.
+
 ## Translation
 
 Translations are managed on Transifex: https://app.transifex.com/danielnylander/svlang/

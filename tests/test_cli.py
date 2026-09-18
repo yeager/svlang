@@ -33,3 +33,16 @@ def test_consistency_json_parse_error(tmp_path, capsys):
     path.write_text('<TS><context>')
     assert main(['--json', 'consistency', str(path)]) == 2
     assert json.loads(capsys.readouterr().out)['errors']
+
+
+def test_check_known_words_without_hunspell(monkeypatch, capsys):
+    from svlang.checkers import frequency
+    monkeypatch.setattr(frequency.shutil, "which", lambda _: None)
+    assert main(["--json", "check", "--text", "Välkommen abstinensprocess qzxqzxqzx"]) == 0
+    data = json.loads(capsys.readouterr().out)
+    assert [r["word"] for r in data["rare_words"]] == ["qzxqzxqzx"]
+
+
+def test_frequency_miss_is_not_a_spelling_verdict(capsys):
+    assert main(["freq", "välkommen"]) == 0
+    assert "Status: Okänt ord" not in capsys.readouterr().out
