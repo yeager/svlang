@@ -329,6 +329,10 @@ class SkrivreglerChecker:
                 if any(p.isupper() and len(p) > 1 for p in parts):
                     continue
                 key = found.lower()
+                # In "den N:e posten" the e belongs to an ordinal suffix,
+                # not to a split spelling of e-post.
+                if key.startswith('e ') and re.search(r'\b(?:\d+|[A-ZÅÄÖ]):$', text[:m.start()]):
+                    continue
                 correction = _SARSKRIVNINGAR.get(key, "")
                 if correction:
                     issues.append(SkrivregelIssue(

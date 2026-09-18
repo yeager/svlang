@@ -63,3 +63,16 @@ def test_empty_text():
 def test_term_count():
     c = SvengelskaChecker()
     assert c.term_count > 50
+
+
+def test_tp_technical_forms_are_not_english_stems():
+    c = SvengelskaChecker()
+    assert c.check('Processen blockerar. Icke-blockerande I/O. HTML-taggar och taggen.') == []
+    assert c.check('Detta är en blocker')[0].suggestion == 'hinder'
+    assert SvengelskaChecker(extra_terms={'taggar': 'egna etiketter'}).check('taggar')
+
+
+def test_command_flags_are_literal_but_prose_is_checked():
+    c = SvengelskaChecker()
+    hits = c.check('Använd --backup, --enable-x86-feature och --ignore-backups för backup.')
+    assert [h.word for h in hits] == ['backup']

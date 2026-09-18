@@ -188,6 +188,16 @@ class SvengelskaChecker:
         low = word.lower()
         if low in self._term_set:
             return low
+        # These Swedish forms otherwise collapse to the English noun "blocker"
+        # or to the verb "tagga". Without POS/context evidence they are not
+        # reliable anglicism candidates. Explicit extra_terms still take priority.
+        if low in {
+            'blockera', 'blockerar', 'blockeras', 'blockerade', 'blockerades',
+            'blockerat', 'blockerats', 'blockerad', 'blockerande',
+            'blockering', 'blockeringen', 'blockeringar', 'blockeringarna',
+            'tagg', 'taggen', 'taggens', 'taggar', 'taggars', 'taggarna', 'taggarnas',
+        }:
+            return None
         for suffix in self._SUFFIXES:
             if low.endswith(suffix) and len(low) > len(suffix) + 2:
                 stem = low[:-len(suffix)]
@@ -202,9 +212,16 @@ class SvengelskaChecker:
         """Find anglicisms in text."""
         hits = []
         seen_positions: set[int] = set()
+        # Flags are literal program syntax, including words such as backup and
+        # feature. Keep them intact while still checking the surrounding prose.
+        options = [m.span() for m in re.finditer(r'(?<![\w-])--?[A-Za-z][A-Za-z0-9_-]*', text)]
+        def inside_option(start, end):
+            return any(a <= start and end <= b for a, b in options)
 
         # First pass: exact pattern matches
         for m in self._pattern.finditer(text):
+            if inside_option(m.start(), m.end()):
+                continue
             word = m.group(0)
             key = word.lower()
             suggestion = self._terms.get(key, "")
@@ -222,7 +239,7 @@ class SvengelskaChecker:
 
         # Second pass: check inflected forms (word boundaries)
         for m in re.finditer(r'\b(\w+)\b', text):
-            if m.start() in seen_positions:
+            if m.start() in seen_positions or inside_option(m.start(), m.end()):
                 continue
             stem = self._stem_match(m.group(0))
             if stem:
