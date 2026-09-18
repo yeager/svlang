@@ -62,3 +62,9 @@ def test_empty_text():
 def test_term_count():
     c = SvengelskaChecker()
     assert c.term_count > 50
+
+
+def test_swedish_blockera_forms_are_not_anglicisms():
+    """Native Swedish blockera forms must not match English blocker."""
+    checker = SvengelskaChecker()
+    assert checker.check("Trafiken är blockerad och blockeringen kan tas bort.") == []

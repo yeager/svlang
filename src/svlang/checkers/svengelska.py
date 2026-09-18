@@ -155,6 +155,11 @@ class SvengelskaChecker:
 
     # Swedish inflection suffixes to strip when matching
     # Order matters: longest first
+    _SWEDISH_FALSE_POSITIVES = {
+        # Native Swedish forms of "blockera" must not match English "blocker".
+        "blockera", "blockerad", "blockerade", "blockeras", "blockering", "blockeringar",
+    }
+
     _SUFFIXES = (
         "erade", "erades",       # -era verbs past: implementerade
         "ering",                 # noun from -era verb: implementering
@@ -187,6 +192,8 @@ class SvengelskaChecker:
     def _stem_match(self, word: str) -> str | None:
         """Try to match a word to a known anglicism by stripping suffixes."""
         low = word.lower()
+        if low in self._SWEDISH_FALSE_POSITIVES:
+            return None
         if low in self._term_set:
             return low
         for suffix in self._SUFFIXES:
