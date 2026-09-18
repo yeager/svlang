@@ -7,7 +7,7 @@ def test_detects_anglicism():
     c = SvengelskaChecker()
     hits = c.check("Vi måste implementera en ny feature")
     words = {h.word.lower() for h in hits}
-    assert "implementera" in words
+    assert "implementera" not in words  # established Swedish technical term
     assert "feature" in words
 
 
@@ -49,9 +49,9 @@ def test_inflected_forms():
     # Definite
     hits = c.check("Feedbacken var bra")
     assert any("feedback" in h.word.lower() for h in hits)
-    # Swedish verb conjugation
-    hits = c.check("Vi implementerade lösningen")
-    assert any("implementer" in h.word.lower() for h in hits)
+    # Swedish inflection of a non-established anglicism
+    hits = c.check("Vi reviewade lösningen")
+    assert any("review" in h.word.lower() for h in hits)
 
 
 def test_empty_text():
