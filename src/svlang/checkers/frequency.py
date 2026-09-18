@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import re
+import shutil
+import subprocess
 from pathlib import Path
 from typing import NamedTuple
 
@@ -20,6 +22,20 @@ class SwedishFrequency:
     
     def __init__(self):
         self._load_frequency_data()
+        self._load_lexicon()
+
+    def _load_lexicon(self):
+        """Load the bundled lexicon to distinguish valid words from unknown ones."""
+        data_dir = Path(__file__).parent.parent / "data"
+        lexicon_path = data_dir / "sv_wordlist.txt"
+        self.lexicon = set()
+        if lexicon_path.exists():
+            with lexicon_path.open(encoding="utf-8") as f:
+                self.lexicon = {
+                    line.strip().lower()
+                    for line in f
+                    if line.strip() and not line.startswith("#")
+                }
     
     def _load_frequency_data(self):
         """Load frequency data from built-in word list."""
@@ -127,34 +143,42 @@ class SwedishFrequency:
             # Word not found = very rare/unknown
             return FrequencyResult(word, 1.0, False, None)
     
-    def analyze_text(self, text: str, threshold: float = 0.7) -> list[FrequencyResult]:
-        """Analyze text for rare/archaic words.
-        
-        Args:
-            text: Text to analyze
-            threshold: Score threshold for flagging (0.7 = fairly uncommon)
-            
-        Returns:
-            List of FrequencyResult for words above threshold
+    def _hunspell_known_words(self, words: set[str]) -> set[str]:
+        """Return words accepted by an installed Swedish Hunspell dictionary.
+
+        The compact frequency list measures commonness, while Hunspell provides
+        morphological coverage for valid inflections such as ``enheten``.
+        The optional lookup keeps this package usable where Hunspell is absent.
         """
-        # Simple tokenization
-        words = re.findall(r'\b\w+\b', text.lower())
-        
+        if not words or not shutil.which("hunspell"):
+            return set()
+        try:
+            result = subprocess.run(
+                ["hunspell", "-d", "sv_SE", "-l"],
+                input="\n".join(words) + "\n", text=True, capture_output=True,
+                check=False, timeout=10,
+            )
+        except (OSError, subprocess.SubprocessError):
+            return set()
+        misspelled = {line.strip().lower() for line in result.stdout.splitlines() if line.strip()}
+        return words - misspelled
+
+    def analyze_text(self, text: str, threshold: float = 0.7) -> list[FrequencyResult]:
+        """Analyze text for rare or unknown words.
+
+        Valid lexicon words and Hunspell-recognized inflections are excluded:
+        the bundled top-10k list measures frequency, not spelling correctness.
+        """
+        words = set(re.findall(r'\b\w+\b', text.lower()))
+        words = {word for word in words if len(word) >= 3}
+        known_words = self.lexicon | self._hunspell_known_words(words)
         flagged_words = []
-        seen = set()
-        
         for word in words:
-            if word in seen or len(word) < 3:  # Skip very short words and duplicates
-                continue
-            seen.add(word)
-            
             result = self.get_frequency_score(word)
-            if result.frequency_score >= threshold:
+            if result.frequency_score >= threshold and word not in known_words:
                 flagged_words.append(result)
-        
-        # Sort by frequency score (most unusual first)
         return sorted(flagged_words, key=lambda x: x.frequency_score, reverse=True)
-    
+
     def get_word_rarity_level(self, score: float) -> str:
         """Get human-readable rarity level."""
         if score < 0.1:

@@ -36,7 +36,7 @@ def test_frequency_text_analysis():
     freq = SwedishFrequency()
     
     # Text with mix of common and rare words
-    text = "och att det är helt vanliga ord men arkitektonisk är ovanligt"
+    text = "och att det är helt vanliga ord men zyx123nonsens är okänt"
     rare_words = freq.analyze_text(text, threshold=0.5)
     
     # Should find some rare words - check that function returns results
@@ -74,3 +74,15 @@ def test_frequency_edge_cases():
     result = freq.get_frequency_score("hej!")
     # Should clean and analyze "hej" 
     assert result.word == "hej!"
+
+def test_frequency_text_analysis_skips_valid_lexicon_words_outside_top_list():
+    """Known Swedish words outside the compact frequency list are not unknown."""
+    freq = SwedishFrequency()
+    assert "välkommen" in freq.lexicon
+    assert not any(item.word == "välkommen" for item in freq.analyze_text("välkommen", threshold=0.7))
+
+
+def test_frequency_text_analysis_skips_hunspell_inflections():
+    """Swedish inflections are valid even when the simple lexicon has lemmas."""
+    freq = SwedishFrequency()
+    assert not any(item.word == "enheten" for item in freq.analyze_text("enheten", threshold=0.7))
