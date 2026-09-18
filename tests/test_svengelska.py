@@ -68,3 +68,4 @@ def test_swedish_blockera_forms_are_not_anglicisms():
     """Native Swedish blockera forms must not match English blocker."""
     checker = SvengelskaChecker()
     assert checker.check("Trafiken är blockerad och blockeringen kan tas bort.") == []
+    assert checker.check("Ange IP-adresser och serveradresser.") == []

@@ -158,6 +158,8 @@ class SvengelskaChecker:
     _SWEDISH_FALSE_POSITIVES = {
         # Native Swedish forms of "blockera" must not match English "blocker".
         "blockera", "blockerad", "blockerade", "blockeras", "blockering", "blockeringar",
+        # Native noun forms of "adress" must not match anglicism "adressera".
+        "adress", "adressen", "adresser", "adresserna", "adressers",
     }
 
     _SUFFIXES = (
