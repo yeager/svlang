@@ -50,7 +50,7 @@ def test_inflected_forms():
     hits = c.check("Feedbacken var bra")
     assert any("feedback" in h.word.lower() for h in hits)
     # Swedish inflection of a non-established anglicism
-    hits = c.check("Vi reviewade lösningen")
+    hits = c.check("Vi reviewerade lösningen")
     assert any("review" in h.word.lower() for h in hits)
 
 

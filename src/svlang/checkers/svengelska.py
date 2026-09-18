@@ -201,9 +201,10 @@ class SvengelskaChecker:
                 stem = low[:-len(suffix)]
                 if stem in self._term_set:
                     return stem
-                # Try adding back common verb ending: implementer → implementera
-                if (stem + "a") in self._term_set:
-                    return stem + "a"
+                # Try restoring Swedish verb endings after inflection stripping.
+                for ending in ("era", "a"):
+                    if (stem + ending) in self._term_set:
+                        return stem + ending
         return None
 
     def check(self, text: str) -> list[Anglicism]:
