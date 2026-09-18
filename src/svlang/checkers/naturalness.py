@@ -181,7 +181,7 @@ class SwedishNaturalness:
             if not self._check_v2_rule(sentence):
                 issues.append(NaturalnessIssue(
                     category="word_order",
-                    description="Möjlig överträdelse av V2-regeln (verbet borde vara andrä satsdelen)",
+                    description="Möjlig överträdelse av V2-regeln (verbet borde vara andra satsdelen)",
                     severity=0.6,
                     context=sentence[:100] + "..." if len(sentence) > 100 else sentence
                 ))
