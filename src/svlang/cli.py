@@ -43,7 +43,10 @@ def _read_analysis_text(path: Path) -> str:
         if entry.msgstr:
             targets.append(entry.msgstr)
         targets.extend(value for value in entry.msgstr_plural.values() if value)
-    return "\n".join(targets)
+    # PO entries are independent UI strings.  An explicit sentence boundary
+    # prevents a run of labels without punctuation from being reported as one
+    # artificial, extremely long sentence by the naturalness checker.
+    return "\n.\n".join(targets)
 
 
 def _output(data, as_json=False, quiet=False):
