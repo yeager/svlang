@@ -86,6 +86,16 @@ uppmätta korpusfrekvenser. `freq` visar bara förekomst i den listan;
 `found: false` betyder inte att ordet är felstavat. Frekvensförslag är råd och
 gör inte ensamma att `check` avslutas med status 1.
 
+## Terminology sources
+
+When a check or a human reviewer needs to assess Swedish spelling, usage or
+specialized terminology, svlang's project guidance uses [SAOL, SO and
+SAOB](https://svenska.se/), [TEPA](https://termipankki.fi/tepa/sv/),
+[IATE](https://iate.europa.eu/home), [Rikstermbanken](https://www.rikstermbanken.se/)
+and [ISOF's guidance on fackspråk och terminologi](https://www.isof.se/svenska-spraket/facksprak-och-terminologi).
+They are consulted as reference sources; svlang does not scrape or redistribute
+their content.
+
 ## Development
 
 ```bash
