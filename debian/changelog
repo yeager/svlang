@@ -1,3 +1,9 @@
+svlang (0.2.2-1) unstable; urgency=medium
+
+  * Accept both iväg and i väg in Swedish writing-rule checks.
+
+ -- Daniel Nylander <daniel@danielnylander.se>  Sat, 19 Sep 2026 16:39:17 +0200
+
 svlang (0.2.0-1) unstable; urgency=medium
 
   * New upstream release.

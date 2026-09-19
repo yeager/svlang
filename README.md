@@ -1,6 +1,6 @@
 # svlang
 
-![Version](https://img.shields.io/badge/version-0.2.1-blue)
+![Version](https://img.shields.io/badge/version-0.2.2-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Python](https://img.shields.io/badge/python-3.10+-blue)
 
@@ -30,13 +30,15 @@ sudo dnf install svlang
 
 ### Debian/Ubuntu
 
-Den senaste DEB-filen kan installeras direkt medan den signerade APT-katalogen
-uppdateras:
+DEB-filen för version 0.2.2 finns i [GitHub-releasen](https://github.com/yeager/svlang/releases/tag/v0.2.2):
 
 ```bash
-curl -LO https://yeager.github.io/debian-repo/pool/main/s/svlang/svlang_0.2.0-2_all.deb
-sudo apt install ./svlang_0.2.0-2_all.deb
+curl -LO https://github.com/yeager/svlang/releases/download/v0.2.2/svlang_0.2.2-1_all.deb
+sudo apt install ./svlang_0.2.2-1_all.deb
 ```
+
+Releasen innehåller även en Python-wheel, ett källarkiv och `SHA256SUMS`.
+APT/RPM-kataloger och PyPI kan fortfarande innehålla en äldre version.
 
 ### pip
 ```bash
@@ -117,7 +119,7 @@ Contributions welcome!
 
 ## Changelog
 
-- **Unreleased**: Accept both `iväg` and `i väg` in writing-rule checks, following Svensk ordbok.
+- **0.2.2**: Accept both `iväg` and `i väg` in writing-rule checks, following Svensk ordbok.
 - **0.2.1**: Document Computer Swedens IT-ord as the first terminology source for IT terms
 - **0.2.0**: Latest stable release with enhanced Swedish language support
 - **0.1.x**: Initial development and core NLP functionality
