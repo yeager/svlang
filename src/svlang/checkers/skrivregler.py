@@ -215,7 +215,7 @@ _STAVFEL: dict[str, str] = {
     # Common everyday typos
     # "idag/igår/imorgon" — båda former accepteras (SAOL), skippar
     "isåfall": "i så fall",
-    "iväg": "i väg",
+    # "iväg/i väg" are both accepted spellings (Svensk ordbok).
     # "ifrån" removed — valid Swedish (därifrån, härifrån, etc.)
     "tillochmed": "till och med",
     "vokal": None,  # OK, many meanings

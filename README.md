@@ -117,6 +117,7 @@ Contributions welcome!
 
 ## Changelog
 
+- **Unreleased**: Accept both `iväg` and `i väg` in writing-rule checks, following Svensk ordbok.
 - **0.2.1**: Document Computer Swedens IT-ord as the first terminology source for IT terms
 - **0.2.0**: Latest stable release with enhanced Swedish language support
 - **0.1.x**: Initial development and core NLP functionality
