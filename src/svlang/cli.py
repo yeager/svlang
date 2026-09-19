@@ -21,6 +21,31 @@ except AttributeError:
 _ = gettext.gettext
 
 
+def _read_analysis_text(path: Path) -> str:
+    """Read user-facing target text from a localization file.
+
+    A PO file contains source strings, translator comments and a metadata
+    header.  Treating that whole file as Swedish prose makes the language
+    checks report English source text as translation defects.  For PO input,
+    analyze only non-obsolete target strings (including every plural form).
+    Other file types remain ordinary text files.
+    """
+    if path.suffix.lower() != ".po":
+        return path.read_text(encoding="utf-8")
+
+    import polib
+
+    po = polib.pofile(str(path))
+    targets: list[str] = []
+    for entry in po:
+        if entry.obsolete:
+            continue
+        if entry.msgstr:
+            targets.append(entry.msgstr)
+        targets.extend(value for value in entry.msgstr_plural.values() if value)
+    return "\n".join(targets)
+
+
 def _output(data, as_json=False, quiet=False):
     """Output data as JSON or human-readable text."""
     if as_json:
@@ -48,7 +73,7 @@ def _cmd_svengelska(args):
             else:
                 print(_("File not found: {path}").format(path=path), file=sys.stderr)
             return 2
-        text = path.read_text(encoding="utf-8")
+        text = _read_analysis_text(path)
     else:
         if args.json:
             _output({"error": _("Specify --text or --file")}, as_json=True)
@@ -180,7 +205,7 @@ def _cmd_lix(args):
             else:
                 print(_("File not found: {path}").format(path=path), file=sys.stderr)
             return 2
-        text = path.read_text(encoding="utf-8")
+        text = _read_analysis_text(path)
     else:
         if args.json:
             _output({"error": _("Specify --text or --file")}, as_json=True)
@@ -226,7 +251,7 @@ def _cmd_skrivregler(args):
             else:
                 print(_("File not found: {path}").format(path=path), file=sys.stderr)
             return 2
-        text = path.read_text(encoding="utf-8")
+        text = _read_analysis_text(path)
     else:
         if args.json:
             _output({"error": _("Specify --text or --file")}, as_json=True)
@@ -347,7 +372,7 @@ def _cmd_check(args):
             else:
                 print(_("File not found: {path}").format(path=path), file=sys.stderr)
             return 2
-        text = path.read_text(encoding="utf-8")
+        text = _read_analysis_text(path)
     else:
         if args.json:
             _output({"error": _("Specify --text or --file")}, as_json=True)
