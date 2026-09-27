@@ -45,8 +45,6 @@ _SARSKRIVNINGAR: dict[str, str] = {
     "fil systemet": "filsystemet",
     "käll kod": "källkod",
     "käll koden": "källkoden",
-    "program vara": "programvara",
-    "program varan": "programvaran",
     "nät verk": "nätverk",
     "nät verket": "nätverket",
     "lösen ord": "lösenord",
@@ -107,8 +105,6 @@ _SARSKRIVNINGAR: dict[str, str] = {
     "arbets platsen": "arbetsplatsen",
     "fel meddelande": "felmeddelande",
     "fel meddelandet": "felmeddelandet",
-    "för slag": "förslag",
-    "för slaget": "förslaget",
     "för utsättning": "förutsättning",
     "för utsättningar": "förutsättningar",
     "höger klick": "högerklick",
@@ -127,8 +123,6 @@ _SARSKRIVNINGAR: dict[str, str] = {
     "tids zonen": "tidszonen",
     "upphovs rätt": "upphovsrätt",
     "upphovs rätten": "upphovsrätten",
-    "var dag": "vardag",
-    "var dagen": "vardagen",
     "över sättning": "översättning",
     "över sättningar": "översättningar",
     "över sättare": "översättare",
@@ -250,7 +244,7 @@ _DEM_AS_SUBJECT = re.compile(
 # Only when "de" is followed by end-of-sentence or another pronoun/determiner
 _DE_INDIRECT_OBJECT = re.compile(
     r'\b(?:ge|gav|gett|ger|visa|visade|berätta|berättade|'
-    r'skicka|skickade|lämna|lämnade)\s+de\s*[.!?,;:\n]',
+    r'skicka|skickade|lämna|lämnade)\s+de\s*[.!?,;:]',
     re.IGNORECASE,
 )
 
@@ -331,7 +325,7 @@ class SkrivreglerChecker:
                 key = found.lower()
                 # In "den N:e posten" the e belongs to an ordinal suffix,
                 # not to a split spelling of e-post.
-                if key.startswith('e ') and re.search(r'\b(?:\d+|[A-ZÅÄÖ]):$', text[:m.start()]):
+                if key.startswith('e ') and re.search(r'\b(?:\d+|[A-ZÅÄÖ][A-ZÅÄÖ0-9_]*):$', text[:m.start()]):
                     continue
                 correction = _SARSKRIVNINGAR.get(key, "")
                 if correction:

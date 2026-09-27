@@ -9,7 +9,19 @@ def test_accepted_away_spellings_are_not_typos():
 
 def test_tp_ordinal_suffix_is_not_split_email():
     c = SkrivreglerChecker()
-    assert c.check('Visa den N:e posten och den 3:e posten.') == []
+    assert c.check('Visa den N:e posten, NUMMER:e posten och den 3:e posten.') == []
     hits = c.check('Läs e posten.')
     assert len(hits) == 1
     assert hits[0].suggestion == 'e-posten'
+
+
+def test_contextual_word_pairs_are_not_sarskrivning():
+    checker = SkrivreglerChecker()
+    assert checker.check(
+        'Program vara förberett. Det hände var dag. En bana för slaget.'
+    ) == []
+
+
+def test_line_break_after_de_is_not_an_indirect_object():
+    checker = SkrivreglerChecker()
+    assert checker.check('Visa de\n mest aktiva processerna.') == []

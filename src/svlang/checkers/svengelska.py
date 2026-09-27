@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from bisect import bisect_right
 import re
 from dataclasses import dataclass
 
@@ -220,8 +221,10 @@ class SvengelskaChecker:
         # Flags are literal program syntax, including words such as backup and
         # feature. Keep them intact while still checking the surrounding prose.
         options = [m.span() for m in re.finditer(r'(?<![\w-])--?[A-Za-z][A-Za-z0-9_-]*', text)]
+        option_starts = [start for start, _ in options]
         def inside_option(start, end):
-            return any(a <= start and end <= b for a, b in options)
+            index = bisect_right(option_starts, start) - 1
+            return index >= 0 and start >= options[index][0] and end <= options[index][1]
 
         # First pass: exact pattern matches
         for m in self._pattern.finditer(text):
