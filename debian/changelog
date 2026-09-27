@@ -1,3 +1,9 @@
+svlang (0.2.4-1) unstable; urgency=medium
+
+  * Improve corpus-scale QA performance and avoid contextual false positives.
+
+ -- Daniel Nylander <github@danielnylander.se>  Sun, 27 Sep 2026 12:00:00 +0200
+
 svlang (0.2.2-1) unstable; urgency=medium
 
   * Accept both iväg and i väg in Swedish writing-rule checks.
