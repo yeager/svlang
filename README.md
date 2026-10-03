@@ -28,17 +28,12 @@ sudo dnf makecache
 sudo dnf install svlang
 ```
 
-### Debian/Ubuntu
+### Aktuell version
 
-DEB-filen för version 0.2.7 finns i [GitHub-releasen](https://github.com/yeager/svlang/releases/tag/v0.2.7):
-
-```bash
-curl -LO https://github.com/yeager/svlang/releases/download/v0.2.7/svlang_0.2.7-1_all.deb
-sudo apt install ./svlang_0.2.7-1_all.deb
-```
-
-Releasen innehåller även en Python-wheel, ett källarkiv och `SHA256SUMS`.
-APT/RPM-kataloger och PyPI kan fortfarande innehålla en äldre version.
+[Version 0.2.7](https://github.com/yeager/svlang/releases/tag/v0.2.7) innehåller
+versionsanteckningar och den annoterade Git-taggen. Installera via `pip` eller
+från källkod enligt anvisningarna nedan. APT- och RPM-kataloger kan ligga efter
+den senaste GitHub-versionen.
 
 ### pip
 ```bash
