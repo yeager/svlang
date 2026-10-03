@@ -1,6 +1,6 @@
 # svlang
 
-![Version](https://img.shields.io/badge/version-0.2.2-blue)
+[![Version](https://img.shields.io/badge/version-0.2.7-blue)](https://github.com/yeager/svlang/releases/tag/v0.2.7)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Python](https://img.shields.io/badge/python-3.10+-blue)
 
@@ -30,11 +30,11 @@ sudo dnf install svlang
 
 ### Debian/Ubuntu
 
-DEB-filen för version 0.2.2 finns i [GitHub-releasen](https://github.com/yeager/svlang/releases/tag/v0.2.2):
+DEB-filen för version 0.2.7 finns i [GitHub-releasen](https://github.com/yeager/svlang/releases/tag/v0.2.7):
 
 ```bash
-curl -LO https://github.com/yeager/svlang/releases/download/v0.2.2/svlang_0.2.2-1_all.deb
-sudo apt install ./svlang_0.2.2-1_all.deb
+curl -LO https://github.com/yeager/svlang/releases/download/v0.2.7/svlang_0.2.7-1_all.deb
+sudo apt install ./svlang_0.2.7-1_all.deb
 ```
 
 Releasen innehåller även en Python-wheel, ett källarkiv och `SHA256SUMS`.
@@ -90,6 +90,24 @@ Frekvenslistan är en uppskattning byggd av vanliga ord och en ordlista, inte
 uppmätta korpusfrekvenser. `freq` visar bara förekomst i den listan;
 `found: false` betyder inte att ordet är felstavat. Frekvensförslag är råd och
 gör inte ensamma att `check` avslutas med status 1.
+
+## Gemensam språkgranskning
+
+Använd `svlang` tillsammans med [l10n-lint](https://github.com/yeager/l10n-lint),
+[hunspell-sv](https://github.com/yeager/hunspell-sv),
+[swedish-foss-terminology](https://github.com/yeager/swedish-foss-terminology) och
+[swedish-tm](https://github.com/yeager/swedish-tm). Kör först katalog- och
+platshållarkontroller, sedan stavning och skrivregler. Kontrollera därefter
+varje varning mot källtext, gränssnittskontext och projektets terminologi.
+
+`skrivregler` kontrollerar mekaniskt sådant som kan avgöras utan sammanhang:
+komma omedelbart före `och` enligt projektets policy, mellanslag före svensk
+skiljeteckning, svenska citattecken, utelämningstecknet `…`, mellanrum före
+procenttecken, tusentalsgruppering och tankstreck i talintervall.
+[Stilpolicyn](docs/swedish-style-guide.md) beskriver kontrollerna och de
+regler som alltid måste granskas manuellt, exempelvis tilltal, betydelse,
+register och tvetydiga termer. En text före `|` i en Crowdin-nyckel är
+kontextmetadata och får inte läcka in i den synliga svenska översättningen.
 
 ## Terminology sources
 
