@@ -45,3 +45,16 @@ def test_swedish_punctuation_spacing_and_ellipsis_are_reported():
         'Använd ellipstecknet ”…” i stället för tre punkter',
     }
     assert checker.check('Hej! (test) Vänta…') == []
+
+
+def test_swedish_quotes_numbers_percent_and_ranges_are_reported():
+    checker = SkrivreglerChecker()
+    text = '“Citat” 1.000.000 besökare, 8,65% mellan 11 - 12.'
+    suggestions = {issue.suggestion for issue in checker.check(text)}
+    assert suggestions == {
+        'Använd svenska citattecken ”…”',
+        'Gruppera stora tal med mellanslag, inte punkt',
+        'Sätt mellanslag före procenttecknet',
+        'Använd tankstreck i talintervall',
+    }
+    assert checker.check('”Citat” 1 000 000 besökare, 8,65 % mellan 11–12.') == []

@@ -236,7 +236,17 @@ def _cmd_lix(args):
 
 def _cmd_skrivregler(args):
     """Check Swedish writing rules."""
-    from svlang.checkers.skrivregler import SkrivreglerChecker
+    from svlang.checkers.skrivregler import STYLE_GUIDE, SkrivreglerChecker
+    if getattr(args, 'style_guide', False):
+        if args.json:
+            _output({"style_guide": [
+                {"section": section, "automatic": automatic, "review": review}
+                for section, automatic, review in STYLE_GUIDE
+            ]}, as_json=True)
+        elif not args.quiet:
+            for section, automatic, review in STYLE_GUIDE:
+                print(f"{section}:\n  Automatiskt: {automatic}\n  Granska: {review}")
+        return 0
     checker = SkrivreglerChecker(
         check_sarskrivning=not args.disable_sarskrivning,
         check_dedem=not args.disable_dedem,
@@ -628,6 +638,7 @@ def main(argv: list[str] | None = None):
     p_skriv = sub.add_parser("skrivregler", aliases=["regler", "sr"], help=_("Check Swedish writing rules"))
     p_skriv.add_argument("--text", "-t", nargs="+", help=_("Text to check"))
     p_skriv.add_argument("--file", "-f", help=_("File to check"))
+    p_skriv.add_argument("--style-guide", action="store_true", help=_("Show the Swedish style-guide coverage"))
     p_skriv.add_argument("--disable-sarskrivning", action="store_true", help=_("Disable compound split check"))
     p_skriv.add_argument("--disable-dedem", action="store_true", help=_("Disable de/dem check"))
     p_skriv.add_argument("--disable-stavfel", action="store_true", help=_("Disable misspelling check"))

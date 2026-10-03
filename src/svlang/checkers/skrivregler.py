@@ -20,6 +20,17 @@ import re
 from dataclasses import dataclass, field
 
 
+STYLE_GUIDE = (
+    ("Skiljetecken och skrivtecken", "Punkt, ellips, citattecken, mellanslag, talintervall och projektets komma-och-regel kontrolleras automatiskt.", "Bedöm komma, semikolon, kolon, bindestreck, tankstreck och snedstreck i sitt sammanhang."),
+    ("Stor och liten bokstav", "Kontrolleras där formaten ger säkra signaler.", "Bedöm namn, rubriker, organisationer och sammansättningar med namn."),
+    ("Sammansättningar", "Vanliga särskrivningar och kända stavfel kontrolleras automatiskt.", "Bedöm nya, fackliga och långa sammansättningar."),
+    ("Förkortningar", "Enskilda formatregler kontrolleras när de är säkra.", "Bedöm förkortningens lämplighet, böjning och interpunktion."),
+    ("Tal och siffror", "Talgrupper, decimaler, procent och intervall kontrolleras automatiskt.", "Bedöm sifferform, datum, tider, mått, valuta och telefonnummer."),
+    ("Citat och repliker", "Otvetydigt engelskt öppningscitat flaggas.", "Bedöm citatets interpunktion, replikform och trohet mot originalet."),
+    ("Textens form", "Ingen automatisk strukturdömning görs för korta UI-strängar.", "Bedöm rubriker, stycken, punktlistor, betoning och avstavning."),
+)
+
+
 @dataclass
 class SkrivregelIssue:
     """A detected writing rule violation."""
@@ -269,6 +280,10 @@ _COMMA_BEFORE_OCH = re.compile(r',\s+och\b', re.IGNORECASE)
 _SPACE_BEFORE_PUNCTUATION = re.compile(r'\S[ \t]+[,.!?;:](?!\w)')
 _SPACE_INSIDE_PARENS = re.compile(r'\([ \t]+\S|\S[ \t]+\)')
 _ASCII_ELLIPSIS = re.compile(r'\.\.\.')
+_ENGLISH_CURLY_QUOTES = re.compile(r'“')
+_LARGE_DOTTED_NUMBER = re.compile(r'\b\d{1,3}(?:\.\d{3}){2,}\b')
+_PERCENT_WITHOUT_SPACE = re.compile(r'\b\d+(?:,\d+)?%(?!\w)')
+_SPACED_NUMERIC_HYPHEN = re.compile(r'\b\d+[ \t]+-[ \t]+\d+\b')
 
 
 class SkrivreglerChecker:
@@ -407,6 +422,10 @@ class SkrivreglerChecker:
             (_SPACE_BEFORE_PUNCTUATION, 'Ta bort mellanslaget före skiljetecknet'),
             (_SPACE_INSIDE_PARENS, 'Ta bort mellanslaget innanför parentesen'),
             (_ASCII_ELLIPSIS, 'Använd ellipstecknet ”…” i stället för tre punkter'),
+            (_ENGLISH_CURLY_QUOTES, 'Använd svenska citattecken ”…”'),
+            (_LARGE_DOTTED_NUMBER, 'Gruppera stora tal med mellanslag, inte punkt'),
+            (_PERCENT_WITHOUT_SPACE, 'Sätt mellanslag före procenttecknet'),
+            (_SPACED_NUMERIC_HYPHEN, 'Använd tankstreck i talintervall'),
         ):
             for m in pattern.finditer(text):
                 issues.append(SkrivregelIssue(
@@ -439,5 +458,5 @@ class SkrivreglerChecker:
             "sarskrivning": len(_SARSKRIVNINGAR),
             "stavfel": len(STAVFEL),
             "dedem": 3,  # 3 pattern groups
-            "interpunktion": 5,  # comma, spacing, ellipsis, and double space
+            "interpunktion": 9,  # comma, spacing, ellipsis, quotes, numbers, ranges
         }

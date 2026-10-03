@@ -1,3 +1,9 @@
+svlang (0.2.7-1) unstable; urgency=medium
+
+  * Add the Swedish style-policy checklist and typography checks.
+
+ -- Daniel Nylander <github@danielnylander.se>  Sat, 03 Oct 2026 09:55:00 +0200
+
 svlang (0.2.6-1) unstable; urgency=medium
 
   * Flag punctuation-spacing errors and ASCII three-dot ellipses.

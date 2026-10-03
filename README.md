@@ -63,6 +63,9 @@ svlang check --file text.txt
 Check Swedish writing rules:
 ```bash
 svlang skrivregler --file file.txt
+
+# Visa hela stilpolicyn och manuella granskningspunkter
+svlang skrivregler --style-guide
 ```
 
 Check text naturalness (heuristics, not a complete grammar checker):
@@ -119,6 +122,7 @@ Contributions welcome!
 
 ## Changelog
 
+- **0.2.7**: Add the documented Swedish style-policy checklist and typography checks.
 - **0.2.6**: Flag punctuation-spacing errors and ASCII three-dot ellipses.
 - **0.2.5**: Flag commas immediately before `och` in Swedish translations.
 
