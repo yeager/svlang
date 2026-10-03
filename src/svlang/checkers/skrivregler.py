@@ -260,6 +260,11 @@ _MISSING_SPACE_AFTER = re.compile(r'[.!?,:;][A-ZÅÄÖ]')
 # Space before punctuation (except open parens)
 _SPACE_BEFORE_PUNCT = re.compile(r'\s+[.!?,;:](?!\w)')
 
+# Swedish style does not use a comma immediately before the coordinating
+# conjunction “och”. Keep this separate from the opt-in general punctuation
+# checks: it is a high-confidence translation error.
+_COMMA_BEFORE_OCH = re.compile(r',\s+och\b', re.IGNORECASE)
+
 
 class SkrivreglerChecker:
     """Detect common Swedish writing errors.
@@ -377,6 +382,19 @@ class SkrivreglerChecker:
                     ))
 
         # ── Interpunktion ──
+        # A comma before “och” is not used in the Swedish house style for
+        # translations. This is deliberately always enabled, unlike the
+        # broader punctuation checks below.
+        for m in _COMMA_BEFORE_OCH.finditer(text):
+            issues.append(SkrivregelIssue(
+                rule="interpunktion",
+                word=m.group(0),
+                suggestion='Ta bort kommat före ”och”',
+                context=self._context(text, m.start(), m.end()),
+                position=m.start(),
+                line=self._line_number(text, m.start()),
+            ))
+
         if self._check_interpunktion:
             for m in _DOUBLE_SPACE.finditer(text):
                 issues.append(SkrivregelIssue(
@@ -398,5 +416,5 @@ class SkrivreglerChecker:
             "sarskrivning": len(_SARSKRIVNINGAR),
             "stavfel": len(STAVFEL),
             "dedem": 3,  # 3 pattern groups
-            "interpunktion": 1,  # double space
+            "interpunktion": 2,  # comma before ”och” and double space
         }

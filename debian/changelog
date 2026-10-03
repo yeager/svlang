@@ -1,3 +1,9 @@
+svlang (0.2.5-1) unstable; urgency=medium
+
+  * Flag commas immediately before “och” in Swedish translations.
+
+ -- Daniel Nylander <github@danielnylander.se>  Sat, 03 Oct 2026 09:30:00 +0200
+
 svlang (0.2.4-1) unstable; urgency=medium
 
   * Improve corpus-scale QA performance and avoid contextual false positives.

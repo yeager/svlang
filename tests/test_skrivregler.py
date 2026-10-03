@@ -25,3 +25,12 @@ def test_contextual_word_pairs_are_not_sarskrivning():
 def test_line_break_after_de_is_not_an_indirect_object():
     checker = SkrivreglerChecker()
     assert checker.check('Visa de\n mest aktiva processerna.') == []
+
+
+def test_comma_before_och_is_reported_by_default():
+    checker = SkrivreglerChecker()
+    issues = checker.check('Jag öppnade filen, och sparade ändringarna.')
+    assert len(issues) == 1
+    assert issues[0].rule == 'interpunktion'
+    assert issues[0].suggestion == 'Ta bort kommat före ”och”'
+    assert checker.check('Jag öppnade filen och sparade ändringarna.') == []
