@@ -40,7 +40,7 @@ den senaste GitHub-versionen.
 pip install svlang
 ```
 
-## Building from source
+## Bygg från källkod
 
 ```bash
 git clone https://github.com/yeager/svlang
@@ -48,14 +48,14 @@ cd svlang
 pip install -e .
 ```
 
-## Usage
+## Användning
 
-Check Swedish text:
+Kontrollera svensk text:
 ```bash
 svlang check --file text.txt
 ```
 
-Check Swedish writing rules:
+Kontrollera svenska skrivregler:
 ```bash
 svlang skrivregler --file file.txt
 
@@ -63,12 +63,12 @@ svlang skrivregler --file file.txt
 svlang skrivregler --style-guide
 ```
 
-Check text naturalness (heuristics, not a complete grammar checker):
+Kontrollera språklig naturlighet (heuristik, inte en fullständig grammatikkontroll):
 ```bash
 svlang natural --text "Det här är en svensk mening."
 ```
 
-Show help and all options:
+Visa hjälp och alla alternativ:
 ```bash
 svlang --help
 man svlang
@@ -76,10 +76,10 @@ man svlang
 
 ## Frekvens och stavningskontroll
 
-`check` consults both bundled Swedish lexicons before flagging a word missing
-from the estimated frequency list. If `hunspell` and its `sv_SE` dictionary are
-installed, inflected forms are checked there too. Without them, the bundled
-lexicons still work, but morphological coverage is narrower.
+`check` kontrollerar båda de medföljande svenska lexikonen innan ett ord som
+saknas i frekvenslistan markeras. Om `hunspell` och dess `sv_SE`-ordlista är
+installerade kontrolleras även böjda former där. Utan dem fungerar de
+medföljande lexikonen fortfarande, men den morfologiska täckningen är mindre.
 
 Frekvenslistan är en uppskattning byggd av vanliga ord och en ordlista, inte
 uppmätta korpusfrekvenser. `freq` visar bara förekomst i den listan;
@@ -104,50 +104,61 @@ regler som alltid måste granskas manuellt, exempelvis tilltal, betydelse,
 register och tvetydiga termer. En text före `|` i en Crowdin-nyckel är
 kontextmetadata och får inte läcka in i den synliga svenska översättningen.
 
-## Terminology sources
+## Terminologikällor
 
-For IT terminology, svlang's project guidance uses [Computer Swedens
-IT-ord](https://it-ord.computersweden.se/) as the first reference source. For
-other terminology and general Swedish it uses [SAOL, SO and
+För IT-terminologi använder svlangs projektriktlinjer [Computer Swedens
+IT-ord](https://it-ord.computersweden.se/) som första referenskälla. För annan
+terminologi och allmän svenska används [SAOL, SO och
 SAOB](https://svenska.se/), [TEPA](https://termipankki.fi/tepa/sv/),
 [IATE](https://iate.europa.eu/home), [Rikstermbanken](https://www.rikstermbanken.se/)
-and [ISOF's guidance on fackspråk och terminologi](https://www.isof.se/svenska-spraket/facksprak-och-terminologi).
-They are consulted as reference sources; svlang does not scrape or redistribute
-their content.
+och [ISOF:s vägledning om fackspråk och terminologi](https://www.isof.se/svenska-spraket/facksprak-och-terminologi).
+De används som referenskällor. svlang samlar inte in eller återdistribuerar deras innehåll.
 
-## Development
+## Utveckling
 
 ```bash
 python -m pip install -e '.[dev]'
 python -m pytest
 ```
 
-Tests simulate Hunspell availability and failure; system dictionaries are not
-required to run the suite.
+Tester simulerar tillgänglig och otillgänglig Hunspell. Systemordlistor krävs inte för att köra sviten.
 
-## Translation
+## Översättning
 
-Translations are managed on Transifex: https://app.transifex.com/danielnylander/svlang/
+Översättningar hanteras på Transifex: https://app.transifex.com/danielnylander/svlang/
 
-Currently supported: Swedish, Danish, German, Spanish, Finnish, French, Italian, Norwegian Bokmål, Dutch, Polish, Portuguese (Brazil)
+Språk som stöds: svenska, danska, tyska, spanska, finska, franska, italienska, norskt bokmål, nederländska, polska och portugisiska (Brasilien)
 
-Contributions welcome!
+Bidrag välkomnas!
 
 ## Changelog
 
-- **0.2.7**: Add the documented Swedish style-policy checklist and typography checks.
-- **0.2.6**: Flag punctuation-spacing errors and ASCII three-dot ellipses.
-- **0.2.5**: Flag commas immediately before `och` in Swedish translations.
+- **0.2.7**: Lägger till den dokumenterade svenska stilpolicyn och typografikontroller.
+- **0.2.6**: Markerar felaktiga mellanslag vid skiljetecken och tre ASCII-punkter.
+- **0.2.5**: Markerar kommatecken omedelbart före `och` i svenska översättningar.
+- **0.2.2**: Accepterar både `iväg` och `i väg` i skrivregelkontroller enligt Svensk ordbok.
+- **0.2.1**: Dokumenterar Computer Swedens IT-ord som första terminologikälla för IT-termer.
+- **0.2.0**: Stabil version med utökat stöd för svenska.
+- **0.1.x**: Första utveckling och grundläggande NLP-funktioner.
 
-- **0.2.2**: Accept both `iväg` and `i väg` in writing-rule checks, following Svensk ordbok.
-- **0.2.1**: Document Computer Swedens IT-ord as the first terminology source for IT terms
-- **0.2.0**: Latest stable release with enhanced Swedish language support
-- **0.1.x**: Initial development and core NLP functionality
-
-## License
+## Licens
 
 MIT
 
-## Author
+## Upphovsperson
 
 Daniel Nylander (daniel@danielnylander.se)
+
+## English reference
+
+svlang is a command-line helper for Swedish localization review. Use `check` for
+word-list and Hunspell-backed spelling signals, `freq` for frequency lookups,
+`skrivregler` for mechanical style checks, and `natural` for heuristic wording
+signals. Run `svlang skrivregler --style-guide` for the complete policy.
+
+Use it with l10n-lint, hunspell-sv, swedish-foss-terminology and swedish-tm.
+Automatic checks cover the project rule against a comma directly before `och`,
+punctuation spacing, Swedish quotation marks, ellipses, percentages, digit
+grouping and numeric ranges. Meaning, tone, register and context-specific
+terminology remain manual review tasks. A Crowdin prefix before `|` is metadata
+and must not appear in the visible Swedish translation.
