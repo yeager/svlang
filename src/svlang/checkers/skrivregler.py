@@ -264,6 +264,11 @@ _SPACE_BEFORE_PUNCT = re.compile(r'\s+[.!?,;:](?!\w)')
 # conjunction “och”. Keep this separate from the opt-in general punctuation
 # checks: it is a high-confidence translation error.
 _COMMA_BEFORE_OCH = re.compile(r',\s+och\b', re.IGNORECASE)
+# Swedish typography: no whitespace immediately before punctuation or
+# immediately inside ordinary parentheses. Three dots are one ellipsis glyph.
+_SPACE_BEFORE_PUNCTUATION = re.compile(r'\S[ \t]+[,.!?;:](?!\w)')
+_SPACE_INSIDE_PARENS = re.compile(r'\([ \t]+\S|\S[ \t]+\)')
+_ASCII_ELLIPSIS = re.compile(r'\.\.\.')
 
 
 class SkrivreglerChecker:
@@ -395,6 +400,24 @@ class SkrivreglerChecker:
                 line=self._line_number(text, m.start()),
             ))
 
+        # These formatting errors are unambiguous in ordinary Swedish
+        # translation text, so report them together with the house-style
+        # comma-before-och rule.
+        for pattern, suggestion in (
+            (_SPACE_BEFORE_PUNCTUATION, 'Ta bort mellanslaget före skiljetecknet'),
+            (_SPACE_INSIDE_PARENS, 'Ta bort mellanslaget innanför parentesen'),
+            (_ASCII_ELLIPSIS, 'Använd ellipstecknet ”…” i stället för tre punkter'),
+        ):
+            for m in pattern.finditer(text):
+                issues.append(SkrivregelIssue(
+                    rule="interpunktion",
+                    word=m.group(0),
+                    suggestion=suggestion,
+                    context=self._context(text, m.start(), m.end()),
+                    position=m.start(),
+                    line=self._line_number(text, m.start()),
+                ))
+
         if self._check_interpunktion:
             for m in _DOUBLE_SPACE.finditer(text):
                 issues.append(SkrivregelIssue(
@@ -416,5 +439,5 @@ class SkrivreglerChecker:
             "sarskrivning": len(_SARSKRIVNINGAR),
             "stavfel": len(STAVFEL),
             "dedem": 3,  # 3 pattern groups
-            "interpunktion": 2,  # comma before ”och” and double space
+            "interpunktion": 5,  # comma, spacing, ellipsis, and double space
         }

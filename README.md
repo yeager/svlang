@@ -119,6 +119,7 @@ Contributions welcome!
 
 ## Changelog
 
+- **0.2.6**: Flag punctuation-spacing errors and ASCII three-dot ellipses.
 - **0.2.5**: Flag commas immediately before `och` in Swedish translations.
 
 - **0.2.2**: Accept both `iväg` and `i väg` in writing-rule checks, following Svensk ordbok.

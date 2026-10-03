@@ -34,3 +34,14 @@ def test_comma_before_och_is_reported_by_default():
     assert issues[0].rule == 'interpunktion'
     assert issues[0].suggestion == 'Ta bort kommat före ”och”'
     assert checker.check('Jag öppnade filen och sparade ändringarna.') == []
+
+
+def test_swedish_punctuation_spacing_and_ellipsis_are_reported():
+    checker = SkrivreglerChecker()
+    issues = checker.check('Hej ! ( test ) Vänta...')
+    assert {issue.suggestion for issue in issues} == {
+        'Ta bort mellanslaget före skiljetecknet',
+        'Ta bort mellanslaget innanför parentesen',
+        'Använd ellipstecknet ”…” i stället för tre punkter',
+    }
+    assert checker.check('Hej! (test) Vänta…') == []
