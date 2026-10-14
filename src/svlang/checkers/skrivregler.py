@@ -434,8 +434,10 @@ class SkrivreglerChecker:
                 # metavariable: “Använd ? för MIME-typer”. It is not prose
                 # punctuation. Keep the exemption deliberately narrow.
                 if (pattern is _SPACE_BEFORE_PUNCTUATION and m.group(0).endswith('?')
-                        and re.search(r'(?:Använd|Skriv|Ange) \? (?:som|för|i|med)\b',
-                                      text[max(0, m.start() - 24):m.end() + 32], re.I)):
+                        and (re.search(r'(?:Använd|Skriv|Ange) \? (?:som|för|i|med)\b',
+                                       text[max(0, m.start() - 24):m.end() + 32], re.I)
+                             or re.search(r'\(\?\) av \?',
+                                          text[max(0, m.start() - 24):m.end() + 32]))):
                     continue
                 issues.append(SkrivregelIssue(
                     rule="interpunktion",
