@@ -45,6 +45,7 @@ def test_swedish_punctuation_spacing_and_ellipsis_are_reported():
         'Använd ellipstecknet ”…” i stället för tre punkter',
     }
     assert checker.check('Hej! (test) Vänta…') == []
+    assert checker.check("Använd 'set auto-load ...' för kommandot.") == []
 
 def test_cli_question_metavariable_is_not_punctuation():
     checker = SkrivreglerChecker()
