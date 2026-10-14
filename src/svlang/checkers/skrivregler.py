@@ -430,6 +430,13 @@ class SkrivreglerChecker:
             (_EM_DASH, 'Undvik tankstreck i svensk text; använd kolon, komma eller parentes'),
         ):
             for m in pattern.finditer(text):
+                # In CLI help, a standalone question mark is often a literal
+                # metavariable: “Använd ? för MIME-typer”. It is not prose
+                # punctuation. Keep the exemption deliberately narrow.
+                if (pattern is _SPACE_BEFORE_PUNCTUATION and m.group(0).endswith('?')
+                        and re.search(r'(?:Använd|Skriv|Ange) \? (?:som|för|i|med)\b',
+                                      text[max(0, m.start() - 24):m.end() + 32], re.I)):
+                    continue
                 issues.append(SkrivregelIssue(
                     rule="interpunktion",
                     word=m.group(0),

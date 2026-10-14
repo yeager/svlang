@@ -1,6 +1,6 @@
 # svlang
 
-[![Version](https://img.shields.io/badge/version-0.2.8-blue)](https://github.com/yeager/svlang/releases/tag/v0.2.8)
+[![Version](https://img.shields.io/badge/version-0.2.9-blue)](https://github.com/yeager/svlang/releases/tag/v0.2.8)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Python](https://img.shields.io/badge/python-3.10+-blue)
 
@@ -135,6 +135,8 @@ Språk som stöds: svenska, danska, tyska, spanska, finska, franska, italienska,
 Bidrag välkomnas!
 
 ## Changelog
+
+- **0.2.9**: Tolkar den dokumenterade CLI-metavariabeln `?` utan falsk interpunktionsvarning.
 
 - **0.2.8**: Markerar tankstreck i löpande svensk text och dokumenterar när
   originalets struktur måste bevaras.

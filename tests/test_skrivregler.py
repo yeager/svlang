@@ -46,6 +46,12 @@ def test_swedish_punctuation_spacing_and_ellipsis_are_reported():
     }
     assert checker.check('Hej! (test) Vänta…') == []
 
+def test_cli_question_metavariable_is_not_punctuation():
+    checker = SkrivreglerChecker()
+    assert checker.check('Använd ? för MIME-typer.') == []
+    assert any(issue.suggestion == 'Ta bort mellanslaget före skiljetecknet'
+               for issue in checker.check('Hej ?'))
+
 
 def test_swedish_quotes_numbers_percent_and_ranges_are_reported():
     checker = SkrivreglerChecker()
