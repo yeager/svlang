@@ -1,6 +1,6 @@
 # svlang
 
-[![Version](https://img.shields.io/badge/version-0.2.7-blue)](https://github.com/yeager/svlang/releases/tag/v0.2.7)
+[![Version](https://img.shields.io/badge/version-0.2.8-blue)](https://github.com/yeager/svlang/releases/tag/v0.2.8)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Python](https://img.shields.io/badge/python-3.10+-blue)
 
@@ -98,7 +98,10 @@ varje varning mot källtext, gränssnittskontext och projektets terminologi.
 `skrivregler` kontrollerar mekaniskt sådant som kan avgöras utan sammanhang:
 komma omedelbart före `och` enligt projektets policy, mellanslag före svensk
 skiljeteckning, svenska citattecken, utelämningstecknet `…`, mellanrum före
-procenttecken, tusentalsgruppering och tankstreck i talintervall.
+procenttecken, tusentalsgruppering, tankstreck i talintervall och tankstreck
+i löpande svensk text. Använd normalt kolon, komma eller parentes i stället
+för tankstreck. Behåll det bara när originalets syntax eller layout måste
+bevaras och kontrollera då alltid källsträngen.
 [Stilpolicyn](docs/swedish-style-guide.md) beskriver kontrollerna och de
 regler som alltid måste granskas manuellt, exempelvis tilltal, betydelse,
 register och tvetydiga termer. En text före `|` i en Crowdin-nyckel är
@@ -133,6 +136,8 @@ Bidrag välkomnas!
 
 ## Changelog
 
+- **0.2.8**: Markerar tankstreck i löpande svensk text och dokumenterar när
+  originalets struktur måste bevaras.
 - **0.2.7**: Lägger till den dokumenterade svenska stilpolicyn och typografikontroller.
 - **0.2.6**: Markerar felaktiga mellanslag vid skiljetecken och tre ASCII-punkter.
 - **0.2.5**: Markerar kommatecken omedelbart före `och` i svenska översättningar.
@@ -159,6 +164,8 @@ signals. Run `svlang skrivregler --style-guide` for the complete policy.
 Use it with l10n-lint, hunspell-sv, swedish-foss-terminology and swedish-tm.
 Automatic checks cover the project rule against a comma directly before `och`,
 punctuation spacing, Swedish quotation marks, ellipses, percentages, digit
-grouping and numeric ranges. Meaning, tone, register and context-specific
-terminology remain manual review tasks. A Crowdin prefix before `|` is metadata
-and must not appear in the visible Swedish translation.
+grouping, numeric ranges and em dashes in ordinary Swedish text. Prefer a
+colon, comma or parentheses to an em dash. Preserve it only when the original
+syntax or layout requires it, after comparing the source. Meaning, tone,
+register and context-specific terminology remain manual review tasks. A Crowdin
+prefix before `|` is metadata and must not appear in the visible Swedish translation.

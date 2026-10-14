@@ -15,6 +15,9 @@ sammanhang, genre eller betydelse.
 - stora tal med mellanslag som gruppavskiljare
 - mellanslag före procenttecken
 - tankstreck i talintervall
+- tankstreck i löpande svensk text. Använd normalt kolon, komma eller
+  parentes i stället. Behåll det bara när originalets syntax, layout eller
+  annan teknisk struktur måste bevaras; jämför alltid med källsträngen.
 - svenska decimaltecken, datumformat och talformat i `l10n-lint`
 
 ## Granskningspunkter

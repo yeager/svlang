@@ -58,3 +58,14 @@ def test_swedish_quotes_numbers_percent_and_ranges_are_reported():
         'Använd tankstreck i talintervall',
     }
     assert checker.check('”Citat” 1 000 000 besökare, 8,65 % mellan 11–12.') == []
+
+
+def test_em_dash_is_reported_but_en_dash_and_hyphen_are_allowed():
+    checker = SkrivreglerChecker()
+    issues = checker.check('Status — klar. Gäller 11–12 och Homebrew-appen.')
+    assert len(issues) == 1
+    assert issues[0].rule == 'interpunktion'
+    assert issues[0].suggestion == (
+        'Undvik tankstreck i svensk text; använd kolon, komma eller parentes'
+    )
+    assert checker.check('Status: klar. Gäller 11–12 och Homebrew-appen.') == []

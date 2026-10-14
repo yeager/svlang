@@ -284,6 +284,7 @@ _ENGLISH_CURLY_QUOTES = re.compile(r'“')
 _LARGE_DOTTED_NUMBER = re.compile(r'\b\d{1,3}(?:\.\d{3}){2,}\b')
 _PERCENT_WITHOUT_SPACE = re.compile(r'\b\d+(?:,\d+)?%(?!\w)')
 _SPACED_NUMERIC_HYPHEN = re.compile(r'\b\d+[ \t]+-[ \t]+\d+\b')
+_EM_DASH = re.compile("—")
 
 
 class SkrivreglerChecker:
@@ -426,6 +427,7 @@ class SkrivreglerChecker:
             (_LARGE_DOTTED_NUMBER, 'Gruppera stora tal med mellanslag, inte punkt'),
             (_PERCENT_WITHOUT_SPACE, 'Sätt mellanslag före procenttecknet'),
             (_SPACED_NUMERIC_HYPHEN, 'Använd tankstreck i talintervall'),
+            (_EM_DASH, 'Undvik tankstreck i svensk text; använd kolon, komma eller parentes'),
         ):
             for m in pattern.finditer(text):
                 issues.append(SkrivregelIssue(
@@ -458,5 +460,5 @@ class SkrivreglerChecker:
             "sarskrivning": len(_SARSKRIVNINGAR),
             "stavfel": len(STAVFEL),
             "dedem": 3,  # 3 pattern groups
-            "interpunktion": 9,  # comma, spacing, ellipsis, quotes, numbers, ranges
+            "interpunktion": 10,  # comma, spacing, ellipsis, quotes, numbers, ranges, em dash
         }
