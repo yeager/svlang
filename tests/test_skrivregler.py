@@ -77,3 +77,14 @@ def test_em_dash_is_reported_but_en_dash_and_hyphen_are_allowed():
         'Undvik tankstreck i svensk text; använd kolon, komma eller parentes'
     )
     assert checker.check('Status: klar. Gäller 11–12 och Homebrew-appen.') == []
+
+
+def test_cli_skrivregler_json_catalog_checks_values_not_format(tmp_path, capsys):
+    from svlang.cli import main
+
+    catalog = tmp_path / "sv.json"
+    catalog.write_text(
+        '{\n  "English source": "Hej, och välkommen…"\n}\n', encoding="utf-8"
+    )
+    assert main(["skrivregler", "--file", str(catalog), "--enable-interpunktion"]) == 1
+    assert "Ta bort kommat före ”och”" in capsys.readouterr().out

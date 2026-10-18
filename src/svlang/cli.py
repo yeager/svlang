@@ -30,7 +30,23 @@ def _read_analysis_text(path: Path) -> str:
     analyze only non-obsolete target strings (including every plural form).
     Other file types remain ordinary text files.
     """
-    if path.suffix.lower() != ".po":
+    suffix = path.suffix.lower()
+    if suffix == ".json":
+        data = json.loads(path.read_text(encoding="utf-8"))
+
+        def collect_values(value):
+            if isinstance(value, str):
+                return [value]
+            if isinstance(value, dict):
+                return [item for child in value.values() for item in collect_values(child)]
+            if isinstance(value, list):
+                return [item for child in value for item in collect_values(child)]
+            return []
+
+        # JSON localization catalogs map source keys to target values. Analyze
+        # values only, since keys and indentation are not Swedish prose.
+        return "\n.\n".join(collect_values(data))
+    if suffix != ".po":
         return path.read_text(encoding="utf-8")
 
     import polib
