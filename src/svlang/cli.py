@@ -6,6 +6,7 @@ import argparse
 import gettext
 import json
 import locale
+import re
 import sys
 from pathlib import Path
 
@@ -28,7 +29,10 @@ def _read_analysis_text(path: Path) -> str:
     header.  Treating that whole file as Swedish prose makes the language
     checks report English source text as translation defects.  For PO input,
     analyze only non-obsolete target strings (including every plural form).
-    Other file types remain ordinary text files.
+    Fluent catalogs use their message identifiers as keys, and include
+    variables and expressions that are not Swedish prose. Analyze only target
+    patterns and retain literal strings in placeables. Other file types remain
+    ordinary text files.
     """
     suffix = path.suffix.lower()
     if suffix == ".json":
@@ -46,6 +50,39 @@ def _read_analysis_text(path: Path) -> str:
         # JSON localization catalogs map source keys to target values. Analyze
         # values only, since keys and indentation are not Swedish prose.
         return "\n.\n".join(collect_values(data))
+    if suffix == ".ftl":
+        from fluent.syntax import FluentParser, ast
+
+        resource = FluentParser().parse(path.read_text(encoding="utf-8"))
+        targets: list[str] = []
+        for entry in resource.body:
+            if not isinstance(entry, ast.Message) or entry.value is None:
+                continue
+            elements: list[str] = []
+            for element in entry.value.elements:
+                if isinstance(element, ast.TextElement):
+                    elements.append(element.value)
+                elif isinstance(element, ast.Placeable) and isinstance(
+                    element.expression, ast.StringLiteral
+                ):
+                    # A literal such as {"["} is visible to the user. Names,
+                    # variables and Fluent expressions are syntax, not prose.
+                    elements.append(element.expression.value)
+                elif isinstance(element, ast.Placeable):
+                    # Keep a neutral Swedish word between the surrounding
+                    # text. Removing {$name} altogether would turn
+                    # "fel: {$name}:" into "fel: :" and create a false
+                    # punctuation warning.
+                    elements.append("värde")
+            value = "".join(elements).strip()
+            if value:
+                if entry.id.name.endswith("-usage"):
+                    # In command usage syntax, an ASCII ellipsis denotes a
+                    # repeated operand, for example ``[FIL]...``. It is not
+                    # Swedish prose and must not be reported as typography.
+                    value = re.sub(r"(?<=[\]\w])\.\.\.", "…", value)
+                targets.append(value)
+        return "\n.\n".join(targets)
     if suffix != ".po":
         return path.read_text(encoding="utf-8")
 

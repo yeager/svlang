@@ -19,11 +19,11 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Topic :: Text Processing :: Linguistic",
 ]
-dependencies = []
+dependencies = ["fluent.syntax>=0.19"]
 
 [project.optional-dependencies]
 po = ["polib>=1.2"]
-dev = ["pytest>=7", "polib>=1.2"]
+dev = ["pytest>=7", "polib>=1.2", "fluent.syntax>=0.19"]
 
 [project.scripts]
 svlang = "svlang.cli:main"

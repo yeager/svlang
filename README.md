@@ -14,7 +14,8 @@ heuristisk kontroll av hur naturlig en mening verkar. Verktyget ger snabb
 ## Funktioner
 
 - `check` kontrollerar ord mot de medföljande svenska lexikonen och, när det
-  finns, Hunspells svenska ordlista.
+  finns, Hunspells svenska ordlista. PO-, JSON- och Fluent-kataloger granskas
+  med måltexten utan nycklar, källtext eller platshållare.
 - `freq` visar förekomst i den uppskattade frekvenslistan.
 - `skrivregler` hittar vanliga formella skrivregelavvikelser.
 - `natural` ger heuristiska signaler om formuleringar som kan behöva ses över.
@@ -161,7 +162,9 @@ Daniel Nylander (daniel@danielnylander.se)
 svlang is a command-line helper for Swedish localization review. Use `check` for
 word-list and Hunspell-backed spelling signals, `freq` for frequency lookups,
 `skrivregler` for mechanical style checks, and `natural` for heuristic wording
-signals. Run `svlang skrivregler --style-guide` for the complete policy.
+signals. PO, JSON, and Fluent catalogs are analyzed using target text only,
+excluding keys, source text, and placeholders. Run `svlang skrivregler
+--style-guide` for the complete policy.
 
 Use it with l10n-lint, hunspell-sv, swedish-foss-terminology and swedish-tm.
 Automatic checks cover the project rule against a comma directly before `och`,

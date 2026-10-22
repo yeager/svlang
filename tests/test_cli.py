@@ -67,6 +67,43 @@ def test_check_po_keeps_entries_as_separate_sentences(tmp_path, capsys):
     assert data["statistics"]["sentence_count"] == 2
 
 
+def test_check_fluent_analyzes_values_without_keys_or_variables(tmp_path, capsys):
+    catalog = tmp_path / "sv.ftl"
+    catalog.write_text(
+        'swedish-key = Hej och välkommen {"["}{$name}\n',
+        encoding="utf-8",
+    )
+    main(["--json", "check", "--file", str(catalog)])
+    data = json.loads(capsys.readouterr().out)
+    assert data["rare_words"] == []
+
+
+def test_skrivregler_fluent_checks_target_values(tmp_path, capsys):
+    catalog = tmp_path / "sv.ftl"
+    catalog.write_text(
+        'swedish-key = Hej, och välkommen {"["}{$name}\n',
+        encoding="utf-8",
+    )
+    assert main(["skrivregler", "--file", str(catalog)]) == 1
+    assert "Ta bort kommat före ”och”" in capsys.readouterr().out
+
+
+def test_skrivregler_fluent_ignores_cli_usage_ellipsis(tmp_path, capsys):
+    catalog = tmp_path / "sv.ftl"
+    catalog.write_text(
+        'tool-usage = verktyg [FLAGGA]... [FIL]...\n', encoding="utf-8"
+    )
+    assert main(["skrivregler", "--file", str(catalog)]) == 0
+    assert "ellipstecknet" not in capsys.readouterr().out
+
+
+def test_skrivregler_fluent_keeps_variables_from_creating_spacing_errors(tmp_path, capsys):
+    catalog = tmp_path / "sv.ftl"
+    catalog.write_text('error = fel: {$name}: detalj\n', encoding="utf-8")
+    assert main(["skrivregler", "--file", str(catalog)]) == 0
+    assert "Interpunktion" not in capsys.readouterr().out
+
+
 def test_frequency_miss_is_not_a_spelling_verdict(capsys):
     assert main(["freq", "välkommen"]) == 0
     assert "Status: Okänt ord" not in capsys.readouterr().out
