@@ -1,6 +1,6 @@
 # svlang
 
-[![Version](https://img.shields.io/badge/version-0.2.11-blue)](https://github.com/yeager/svlang/releases/tag/v0.2.11)
+[![Version](https://img.shields.io/badge/version-0.2.12-blue)](https://github.com/yeager/svlang/releases/tag/v0.2.12)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Python](https://img.shields.io/badge/python-3.10+-blue)
 
