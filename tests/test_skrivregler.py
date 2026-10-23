@@ -53,6 +53,7 @@ def test_cli_question_metavariable_is_not_punctuation():
     assert any(issue.suggestion == 'Ta bort mellanslaget före skiljetecknet'
                for issue in checker.check('Hej ?'))
     assert checker.check('matris (?) av ? (<felaktigt formaterad beskrivare>)') == []
+    assert checker.check('  - ?') == []
 
 
 def test_swedish_quotes_numbers_percent_and_ranges_are_reported():

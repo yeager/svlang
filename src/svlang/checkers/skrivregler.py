@@ -442,6 +442,14 @@ class SkrivreglerChecker:
                 # Literal command patterns retain their ASCII ellipsis syntax.
                 if pattern in (_ASCII_ELLIPSIS, _SPACE_BEFORE_PUNCTUATION) and re.search(r"['`]set [^'`]*\.\.\.['`]", context):
                     continue
+                # In CLI help, a list item may use a punctuation character as
+                # a literal glob pattern, for example ``- ?``. It is syntax,
+                # not a space before prose punctuation.
+                line_start = text.rfind("\n", 0, m.start()) + 1
+                line_end = text.find("\n", m.end())
+                line = text[line_start:None if line_end < 0 else line_end]
+                if pattern is _SPACE_BEFORE_PUNCTUATION and re.match(r"[ \t]*-[ \t]+\?(?:[ \t]|$)", line):
+                    continue
                 # IPv4 addresses use dotted octets by design, rather than
                 # Swedish thousands separators.
                 if pattern is _LARGE_DOTTED_NUMBER and _IPV4_ADDRESS.fullmatch(m.group(0)):
