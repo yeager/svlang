@@ -44,6 +44,10 @@ def _po_target_for_analysis(source: str, translation: str) -> str:
         # subject to the writing-rule checks.
         if "..." in source_line:
             target_line = target_line.replace("...", "…")
+        # gettext writes a literal percent as %%. Keep the syntax in the PO
+        # file, but exclude it from prose typography checks.
+        if "%%" in source_line:
+            target_line = target_line.replace("%%", "procent")
         if re.search(r"[ \t]+[.;?]", source_line):
             target_line = re.sub(r"[ \t]+(?=[.;?])", "", target_line)
         if re.search(r"\([ \t]+|[ \t]+\)", source_line):
