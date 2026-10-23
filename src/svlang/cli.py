@@ -117,6 +117,26 @@ def _read_analysis_text(path: Path) -> str:
     return "\n.\n".join(targets)
 
 
+_LOCALIZATION_SUFFIXES = {
+    ".arb", ".ftl", ".json", ".po", ".resx", ".strings", ".ts", ".xlf", ".xliff",
+}
+
+
+def _analysis_paths(path: Path) -> list[Path]:
+    """Return a deterministic list of localization files for *path*.
+
+    ``skrivregler --file`` is commonly used on an exported translation batch.
+    Accepting a directory makes that workflow practical while deliberately
+    skipping unrelated files such as build artefacts and binary resources.
+    """
+    if path.is_file():
+        return [path]
+    return sorted(
+        candidate for candidate in path.rglob("*")
+        if candidate.is_file() and candidate.suffix.lower() in _LOCALIZATION_SUFFIXES
+    )
+
+
 def _output(data, as_json=False, quiet=False):
     """Output data as JSON or human-readable text."""
     if as_json:
@@ -332,7 +352,14 @@ def _cmd_skrivregler(args):
             else:
                 print(_("File not found: {path}").format(path=path), file=sys.stderr)
             return 2
-        text = _read_analysis_text(path)
+        paths = _analysis_paths(path)
+        if not paths:
+            if args.json:
+                _output({"error": _("No localization files found: {path}").format(path=path)}, as_json=True)
+            else:
+                print(_("No localization files found: {path}").format(path=path), file=sys.stderr)
+            return 2
+        text = "\n.\n".join(_read_analysis_text(candidate) for candidate in paths)
     else:
         if args.json:
             _output({"error": _("Specify --text or --file")}, as_json=True)

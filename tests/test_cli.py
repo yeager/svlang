@@ -104,6 +104,25 @@ def test_skrivregler_fluent_keeps_variables_from_creating_spacing_errors(tmp_pat
     assert "Interpunktion" not in capsys.readouterr().out
 
 
+def test_skrivregler_directory_checks_localization_catalogs(tmp_path, capsys):
+    catalog_dir = tmp_path / "catalogs"
+    catalog_dir.mkdir()
+    (catalog_dir / "sv.ftl").write_text(
+        "message = Hej, och välkommen\n", encoding="utf-8"
+    )
+    (catalog_dir / "notes.txt").write_text(
+        "Hej, och detta är inte en katalog.\n", encoding="utf-8"
+    )
+    assert main(["skrivregler", "--file", str(catalog_dir)]) == 1
+    output = capsys.readouterr().out
+    assert "Ta bort kommat före ”och”" in output
+
+
+def test_skrivregler_directory_without_catalogs_is_an_error(tmp_path, capsys):
+    assert main(["skrivregler", "--file", str(tmp_path)]) == 2
+    assert "No localization files found" in capsys.readouterr().err
+
+
 def test_skrivregler_xliff_checks_targets_not_xml_indentation(tmp_path, capsys):
     catalog = tmp_path / "sv.xliff"
     catalog.write_text(
