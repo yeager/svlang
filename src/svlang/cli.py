@@ -49,6 +49,12 @@ def _po_target_for_analysis(source: str, translation: str) -> str:
         if re.search(r"\([ \t]+|[ \t]+\)", source_line):
             target_line = re.sub(r"\([ \t]+", "(", target_line)
             target_line = re.sub(r"[ \t]+\)", ")", target_line)
+        # An em dash copied from the source is source-defined punctuation.
+        # Keep it in the catalog, but mask it for the target-only Swedish
+        # writing check. A target that introduces additional em dashes remains
+        # visible to the checker.
+        if target_line.count("—") <= source_line.count("—"):
+            target_line = target_line.replace("—", "–")
         normalized.append(target_line)
     return "\n".join(normalized)
 

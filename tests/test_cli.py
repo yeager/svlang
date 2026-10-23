@@ -81,6 +81,20 @@ def test_skrivregler_po_ignores_source_defined_cli_alignment(tmp_path, capsys):
     assert output.count("Dubbelt mellanslag") == 1
 
 
+def test_skrivregler_po_ignores_source_defined_em_dash(tmp_path, capsys):
+    po = tmp_path / "sv.po"
+    po.write_text(
+        'msgid "Status — clear"\n'
+        'msgstr "Status — klar"\n\n'
+        'msgid "Plain text"\n'
+        'msgstr "Status — fortfarande fel"\n',
+        encoding="utf-8",
+    )
+    assert main(["skrivregler", "--file", str(po), "--enable-interpunktion"]) == 1
+    output = capsys.readouterr().out
+    assert output.count("Undvik tankstreck") == 1
+
+
 def test_skrivregler_po_ignores_source_defined_cli_punctuation(tmp_path, capsys):
     po = tmp_path / "sv.po"
     po.write_text(
