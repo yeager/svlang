@@ -83,6 +83,21 @@ def _read_analysis_text(path: Path) -> str:
                     value = re.sub(r"(?<=[\]\w])\.\.\.", "…", value)
                 targets.append(value)
         return "\n.\n".join(targets)
+    if suffix in {".xlf", ".xliff"}:
+        from xml.etree import ElementTree as ET
+
+        root = ET.parse(path).getroot()
+        targets: list[str] = []
+        for element in root.iter():
+            if element.tag.rsplit("}", 1)[-1] != "target":
+                continue
+            # XLIFF target text can contain inline markup. itertext() retains
+            # the user-visible text while excluding source strings and XML
+            # indentation that would otherwise create false style warnings.
+            value = "".join(element.itertext()).strip()
+            if value:
+                targets.append(value)
+        return "\n.\n".join(targets)
     if suffix != ".po":
         return path.read_text(encoding="utf-8")
 

@@ -104,6 +104,32 @@ def test_skrivregler_fluent_keeps_variables_from_creating_spacing_errors(tmp_pat
     assert "Interpunktion" not in capsys.readouterr().out
 
 
+def test_skrivregler_xliff_checks_targets_not_xml_indentation(tmp_path, capsys):
+    catalog = tmp_path / "sv.xliff"
+    catalog.write_text(
+        """<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2">
+  <file source-language="en" target-language="sv">
+    <body>
+      <trans-unit id="one">
+        <source>English, and source</source>
+        <target>Hej och välkommen</target>
+      </trans-unit>
+      <trans-unit id="two">
+        <source>More English source text</source>
+        <target>Detta, och det andra</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
+""",
+        encoding="utf-8",
+    )
+    assert main(["skrivregler", "--file", str(catalog), "--enable-interpunktion"]) == 1
+    output = capsys.readouterr().out
+    assert "Ta bort kommat före ”och”" in output
+    assert "Dubbelt mellanslag" not in output
+
 def test_frequency_miss_is_not_a_spelling_verdict(capsys):
     assert main(["freq", "välkommen"]) == 0
     assert "Status: Okänt ord" not in capsys.readouterr().out

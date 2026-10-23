@@ -68,6 +68,13 @@ def test_swedish_quotes_numbers_percent_and_ranges_are_reported():
     assert checker.check('”Citat” 1 000 000 besökare, 8,65 % mellan 11–12.') == []
 
 
+def test_ipv4_is_not_mistaken_for_a_dotted_thousands_number():
+    checker = SkrivreglerChecker()
+    suggestions = {issue.suggestion for issue in checker.check("DNS-servern har adressen 255.255.255.255.")}
+    assert "Gruppera stora tal med mellanslag, inte punkt" not in suggestions
+    suggestions = {issue.suggestion for issue in checker.check("Det blev 1.000.000 besök.")}
+    assert "Gruppera stora tal med mellanslag, inte punkt" in suggestions
+
 def test_em_dash_is_reported_but_en_dash_and_hyphen_are_allowed():
     checker = SkrivreglerChecker()
     issues = checker.check('Status — klar. Gäller 11–12 och Homebrew-appen.')

@@ -282,6 +282,7 @@ _SPACE_INSIDE_PARENS = re.compile(r'\([ \t]+\S|\S[ \t]+\)')
 _ASCII_ELLIPSIS = re.compile(r'\.\.\.')
 _ENGLISH_CURLY_QUOTES = re.compile(r'“')
 _LARGE_DOTTED_NUMBER = re.compile(r'\b\d{1,3}(?:\.\d{3}){2,}\b')
+_IPV4_ADDRESS = re.compile(r'\b(?:\d{1,3}\.){3}\d{1,3}\b')
 _PERCENT_WITHOUT_SPACE = re.compile(r'\b\d+(?:,\d+)?%(?!\w)')
 _SPACED_NUMERIC_HYPHEN = re.compile(r'\b\d+[ \t]+-[ \t]+\d+\b')
 _EM_DASH = re.compile("—")
@@ -440,6 +441,10 @@ class SkrivreglerChecker:
                     continue
                 # Literal command patterns retain their ASCII ellipsis syntax.
                 if pattern in (_ASCII_ELLIPSIS, _SPACE_BEFORE_PUNCTUATION) and re.search(r"['`]set [^'`]*\.\.\.['`]", context):
+                    continue
+                # IPv4 addresses use dotted octets by design, rather than
+                # Swedish thousands separators.
+                if pattern is _LARGE_DOTTED_NUMBER and _IPV4_ADDRESS.fullmatch(m.group(0)):
                     continue
                 issues.append(SkrivregelIssue(
                     rule="interpunktion",
