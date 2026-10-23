@@ -67,6 +67,34 @@ def test_check_po_keeps_entries_as_separate_sentences(tmp_path, capsys):
     assert data["statistics"]["sentence_count"] == 2
 
 
+def test_skrivregler_po_ignores_source_defined_cli_alignment(tmp_path, capsys):
+    po = tmp_path / "sv.po"
+    po.write_text(
+        'msgid "-p      Print status"\n'
+        'msgstr "-p      Skriv ut status"\n\n'
+        'msgid "Vanlig text"\n'
+        'msgstr "Vanlig  text"\n',
+        encoding="utf-8",
+    )
+    assert main(["skrivregler", "--file", str(po), "--enable-interpunktion"]) == 1
+    output = capsys.readouterr().out
+    assert output.count("Dubbelt mellanslag") == 1
+
+
+def test_skrivregler_po_ignores_source_defined_cli_punctuation(tmp_path, capsys):
+    po = tmp_path / "sv.po"
+    po.write_text(
+        'msgid "cmd [argument ...] ; ( expression ) ?"\n'
+        'msgstr "cmd [argument ...] ; ( uttryck ) ?"\n\n'
+        'msgid "Vanlig text"\n'
+        'msgstr "Vanlig ... text"\n',
+        encoding="utf-8",
+    )
+    assert main(["skrivregler", "--file", str(po), "--enable-interpunktion"]) == 1
+    output = capsys.readouterr().out
+    assert output.count("ellipstecknet") == 1
+
+
 def test_check_fluent_analyzes_values_without_keys_or_variables(tmp_path, capsys):
     catalog = tmp_path / "sv.ftl"
     catalog.write_text(

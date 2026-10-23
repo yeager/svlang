@@ -22,6 +22,37 @@ except AttributeError:
 _ = gettext.gettext
 
 
+def _po_target_for_analysis(source: str, translation: str) -> str:
+    """Remove source-defined terminal alignment from a PO target.
+
+    CLI help and diagnostic tables often reserve columns with runs of spaces.
+    Those spaces are part of the rendered layout and must be kept in the PO
+    file, but they are not Swedish prose and should not trigger the ordinary
+    double-space check.  Only normalize a target line when the corresponding
+    source line explicitly uses that layout.
+    """
+    source_lines = source.splitlines()
+    target_lines = translation.splitlines()
+    normalized: list[str] = []
+    for index, target_line in enumerate(target_lines):
+        source_line = source_lines[index] if index < len(source_lines) else ""
+        if re.search(r"(?:^|\S)[ \t]{2,}", source_line):
+            target_line = re.sub(r"[ \t]{2,}", " ", target_line)
+        # Command syntax often intentionally uses ASCII ellipses, spaces
+        # before punctuation, and padded parentheses. Mask only syntax that
+        # the source uses on the same line; ordinary Swedish prose stays
+        # subject to the writing-rule checks.
+        if "..." in source_line:
+            target_line = target_line.replace("...", "…")
+        if re.search(r"[ \t]+[.;?]", source_line):
+            target_line = re.sub(r"[ \t]+(?=[.;?])", "", target_line)
+        if re.search(r"\([ \t]+|[ \t]+\)", source_line):
+            target_line = re.sub(r"\([ \t]+", "(", target_line)
+            target_line = re.sub(r"[ \t]+\)", ")", target_line)
+        normalized.append(target_line)
+    return "\n".join(normalized)
+
+
 def _read_analysis_text(path: Path) -> str:
     """Read user-facing target text from a localization file.
 
@@ -109,8 +140,11 @@ def _read_analysis_text(path: Path) -> str:
         if entry.obsolete:
             continue
         if entry.msgstr:
-            targets.append(entry.msgstr)
-        targets.extend(value for value in entry.msgstr_plural.values() if value)
+            targets.append(_po_target_for_analysis(entry.msgid, entry.msgstr))
+        targets.extend(
+            _po_target_for_analysis(entry.msgid_plural or entry.msgid, value)
+            for value in entry.msgstr_plural.values() if value
+        )
     # PO entries are independent UI strings.  An explicit sentence boundary
     # prevents a run of labels without punctuation from being reported as one
     # artificial, extremely long sentence by the naturalness checker.
