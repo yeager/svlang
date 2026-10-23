@@ -47,7 +47,6 @@ class SwedishNaturalness:
             "fokusera": "fokusera på/koncentrera sig på",
             "involvera": "involvera/inkludera",
             "prioritera": "prioritera/sätta i första hand",
-            "optimera": "förbättra/optimera",
             "integrerad": "integrerad/sammanbyggd",
             "kommunicera": "kommunicera/meddela",
             "identifiera": "identifiera/fastställa",
