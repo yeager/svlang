@@ -56,6 +56,13 @@ def test_cli_question_metavariable_is_not_punctuation():
     assert checker.check('  - ?') == []
 
 
+def test_cli_help_indentation_is_not_a_double_space():
+    checker = SkrivreglerChecker(check_interpunktion=True)
+    assert checker.check('  - första posten\n    fortsatt text') == []
+    assert any(issue.suggestion == 'Dubbelt mellanslag → enkelt'
+               for issue in checker.check('Två  mellanslag i löpande text.'))
+
+
 def test_swedish_quotes_numbers_percent_and_ranges_are_reported():
     checker = SkrivreglerChecker()
     text = '“Citat” 1.000.000 besökare, 8,65% mellan 11 - 12.'

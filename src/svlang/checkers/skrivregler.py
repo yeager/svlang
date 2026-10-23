@@ -465,6 +465,12 @@ class SkrivreglerChecker:
 
         if self._check_interpunktion:
             for m in _DOUBLE_SPACE.finditer(text):
+                # Multiline CLI help deliberately indents wrapped lines and
+                # nested list items. Leading indentation is layout, not a
+                # doubled space in Swedish prose.
+                line_start = text.rfind("\n", 0, m.start()) + 1
+                if not text[line_start:m.start()].strip():
+                    continue
                 issues.append(SkrivregelIssue(
                     rule="interpunktion",
                     word="  ",
