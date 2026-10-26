@@ -407,6 +407,24 @@ class SkrivreglerChecker:
                         line=self._line_number(text, m.start()),
                     ))
 
+            # Flag likely compound spelling errors without automatically
+            # rewriting names, abbreviations, code or deliberate repetitions.
+            protected = re.compile(r'https?://\S+|www\.\S+|\{[^}]*\}|<[^>]*>|`[^`]*`', re.IGNORECASE)
+            spans = [m.span() for m in protected.finditer(text)]
+            for m in re.finditer(r'\b[a-zåäö]+\b', text, re.IGNORECASE):
+                word = m.group()
+                if word.lower() in STAVFEL or word.isupper():
+                    continue
+                if any(start <= m.start() < end for start, end in spans):
+                    continue
+                if re.search(r'([bcdfghjklmnpqrstvwxz])\1{2,}', word, re.IGNORECASE):
+                    issues.append(SkrivregelIssue(
+                        rule="stavfel", word=word,
+                        suggestion="Kontrollera tre lika konsonanter i följd",
+                        context=self._context(text, m.start(), m.end()),
+                        position=m.start(), line=self._line_number(text, m.start()),
+                    ))
+
         # ── Interpunktion ──
         # A comma before “och” is not used in the Swedish house style for
         # translations. This is deliberately always enabled, unlike the

@@ -114,3 +114,13 @@ def test_three_identical_consonants_in_known_compounds():
     ]
     assert checker.check("Adresspecifika inställningar och processtatus.") == []
     assert checker.check("En glass-skål och PPP.") == []
+
+
+def test_unknown_triple_consonants_are_warnings_without_auto_correction():
+    checker = SkrivreglerChecker()
+    hits = checker.check("Visa upppil och ägggula.")
+    assert [(h.word, h.suggestion) for h in hits] == [
+        ("upppil", "Kontrollera tre lika konsonanter i följd"),
+        ("ägggula", "Kontrollera tre lika konsonanter i följd"),
+    ]
+    assert checker.check("Visa uppil, äggula och glass-skål. https://www.example.org PPP {ppp}") == []
