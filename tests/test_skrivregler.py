@@ -103,3 +103,14 @@ def test_cli_skrivregler_json_catalog_checks_values_not_format(tmp_path, capsys)
     )
     assert main(["skrivregler", "--file", str(catalog), "--enable-interpunktion"]) == 1
     assert "Ta bort kommat före ”och”" in capsys.readouterr().out
+
+
+def test_three_identical_consonants_in_known_compounds():
+    checker = SkrivreglerChecker()
+    hits = checker.check("Adressspecifika inställningar och processstatus.")
+    assert [(h.word, h.suggestion) for h in hits] == [
+        ("Adressspecifika", "adresspecifika"),
+        ("processstatus", "processtatus"),
+    ]
+    assert checker.check("Adresspecifika inställningar och processtatus.") == []
+    assert checker.check("En glass-skål och PPP.") == []

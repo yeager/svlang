@@ -142,6 +142,10 @@ _SARSKRIVNINGAR: dict[str, str] = {
 # ── Common misspellings ────────────────────────────────────────────
 # Based on prefix.nu/stavning and Språkrådet
 _STAVFEL: dict[str, str] = {
+    # Three identical consonants at compound boundaries (Språkrådets frågelåda).
+    "adressspecifik": "adresspecifik",
+    "adressspecifika": "adresspecifika",
+    "processstatus": "processtatus",
     # Double/single consonant
     "nogrann": "noggrann",
     "vilkor": "villkor",
