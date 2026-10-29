@@ -8,16 +8,12 @@ sammanhang, genre eller betydelse.
 ## Automatisk kontroll
 
 - särskrivningar, vanliga stavfel samt de/dem
-- komma före `och` enligt projektets strikta husregel
 - mellanslag före skiljetecken och innanför parenteser
-- typografiskt ellipstecken (`…`) i stället för tre punkter
+- tre punkter vid ellips; ett sammanhållet ellipstecken (`…`) är också möjligt
 - svenska citatteckens öppning (`”`, inte `“`)
 - stora tal med mellanslag som gruppavskiljare
 - mellanslag före procenttecken
 - tankstreck i talintervall
-- tankstreck i löpande svensk text. Använd normalt kolon, komma eller
-  parentes i stället. Behåll det bara när originalets syntax, layout eller
-  annan teknisk struktur måste bevaras; jämför alltid med källsträngen.
 - svenska decimaltecken, datumformat och talformat i `l10n-lint`
 
 ## Granskningspunkter
@@ -25,7 +21,7 @@ sammanhang, genre eller betydelse.
 Granskaren ska bedöma följande för varje relevant sträng:
 
 1. Skiljetecknets funktion: punkt, frågetecken, utropstecken, komma,
-   semikolon, kolon, bindestreck, tankstreck, parentes och snedstreck.
+   semikolon, kolon, bindestreck, tankstreck, parentes och snedstreck. Komma före `och` kan vara korrekt mellan huvudsatser och vid parentetiska inskott. Bedöm funktionen i sammanhanget.
 2. Stor och liten bokstav i meningar, rubriker, namn, organisationer och
    sammansättningar med namn.
 3. Samman- eller särskrivning, även nya och långa sammansättningar.
@@ -41,8 +37,30 @@ Granskaren ska bedöma följande för varje relevant sträng:
 layout. Därför visas sammanhangsberoende regler som granskningspunkter i
 stället för automatiska fel.
 
+## Avgränsning efter genomgång av *Svenska skrivregler*
+
+Hela den tillhandahållna fjärde upplagan (2017), kapitel 1–18, har granskats
+mot verktygens regler. Boken behandlar textform och texttyper (kap. 1–2), citat
+och källhänvisningar (3–4), avstavning, stavning, böjning, versaler och
+sammansättningar (5–9), förkortningar, tal, skiljetecken och symboler (10–13),
+engelska ord och texter (14), främmande tecken (15), alfabetisk sortering (16),
+teckeninmatning (17) och korrekturtecken (18).
+
+Kapitel 5, delar av 1–4 och 15–18 gäller främst längre dokument, publicering,
+referenshantering eller produktion och ger därför inte generella lintregler för
+kort UI-text. Stavning, böjning, versaler, sammansättningar, tal och tecken kan
+ge säkra automatiska kontroller när formatet och sammanhanget räcker. Bokens
+råd om kommatering, lånord, ordval, citat och textform kräver ofta bedömning.
+Förordet framhåller också att råden gäller normalfall och att alternativ och
+särskilda omständigheter kan motivera andra val. Reglerna här ska därför ses
+som säkra kontroller och granskningsstöd, inte som en fullständig maskinell
+implementering av boken.
+
 ## Källor
 
-- Språkrådet, *Snabba skrivregler – i skolan och på jobbet* (2024).
-- *Svenska skrivregler*.
-- *Svenska skrivregler*, kapitel 4–5.
+- Isof/Språkrådet, [Frågelådan: Hur ska man kommatera?](https://frageladan.isof.se/faqs/30975).
+- Isof/Språkrådet, [Frågelådan: Kan man ha kommatecken före och?](https://frageladan.isof.se/faqs/22623).
+- Isof/Språkrådet, [Hur ska man använda skiljetecken som punkt, kolon, semikolon, komma och tankstreck i löptext?](https://frageladan.isof.se/faqs/26862).
+- Isof, *Snabba skrivregler – i skolan och på jobbet* (2024).
+- Ola Karlsson, *Svenska skrivregler*, fjärde upplagan (2017), kapitel 1–18;
+  genomgången mot den EPUB som tillhandahölls för verktygsgranskningen.

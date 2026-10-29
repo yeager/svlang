@@ -1,6 +1,6 @@
 # svlang
 
-[![Version](https://img.shields.io/badge/version-0.2.22-blue)](https://github.com/yeager/svlang/releases/tag/v0.2.22)
+[![Version](https://img.shields.io/badge/version-0.2.23-blue)](https://github.com/yeager/svlang/releases/tag/v0.2.23)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Python](https://img.shields.io/badge/python-3.10+-blue)
 
@@ -31,7 +31,7 @@ sudo dnf install svlang
 
 ### Aktuell version
 
-[Version 0.2.7](https://github.com/yeager/svlang/releases/tag/v0.2.7) innehåller
+[Version 0.2.23](https://github.com/yeager/svlang/releases/tag/v0.2.23) innehåller
 versionsanteckningar och den annoterade Git-taggen. Installera via `pip` eller
 från källkod enligt anvisningarna nedan. APT- och RPM-kataloger kan ligga efter
 den senaste GitHub-versionen.
@@ -167,10 +167,9 @@ excluding keys, source text, and placeholders. Run `svlang skrivregler
 --style-guide` for the complete policy.
 
 Use it with l10n-lint, hunspell-sv, swedish-foss-terminology and swedish-tm.
-Automatic checks cover the project rule against a comma directly before `och`,
-punctuation spacing, Swedish quotation marks, ellipses, percentages, digit
-grouping, numeric ranges and em dashes in ordinary Swedish text. Prefer a
-colon, comma or parentheses to an em dash. Preserve it only when the original
-syntax or layout requires it, after comparing the source. Meaning, tone,
-register and context-specific terminology remain manual review tasks. A Crowdin
+Automatic checks cover punctuation spacing, Swedish quotation marks,
+percentages, digit grouping and numeric ranges. A single ellipsis character is
+an optional typographic alternative to three dots. Commas before `och` and
+dashes are assessed in context. Meaning, tone, register and context-specific
+terminology remain manual review tasks. A Crowdin
 prefix before `|` is metadata and must not appear in the visible Swedish translation.

@@ -21,7 +21,7 @@ from dataclasses import dataclass, field
 
 
 STYLE_GUIDE = (
-    ("Skiljetecken och skrivtecken", "Punkt, ellips, citattecken, mellanslag, talintervall och projektets komma-och-regel kontrolleras automatiskt.", "Bedöm komma, semikolon, kolon, bindestreck, tankstreck och snedstreck i sitt sammanhang."),
+    ("Skiljetecken och skrivtecken", "Citattecken, mellanslag, talintervall och projektets formatprofil kontrolleras automatiskt.", "Bedöm ellips, komma, semikolon, kolon, bindestreck, tankstreck och snedstreck i sitt sammanhang. Komma före och kan vara korrekt mellan huvudsatser eller kring inskott."),
     ("Stor och liten bokstav", "Kontrolleras där formaten ger säkra signaler.", "Bedöm namn, rubriker, organisationer och sammansättningar med namn."),
     ("Sammansättningar", "Vanliga särskrivningar och kända stavfel kontrolleras automatiskt.", "Bedöm nya, fackliga och långa sammansättningar."),
     ("Förkortningar", "Enskilda formatregler kontrolleras när de är säkra.", "Bedöm förkortningens lämplighet, böjning och interpunktion."),
@@ -275,21 +275,15 @@ _MISSING_SPACE_AFTER = re.compile(r'[.!?,:;][A-ZÅÄÖ]')
 # Space before punctuation (except open parens)
 _SPACE_BEFORE_PUNCT = re.compile(r'\s+[.!?,;:](?!\w)')
 
-# Swedish style does not use a comma immediately before the coordinating
-# conjunction “och”. Keep this separate from the opt-in general punctuation
-# checks: it is a high-confidence translation error.
-_COMMA_BEFORE_OCH = re.compile(r',\s+och\b', re.IGNORECASE)
 # Swedish typography: no whitespace immediately before punctuation or
 # immediately inside ordinary parentheses. Three dots are one ellipsis glyph.
 _SPACE_BEFORE_PUNCTUATION = re.compile(r'\S[ \t]+[,.!?;:](?!\w)')
 _SPACE_INSIDE_PARENS = re.compile(r'\([ \t]+\S|\S[ \t]+\)')
-_ASCII_ELLIPSIS = re.compile(r'\.\.\.')
 _ENGLISH_CURLY_QUOTES = re.compile(r'“')
 _LARGE_DOTTED_NUMBER = re.compile(r'\b\d{1,3}(?:\.\d{3}){2,}\b')
 _IPV4_ADDRESS = re.compile(r'\b(?:\d{1,3}\.){3}\d{1,3}\b')
 _PERCENT_WITHOUT_SPACE = re.compile(r'\b\d+(?:,\d+)?%(?!\w)')
 _SPACED_NUMERIC_HYPHEN = re.compile(r'\b\d+[ \t]+-[ \t]+\d+\b')
-_EM_DASH = re.compile("—")
 
 
 class SkrivreglerChecker:
@@ -426,33 +420,26 @@ class SkrivreglerChecker:
                     ))
 
         # ── Interpunktion ──
-        # A comma before “och” is not used in the Swedish house style for
-        # translations. This is deliberately always enabled, unlike the
-        # broader punctuation checks below.
-        for m in _COMMA_BEFORE_OCH.finditer(text):
-            issues.append(SkrivregelIssue(
-                rule="interpunktion",
-                word=m.group(0),
-                suggestion='Ta bort kommat före ”och”',
-                context=self._context(text, m.start(), m.end()),
-                position=m.start(),
-                line=self._line_number(text, m.start()),
-            ))
-
-        # These formatting errors are unambiguous in ordinary Swedish
-        # translation text, so report them together with the house-style
-        # comma-before-och rule.
+        # Comma use is context dependent. In particular, Swedish normally
+        # uses a comma between coordinated main clauses, so do not flag every
+        # occurrence of 'och'.
+        # These formatting checks are high-confidence in ordinary Swedish prose.
         for pattern, suggestion in (
             (_SPACE_BEFORE_PUNCTUATION, 'Ta bort mellanslaget före skiljetecknet'),
             (_SPACE_INSIDE_PARENS, 'Ta bort mellanslaget innanför parentesen'),
-            (_ASCII_ELLIPSIS, 'Använd ellipstecknet ”…” i stället för tre punkter'),
             (_ENGLISH_CURLY_QUOTES, 'Använd svenska citattecken ”…”'),
             (_LARGE_DOTTED_NUMBER, 'Gruppera stora tal med mellanslag, inte punkt'),
             (_PERCENT_WITHOUT_SPACE, 'Sätt mellanslag före procenttecknet'),
             (_SPACED_NUMERIC_HYPHEN, 'Använd tankstreck i talintervall'),
-            (_EM_DASH, 'Undvik tankstreck i svensk text; använd kolon, komma eller parentes'),
         ):
             for m in pattern.finditer(text):
+                # Chapter 12.3 permits spacing before three dots when they
+                # mark an omission or pause; do not treat that as a space
+                # before an ordinary period.
+                if (pattern is _SPACE_BEFORE_PUNCTUATION
+                        and m.group(0).endswith('.')
+                        and text[m.end():m.end() + 2] == '..'):
+                    continue
                 # In CLI help, a standalone question mark is often a literal
                 # metavariable: “Använd ? för MIME-typer”. It is not prose
                 # punctuation. Keep the exemption deliberately narrow.
@@ -462,7 +449,7 @@ class SkrivreglerChecker:
                              or re.search(r'\(\?\) av \?', context))):
                     continue
                 # Literal command patterns retain their ASCII ellipsis syntax.
-                if pattern in (_ASCII_ELLIPSIS, _SPACE_BEFORE_PUNCTUATION) and re.search(r"['`]set [^'`]*\.\.\.['`]", context):
+                if pattern is _SPACE_BEFORE_PUNCTUATION and re.search(r"['`]set [^'`]*\.\.\.['`]", context):
                     continue
                 # In CLI help, a list item may use a punctuation character as
                 # a literal glob pattern, for example ``- ?``. It is syntax,
@@ -512,5 +499,5 @@ class SkrivreglerChecker:
             "sarskrivning": len(_SARSKRIVNINGAR),
             "stavfel": len(STAVFEL),
             "dedem": 3,  # 3 pattern groups
-            "interpunktion": 10,  # comma, spacing, ellipsis, quotes, numbers, ranges, em dash
+            "interpunktion": 6,  # spacing, quotes, numbers, ranges
         }

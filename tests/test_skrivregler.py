@@ -27,24 +27,23 @@ def test_line_break_after_de_is_not_an_indirect_object():
     assert checker.check('Visa de\n mest aktiva processerna.') == []
 
 
-def test_comma_before_och_is_reported_by_default():
+def test_comma_before_och_is_not_flagged_without_syntax_analysis():
     checker = SkrivreglerChecker()
-    issues = checker.check('Jag öppnade filen, och sparade ändringarna.')
-    assert len(issues) == 1
-    assert issues[0].rule == 'interpunktion'
-    assert issues[0].suggestion == 'Ta bort kommat före ”och”'
-    assert checker.check('Jag öppnade filen och sparade ändringarna.') == []
+    # Isof recommends comma between coordinated main clauses; the same surface
+    # pattern can also be a comma error, so it requires syntactic context.
+    assert checker.check('De tyska turisterna har varit flera i Danmark än i Norge, och Sverige har haft det lägsta antalet.') == []
+    assert checker.check('Jag öppnade filen, och sparade ändringarna.') == []
 
 
-def test_swedish_punctuation_spacing_and_ellipsis_are_reported():
+def test_swedish_punctuation_spacing_is_reported_but_ellipsis_forms_are_allowed():
     checker = SkrivreglerChecker()
     issues = checker.check('Hej ! ( test ) Vänta...')
     assert {issue.suggestion for issue in issues} == {
         'Ta bort mellanslaget före skiljetecknet',
         'Ta bort mellanslaget innanför parentesen',
-        'Använd ellipstecknet ”…” i stället för tre punkter',
     }
     assert checker.check('Hej! (test) Vänta…') == []
+    assert checker.check('Vänta...') == []
     assert checker.check("Använd 'set auto-load ...' för kommandot.") == []
 
 def test_cli_question_metavariable_is_not_punctuation():
@@ -83,14 +82,11 @@ def test_ipv4_is_not_mistaken_for_a_dotted_thousands_number():
     suggestions = {issue.suggestion for issue in checker.check("Det blev 1.000.000 besök.")}
     assert "Gruppera stora tal med mellanslag, inte punkt" in suggestions
 
-def test_em_dash_is_reported_but_en_dash_and_hyphen_are_allowed():
+def test_em_dash_is_not_flagged_as_an_error():
     checker = SkrivreglerChecker()
-    issues = checker.check('Status — klar. Gäller 11–12 och Homebrew-appen.')
-    assert len(issues) == 1
-    assert issues[0].rule == 'interpunktion'
-    assert issues[0].suggestion == (
-        'Undvik tankstreck i svensk text; använd kolon, komma eller parentes'
-    )
+    # Isof describes dash choice as a matter of emphasis and permits several
+    # punctuation choices; a universal em-dash prohibition is too strict.
+    assert checker.check('Status — klar. Gäller 11–12 och Homebrew-appen.') == []
     assert checker.check('Status: klar. Gäller 11–12 och Homebrew-appen.') == []
 
 
@@ -101,8 +97,8 @@ def test_cli_skrivregler_json_catalog_checks_values_not_format(tmp_path, capsys)
     catalog.write_text(
         '{\n  "English source": "Hej, och välkommen…"\n}\n', encoding="utf-8"
     )
-    assert main(["skrivregler", "--file", str(catalog), "--enable-interpunktion"]) == 1
-    assert "Ta bort kommat före ”och”" in capsys.readouterr().out
+    assert main(["skrivregler", "--file", str(catalog), "--enable-interpunktion"]) == 0
+    assert "Inga skrivregelfel" in capsys.readouterr().out
 
 
 def test_three_identical_consonants_in_known_compounds():

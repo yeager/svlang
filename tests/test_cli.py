@@ -95,7 +95,7 @@ def test_skrivregler_po_ignores_gettext_literal_percent(tmp_path, capsys):
     assert output.count("Sätt mellanslag före procenttecknet") == 1
 
 
-def test_skrivregler_po_ignores_source_defined_em_dash(tmp_path, capsys):
+def test_skrivregler_po_allows_em_dashes_in_context(tmp_path, capsys):
     po = tmp_path / "sv.po"
     po.write_text(
         'msgid "Status — clear"\n'
@@ -104,9 +104,8 @@ def test_skrivregler_po_ignores_source_defined_em_dash(tmp_path, capsys):
         'msgstr "Status — fortfarande fel"\n',
         encoding="utf-8",
     )
-    assert main(["skrivregler", "--file", str(po), "--enable-interpunktion"]) == 1
-    output = capsys.readouterr().out
-    assert output.count("Undvik tankstreck") == 1
+    assert main(["skrivregler", "--file", str(po), "--enable-interpunktion"]) == 0
+    assert "Inga skrivregelfel" in capsys.readouterr().out
 
 
 def test_skrivregler_po_ignores_source_defined_cli_punctuation(tmp_path, capsys):
@@ -118,9 +117,8 @@ def test_skrivregler_po_ignores_source_defined_cli_punctuation(tmp_path, capsys)
         'msgstr "Vanlig ... text"\n',
         encoding="utf-8",
     )
-    assert main(["skrivregler", "--file", str(po), "--enable-interpunktion"]) == 1
-    output = capsys.readouterr().out
-    assert output.count("ellipstecknet") == 1
+    assert main(["skrivregler", "--file", str(po), "--enable-interpunktion"]) == 0
+    assert "Inga skrivregelfel" in capsys.readouterr().out
 
 
 def test_check_fluent_analyzes_values_without_keys_or_variables(tmp_path, capsys):
@@ -140,8 +138,8 @@ def test_skrivregler_fluent_checks_target_values(tmp_path, capsys):
         'swedish-key = Hej, och välkommen {"["}{$name}\n',
         encoding="utf-8",
     )
-    assert main(["skrivregler", "--file", str(catalog)]) == 1
-    assert "Ta bort kommat före ”och”" in capsys.readouterr().out
+    assert main(["skrivregler", "--file", str(catalog)]) == 0
+    assert "Inga skrivregelfel" in capsys.readouterr().out
 
 
 def test_skrivregler_fluent_ignores_cli_usage_ellipsis(tmp_path, capsys):
@@ -169,9 +167,8 @@ def test_skrivregler_directory_checks_localization_catalogs(tmp_path, capsys):
     (catalog_dir / "notes.txt").write_text(
         "Hej, och detta är inte en katalog.\n", encoding="utf-8"
     )
-    assert main(["skrivregler", "--file", str(catalog_dir)]) == 1
-    output = capsys.readouterr().out
-    assert "Ta bort kommat före ”och”" in output
+    assert main(["skrivregler", "--file", str(catalog_dir)]) == 0
+    assert "Inga skrivregelfel" in capsys.readouterr().out
 
 
 def test_skrivregler_directory_without_catalogs_is_an_error(tmp_path, capsys):
@@ -200,10 +197,10 @@ def test_skrivregler_xliff_checks_targets_not_xml_indentation(tmp_path, capsys):
 """,
         encoding="utf-8",
     )
-    assert main(["skrivregler", "--file", str(catalog), "--enable-interpunktion"]) == 1
+    assert main(["skrivregler", "--file", str(catalog), "--enable-interpunktion"]) == 0
     output = capsys.readouterr().out
-    assert "Ta bort kommat före ”och”" in output
     assert "Dubbelt mellanslag" not in output
+    assert "Inga skrivregelfel" in output
 
 def test_frequency_miss_is_not_a_spelling_verdict(capsys):
     assert main(["freq", "välkommen"]) == 0
