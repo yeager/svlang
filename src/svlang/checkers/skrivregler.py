@@ -302,7 +302,7 @@ class SkrivreglerChecker:
         check_sarskrivning: bool = True,
         check_dedem: bool = True,
         check_stavfel: bool = True,
-        check_interpunktion: bool = False,  # Opt-in: too noisy for PO files
+        check_interpunktion: bool = True,
     ):
         self._check_sarskrivning = check_sarskrivning
         self._check_dedem = check_dedem
@@ -424,14 +424,15 @@ class SkrivreglerChecker:
         # uses a comma between coordinated main clauses, so do not flag every
         # occurrence of 'och'.
         # These formatting checks are high-confidence in ordinary Swedish prose.
-        for pattern, suggestion in (
+        punctuation_checks = (
             (_SPACE_BEFORE_PUNCTUATION, 'Ta bort mellanslaget före skiljetecknet'),
             (_SPACE_INSIDE_PARENS, 'Ta bort mellanslaget innanför parentesen'),
             (_ENGLISH_CURLY_QUOTES, 'Använd svenska citattecken ”…”'),
             (_LARGE_DOTTED_NUMBER, 'Gruppera stora tal med mellanslag, inte punkt'),
             (_PERCENT_WITHOUT_SPACE, 'Sätt mellanslag före procenttecknet'),
             (_SPACED_NUMERIC_HYPHEN, 'Använd tankstreck i talintervall'),
-        ):
+        ) if self._check_interpunktion else ()
+        for pattern, suggestion in punctuation_checks:
             for m in pattern.finditer(text):
                 # Chapter 12.3 permits spacing before three dots when they
                 # mark an omission or pause; do not treat that as a space

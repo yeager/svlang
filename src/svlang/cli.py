@@ -50,6 +50,15 @@ def _po_target_for_analysis(source: str, translation: str) -> str:
             target_line = target_line.replace("%%", "procent")
         if re.search(r"[ \t]+[.;?]", source_line):
             target_line = re.sub(r"[ \t]+(?=[.;?])", "", target_line)
+        # Diagnostics and expression strings can use colon-separated machine
+        # syntax, for example ``%s : %s`` and ``A : -A``. If the source uses
+        # that exact compact syntax, retain it in the catalog but remove the
+        # spacing only in the analysis copy. Ordinary Swedish punctuation is
+        # deliberately left visible to the checker.
+        if re.search(r"(?:%[A-Za-z]|\b[A-Z])[ \t]+:[ \t]+(?:%[A-Za-z]|[-+]?\S)", source_line):
+            target_line = re.sub(
+                r"(?<=[A-Za-z%])[ \t]+:[ \t]+(?=[A-Za-z%+\-])", ":", target_line
+            )
         if re.search(r"\([ \t]+|[ \t]+\)", source_line):
             target_line = re.sub(r"\([ \t]+", "(", target_line)
             target_line = re.sub(r"[ \t]+\)", ")", target_line)

@@ -121,6 +121,29 @@ def test_skrivregler_po_ignores_source_defined_cli_punctuation(tmp_path, capsys)
     assert "Inga skrivregelfel" in capsys.readouterr().out
 
 
+def test_skrivregler_po_ignores_source_defined_machine_colon_spacing(tmp_path, capsys):
+    po = tmp_path / "sv.po"
+    po.write_text(
+        'msgid "Scale: %s : %s"\n'
+        'msgstr "Skala: %s : %s"\n\n'
+        'msgid "Vector A : -A"\n'
+        'msgstr "Vektor A : -A"\n\n'
+        'msgid "Plain text"\n'
+        'msgstr "Vanlig text : med felaktigt kolon"\n',
+        encoding="utf-8",
+    )
+    assert main(["skrivregler", "--file", str(po), "--enable-interpunktion"]) == 1
+    output = capsys.readouterr().out
+    assert output.count("Ta bort mellanslaget före skiljetecknet") == 1
+
+
+def test_skrivregler_punctuation_is_opt_in(tmp_path, capsys):
+    po = tmp_path / "sv.po"
+    po.write_text('msgid "Plain text"\nmsgstr "Vanlig text : med felaktigt kolon"\n', encoding="utf-8")
+    assert main(["skrivregler", "--file", str(po)]) == 0
+    assert "Inga skrivregelfel" in capsys.readouterr().out
+
+
 def test_check_fluent_analyzes_values_without_keys_or_variables(tmp_path, capsys):
     catalog = tmp_path / "sv.ftl"
     catalog.write_text(
