@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "svlang"
-version = "0.2.23"
+version = "0.2.24"
 description = "Swedish NLP toolkit for translators"
 readme = "README.md"
 license = {text = "MIT"}

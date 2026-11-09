@@ -1,6 +1,6 @@
 # svlang
 
-[![Version](https://img.shields.io/badge/version-0.2.23-blue)](https://github.com/yeager/svlang/releases/tag/v0.2.23)
+[![Version](https://img.shields.io/badge/version-0.2.24-blue)](https://github.com/yeager/svlang/releases/tag/v0.2.24)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Python](https://img.shields.io/badge/python-3.10+-blue)
 
@@ -31,7 +31,7 @@ sudo dnf install svlang
 
 ### Aktuell version
 
-[Version 0.2.23](https://github.com/yeager/svlang/releases/tag/v0.2.23) innehåller
+[Version 0.2.24](https://github.com/yeager/svlang/releases/tag/v0.2.24) innehåller
 versionsanteckningar och den annoterade Git-taggen. Installera via `pip` eller
 från källkod enligt anvisningarna nedan. APT- och RPM-kataloger kan ligga efter
 den senaste GitHub-versionen.

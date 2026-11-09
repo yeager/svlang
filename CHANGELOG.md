@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.24 - 2026-11-09
+
+- Respektera att interpunktionskontrollen är valfri i CLI:t.
+- Undanta källstyrd maskinsyntax som `%s : %s` och `A : -A` från svenska
+  kolonregler, utan att dölja felaktiga kolon i vanlig text.
+
 ## 0.2.23 - 2026-10-29
 
 - Do not flag every comma before *och* or every em dash as an error; punctuation depends on context.
