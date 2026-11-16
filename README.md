@@ -1,6 +1,6 @@
 # svlang
 
-[![Version](https://img.shields.io/badge/version-0.2.24-blue)](https://github.com/yeager/svlang/releases/tag/v0.2.24)
+[![Version](https://img.shields.io/badge/version-0.3.0-blue)](https://github.com/yeager/svlang/releases/tag/v0.3.0)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Python](https://img.shields.io/badge/python-3.10+-blue)
 
@@ -14,8 +14,8 @@ heuristisk kontroll av hur naturlig en mening verkar. Verktyget ger snabb
 ## Funktioner
 
 - `check` kontrollerar ord mot de medföljande svenska lexikonen och, när det
-  finns, Hunspells svenska ordlista. PO-, JSON- och Fluent-kataloger granskas
-  med måltexten utan nycklar, källtext eller platshållare.
+  finns, Hunspells svenska ordlista. PO-, JSON-, Fluent-, Qt TS-, TypeScript-
+  och TSX-resurser granskas med måltexten utan nycklar eller kodsyntax.
 - `freq` visar förekomst i den uppskattade frekvenslistan.
 - `skrivregler` hittar vanliga formella skrivregelavvikelser.
 - `natural` ger heuristiska signaler om formuleringar som kan behöva ses över.
@@ -31,7 +31,7 @@ sudo dnf install svlang
 
 ### Aktuell version
 
-[Version 0.2.24](https://github.com/yeager/svlang/releases/tag/v0.2.24) innehåller
+[Version 0.3.0](https://github.com/yeager/svlang/releases/tag/v0.3.0) innehåller
 versionsanteckningar och den annoterade Git-taggen. Installera via `pip` eller
 från källkod enligt anvisningarna nedan. APT- och RPM-kataloger kan ligga efter
 den senaste GitHub-versionen.
@@ -54,6 +54,19 @@ pip install -e .
 Kontrollera svensk text:
 ```bash
 svlang check --file text.txt
+```
+
+TypeScript-resurser kan granskas direkt. svlang läser strängar ur vanliga
+översättningsfunktioner, översättningsobjekt och synlig TSX-text, och hoppar
+över kommentarer, nycklar och annan kodsyntax. Qt Linguist-filer med ändelsen
+`.ts` känns igen som XML-kataloger och granskas från sina översättningar.
+Installera TypeScript-tillägget när du behöver analysera TypeScript- eller
+TSX-källkod:
+
+```bash
+pip install 'svlang[typescript]'
+svlang skrivregler --file src/locales/sv.ts
+svlang check --file src/components/Settings.tsx
 ```
 
 Kontrollera svenska skrivregler:
@@ -137,6 +150,9 @@ Bidrag välkomnas!
 
 ## Changelog
 
+- **0.3.0**: Läser svenska målsträngar ur TypeScript och TSX med Tree-sitter
+  och behåller stödet för Qt Linguist-kataloger med ändelsen `.ts`.
+
 - **0.2.9**: Tolkar den dokumenterade CLI-metavariabeln `?` utan falsk interpunktionsvarning.
 
 - **0.2.8**: Markerar tankstreck i löpande svensk text och dokumenterar när
@@ -162,8 +178,9 @@ Daniel Nylander (daniel@danielnylander.se)
 svlang is a command-line helper for Swedish localization review. Use `check` for
 word-list and Hunspell-backed spelling signals, `freq` for frequency lookups,
 `skrivregler` for mechanical style checks, and `natural` for heuristic wording
-signals. PO, JSON, and Fluent catalogs are analyzed using target text only,
-excluding keys, source text, and placeholders. Run `svlang skrivregler
+signals. PO, Qt TS, JSON, Fluent, TypeScript and TSX resources are analyzed
+using translated or user-visible text, excluding identifiers and code syntax.
+Run `svlang skrivregler
 --style-guide` for the complete policy.
 
 Use it with l10n-lint, hunspell-sv, swedish-foss-terminology and swedish-tm.

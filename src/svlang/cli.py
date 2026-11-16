@@ -11,6 +11,7 @@ import sys
 from pathlib import Path
 
 from svlang import __version__
+from svlang.checkers.typescript import TypeScriptSupportUnavailable
 
 TEXTDOMAIN = "svlang"
 LOCALEDIR = "/usr/share/locale"
@@ -85,6 +86,28 @@ def _read_analysis_text(path: Path) -> str:
     ordinary text files.
     """
     suffix = path.suffix.lower()
+    if suffix in {".ts", ".tsx"}:
+        source = path.read_text(encoding="utf-8")
+        source_without_bom = source.lstrip("\ufeff")
+        if suffix == ".ts" and source_without_bom.lstrip(" \t\r\n").startswith(("<?xml", "<TS")):
+            from xml.etree import ElementTree as ET
+
+            root = ET.fromstring(source_without_bom)
+            if root.tag.rsplit("}", 1)[-1] == "TS":
+                targets: list[str] = []
+                for translation in root.iter():
+                    if translation.tag.rsplit("}", 1)[-1] != "translation":
+                        continue
+                    if translation.get("type") in {"unfinished", "vanished", "obsolete"}:
+                        continue
+                    value = "".join(translation.itertext()).strip()
+                    if value:
+                        targets.append(value)
+                return "\n.\n".join(targets)
+
+        from svlang.checkers.typescript import extract_translation_text
+
+        return extract_translation_text(path, source_without_bom)
     if suffix == ".json":
         data = json.loads(path.read_text(encoding="utf-8"))
 
@@ -171,7 +194,7 @@ def _read_analysis_text(path: Path) -> str:
 
 
 _LOCALIZATION_SUFFIXES = {
-    ".arb", ".ftl", ".json", ".po", ".resx", ".strings", ".ts", ".xlf", ".xliff",
+    ".arb", ".ftl", ".json", ".po", ".resx", ".strings", ".ts", ".tsx", ".xlf", ".xliff",
 }
 
 
@@ -834,7 +857,14 @@ def main(argv: list[str] | None = None):
         parser.print_help()
         return 0
 
-    return args.func(args)
+    try:
+        return args.func(args)
+    except TypeScriptSupportUnavailable as exc:
+        if args.json:
+            _output({"error": str(exc)}, as_json=True)
+        else:
+            print(f"svlang: {exc}", file=sys.stderr)
+        return 2
 
 
 if __name__ == "__main__":

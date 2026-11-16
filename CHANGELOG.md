@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0 - 2026-11-16
+
+- Läser svenska målsträngar ur TypeScript-översättningsobjekt,
+  översättningsanrop och synlig TSX-text.
+- Skiljer TypeScript från Qt Linguist-filer med ändelsen `.ts` och granskar
+  Qt-katalogernas översättningar i stället för XML-strukturen.
+
 ## 0.2.24 - 2026-11-09
 
 - Respektera att interpunktionskontrollen är valfri i CLI:t.
