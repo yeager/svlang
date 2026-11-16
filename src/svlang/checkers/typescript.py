@@ -9,19 +9,43 @@ from pathlib import Path
 
 
 _TRANSLATION_VARIABLES = {
-    "copy", "labels", "locale", "locales", "messages", "resources", "strings",
-    "translation", "translations", "sv", "sv_se", "svse",
+    "copy",
+    "labels",
+    "locale",
+    "locales",
+    "messages",
+    "resources",
+    "strings",
+    "translation",
+    "translations",
+    "sv",
+    "sv_se",
+    "svse",
 }
 _TRANSLATION_CALLS = {
     "_", "$t", "gettext", "i18n.t", "msg", "ngettext", "t", "translate",
 }
 _MESSAGE_FIELDS = {"defaultmessage", "defaultvalue", "message"}
 _VISIBLE_JSX_ATTRIBUTES = {
-    "alt", "aria-label", "caption", "description", "label", "placeholder",
-    "title", "tooltip",
+    "alt",
+    "aria-label",
+    "caption",
+    "description",
+    "label",
+    "placeholder",
+    "title",
+    "tooltip",
 }
 _NON_TEXT_JSX_ATTRIBUTES = {
-    "class", "classname", "id", "key", "name", "role", "src", "style", "type",
+    "class",
+    "classname",
+    "id",
+    "key",
+    "name",
+    "role",
+    "src",
+    "style",
+    "type",
     "value",
 }
 
@@ -75,7 +99,9 @@ def _property_name(node, source: bytes) -> str:
     return value.strip().lower()
 
 
-def _collect_object_values(node, source: bytes, output: list[str], *, message_fields_only: bool = False) -> None:
+def _collect_object_values(
+    node, source: bytes, output: list[str], *, message_fields_only: bool = False
+) -> None:
     if node.type in {"string", "template_string"}:
         value = _string_value(node, source).strip()
         if value:
@@ -98,7 +124,9 @@ def _collect_object_values(node, source: bytes, output: list[str], *, message_fi
 
 def _locale_module(path: Path) -> bool:
     locale_names = {"sv", "sv-se", "sv_se", "svse"}
-    return path.stem.lower() in locale_names or any(part.lower() in locale_names for part in path.parts)
+    return path.stem.lower() in locale_names or any(
+        part.lower() in locale_names for part in path.parts
+    )
 
 
 def extract_translation_text(path: Path, source_text: str) -> str:
