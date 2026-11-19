@@ -403,7 +403,7 @@ class SkrivreglerChecker:
 
             # Flag likely compound spelling errors without automatically
             # rewriting names, abbreviations, code or deliberate repetitions.
-            protected = re.compile(r'https?://\S+|www\.\S+|\{[^}]*\}|<[^>]*>|`[^`]*`', re.IGNORECASE)
+            protected = re.compile(r'https?://\S+|www\.\S+|(?<!\w)/(?:[\w.-]+/)+[\w.-]*|\{[^}]*\}|<[^>]*>|`[^`]*`', re.IGNORECASE)
             spans = [m.span() for m in protected.finditer(text)]
             for m in re.finditer(r'\b[a-zåäö]+\b', text, re.IGNORECASE):
                 word = m.group()

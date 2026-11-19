@@ -120,3 +120,9 @@ def test_unknown_triple_consonants_are_warnings_without_auto_correction():
         ("ägggula", "Kontrollera tre lika konsonanter i följd"),
     ]
     assert checker.check("Visa uppil, äggula och glass-skål. https://www.example.org PPP {ppp}") == []
+
+
+def test_unquoted_local_paths_are_not_triple_consonant_words():
+    checker = SkrivreglerChecker()
+    assert checker.check('Spara under /config/www/ och /local/filename.') == []
+    assert any(issue.word == 'upppil' for issue in checker.check('Visa upppil.'))
