@@ -409,6 +409,10 @@ class SkrivreglerChecker:
                 word = m.group()
                 if word.lower() in STAVFEL or word.isupper():
                     continue
+                # A path segment such as /config/www/ is code, not a
+                # Swedish word with an accidental triple consonant.
+                if text[m.start() - 1:m.start()] == "/" and text[m.end():m.end() + 1] == "/":
+                    continue
                 if any(start <= m.start() < end for start, end in spans):
                     continue
                 if re.search(r'([bcdfghjklmnpqrstvwxz])\1{2,}', word, re.IGNORECASE):
