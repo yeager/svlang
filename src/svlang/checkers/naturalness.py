@@ -107,6 +107,13 @@ class SwedishNaturalness:
     
     def _check_v2_rule(self, sentence: str) -> bool:
         """Check if sentence follows Swedish V2 (verb second) rule."""
+        # The rule-based fallback cannot identify multiword subjects (for
+        # example, "Den interna strömmen är ...").  Counting word positions
+        # in such sentences produces false V2 warnings, so only perform this
+        # check when the dependency-aware tagger is actually available.
+        if not self.stanza_nlp:
+            return True
+
         if self.stanza_nlp:
             try:
                 doc = self.stanza_nlp(sentence)

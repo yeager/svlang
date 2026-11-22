@@ -108,6 +108,14 @@ def test_v2_rule_simple():
     # May or may not detect depending on POS tagger quality
 
 
+def test_v2_fallback_does_not_flag_multiword_subject(monkeypatch):
+    """The heuristic fallback must not mistake a noun phrase for V2 failure."""
+    analyzer = SwedishNaturalness()
+    monkeypatch.setattr(analyzer, "stanza_nlp", None)
+    result = analyzer.analyze("Den interna strömmen är för hög.")
+    assert not [issue for issue in result.issues if issue.category == "word_order"]
+
+
 def test_multiple_sentences():
     """Test analysis of text with multiple sentences."""
     analyzer = SwedishNaturalness()
