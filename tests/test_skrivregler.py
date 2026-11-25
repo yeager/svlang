@@ -126,3 +126,12 @@ def test_unquoted_local_paths_are_not_triple_consonant_words():
     checker = SkrivreglerChecker()
     assert checker.check('Spara under /config/www/ och /local/filename.') == []
     assert any(issue.word == 'upppil' for issue in checker.check('Visa upppil.'))
+
+
+def test_temperature_units_use_degree_sign_not_ordinal_sign():
+    checker = SkrivreglerChecker()
+    issues = checker.check('Kaffetemperatur 90 ºC, vatten 122ºF och mål 18 °C.')
+    degree_issues = [issue for issue in issues if issue.word in {'90 ºC', '122ºF'}]
+    assert len(degree_issues) == 2
+    assert all('gradtecknet °' in issue.suggestion for issue in degree_issues)
+    assert checker.check('Välj 90 °C eller 122 °F.') == []

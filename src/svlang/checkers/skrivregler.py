@@ -283,6 +283,7 @@ _ENGLISH_CURLY_QUOTES = re.compile(r'“')
 _LARGE_DOTTED_NUMBER = re.compile(r'\b\d{1,3}(?:\.\d{3}){2,}\b')
 _IPV4_ADDRESS = re.compile(r'\b(?:\d{1,3}\.){3}\d{1,3}\b')
 _PERCENT_WITHOUT_SPACE = re.compile(r'\b\d+(?:,\d+)?%(?!\w)')
+_ORDINAL_DEGREE_SIGN = re.compile(r'\b\d+(?:[.,]\d+)?\s*º\s*[CF]\b', re.I)
 _SPACED_NUMERIC_HYPHEN = re.compile(r'\b\d+[ \t]+-[ \t]+\d+\b')
 
 
@@ -403,7 +404,7 @@ class SkrivreglerChecker:
 
             # Flag likely compound spelling errors without automatically
             # rewriting names, abbreviations, code or deliberate repetitions.
-            protected = re.compile(r'https?://\S+|www\.\S+|(?<!\w)/(?:[\w.-]+/)+[\w.-]*|\{[^}]*\}|<[^>]*>|`[^`]*`', re.IGNORECASE)
+            protected = re.compile(r'https?://\S+|(?<!\w)/(?:[\w.-]+/)+[\w.-]*|\{[^}]*\}|<[^>]*>|`[^`]*`', re.IGNORECASE)
             spans = [m.span() for m in protected.finditer(text)]
             for m in re.finditer(r'\b[a-zåäö]+\b', text, re.IGNORECASE):
                 word = m.group()
@@ -434,6 +435,7 @@ class SkrivreglerChecker:
             (_ENGLISH_CURLY_QUOTES, 'Använd svenska citattecken ”…”'),
             (_LARGE_DOTTED_NUMBER, 'Gruppera stora tal med mellanslag, inte punkt'),
             (_PERCENT_WITHOUT_SPACE, 'Sätt mellanslag före procenttecknet'),
+            (_ORDINAL_DEGREE_SIGN, 'Använd gradtecknet ° före C eller F, inte ordningstecknet º'),
             (_SPACED_NUMERIC_HYPHEN, 'Använd tankstreck i talintervall'),
         ) if self._check_interpunktion else ()
         for pattern, suggestion in punctuation_checks:
@@ -470,7 +472,7 @@ class SkrivreglerChecker:
                     continue
                 issues.append(SkrivregelIssue(
                     rule="interpunktion",
-                    word=m.group(0),
+                    word=(m.group(0) if pattern is not _ORDINAL_DEGREE_SIGN else text[m.start():m.end()]),
                     suggestion=suggestion,
                     context=self._context(text, m.start(), m.end()),
                     position=m.start(),
