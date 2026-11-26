@@ -2,6 +2,7 @@
 
 ## 0.3.0 - 2026-11-16
 
+- Exempt mixed-case technical names with uppercase acronyms, such as `PPPoE`, from the three-identical-consonant warning; add regression coverage.
 - Läser svenska målsträngar ur TypeScript-översättningsobjekt,
   översättningsanrop och synlig TSX-text.
 - Skiljer TypeScript från Qt Linguist-filer med ändelsen `.ts` och granskar

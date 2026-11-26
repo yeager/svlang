@@ -408,7 +408,7 @@ class SkrivreglerChecker:
             spans = [m.span() for m in protected.finditer(text)]
             for m in re.finditer(r'\b[a-zåäö]+\b', text, re.IGNORECASE):
                 word = m.group()
-                if word.lower() in STAVFEL or word.isupper():
+                if word.lower() in STAVFEL or word.isupper() or re.search(r'[A-Z]{3,}', word):
                     continue
                 # A path segment such as /config/www/ is code, not a
                 # Swedish word with an accidental triple consonant.

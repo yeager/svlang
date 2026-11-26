@@ -109,7 +109,7 @@ def test_three_identical_consonants_in_known_compounds():
         ("processstatus", "processtatus"),
     ]
     assert checker.check("Adresspecifika inställningar och processtatus.") == []
-    assert checker.check("En glass-skål och PPP.") == []
+    assert checker.check("En glass-skål, PPP och PPPoE.") == []
 
 
 def test_unknown_triple_consonants_are_warnings_without_auto_correction():
@@ -119,7 +119,7 @@ def test_unknown_triple_consonants_are_warnings_without_auto_correction():
         ("upppil", "Kontrollera tre lika konsonanter i följd"),
         ("ägggula", "Kontrollera tre lika konsonanter i följd"),
     ]
-    assert checker.check("Visa uppil, äggula och glass-skål. https://www.example.org PPP {ppp}") == []
+    assert checker.check("Visa uppil, äggula och glass-skål. https://www.example.org PPP PPPoE {ppp}") == []
 
 
 def test_unquoted_local_paths_are_not_triple_consonant_words():
